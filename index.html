@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.3</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.5</div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -216,6 +216,7 @@ body{display:flex;flex-direction:column}
     <button class="tab-btn on" id="tab-amb-btn" onclick="ambTab('clima')">🌡️ Clima</button>
     <button class="tab-btn" id="tab-riego-btn" onclick="ambTab('riego')">💧 Riego</button>
     <button class="tab-btn" id="tab-plaga-btn" onclick="ambTab('plagas')">🐛 Plagas</button>
+    <button class="tab-btn" id="tab-enf-btn" onclick="ambTab('enfermedades')">🦠 Enfermedades</button>
   </div>
   <div id="amb-clima">
     <div style="padding:0 12px 8px" id="amb-alertas"></div>
@@ -249,6 +250,25 @@ body{display:flex;flex-direction:column}
       <div id="lst-plagas"></div>
     </div>
   </div>
+
+  <div id="amb-enfermedades" style="display:none">
+    <div style="padding:0 12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:600">Guía de enfermedades</span>
+        <div style="display:flex;gap:6px">
+          <input type="text" class="fi" id="enf-buscar" placeholder="Buscar..." style="width:130px;padding:6px 10px;font-size:13px" oninput="renderEnfermedades()">
+        </div>
+      </div>
+      <div class="tab-bar" style="padding:0 0 10px">
+        <button class="tab-btn on" id="tab-enf-todos" onclick="enfFiltro('todos')">Todos</button>
+        <button class="tab-btn" id="tab-enf-hongos" onclick="enfFiltro('Hongo')">🍄 Hongos</button>
+        <button class="tab-btn" id="tab-enf-bact" onclick="enfFiltro('Bacteria')">🦠 Bacterias</button>
+        <button class="tab-btn" id="tab-enf-def" onclick="enfFiltro('Deficiencia')">⚗️ Deficiencias</button>
+        <button class="tab-btn" id="tab-enf-plaga" onclick="enfFiltro('Plaga')">🐛 Plagas</button>
+      </div>
+      <div id="lst-enfermedades"></div>
+    </div>
+  </div>
 </div>
 
 <!-- RECORDATORIOS -->
@@ -266,6 +286,37 @@ body{display:flex;flex-direction:column}
   <div id="lst-rec-main"></div>
   <div style="padding:14px 14px 4px;font-size:13px;font-weight:600;color:var(--text3)">Tareas automáticas (de ciclos)</div>
   <div id="lst-rec-auto"></div>
+</div>
+
+<!-- REPORTES -->
+<div class="pg" id="pg-reportes">
+  <div class="sh"><div><div class="st">Reportes</div><div class="sst">Análisis de producción</div></div></div>
+  <div class="tab-bar">
+    <button class="tab-btn on" id="tab-rp-prod" onclick="repTab('produccion')">📊 Producción</button>
+    <button class="tab-btn" id="tab-rp-rent" onclick="repTab('rentabilidad')">💰 Rentabilidad</button>
+    <button class="tab-btn" id="tab-rp-camas" onclick="repTab('camas')">🛏 Por camas</button>
+  </div>
+  <div style="padding:0 12px" id="rep-content"></div>
+</div>
+
+<!-- BIBLIOTECA -->
+<div class="pg" id="pg-biblioteca">
+  <div class="sh">
+    <div><div class="st">Cultivos</div><div class="sst">Biblioteca de especies</div></div>
+    <button class="btn bsm bp" onclick="abrirEditCultivo()">+ Agregar</button>
+  </div>
+  <div id="lst-biblioteca"></div>
+</div>
+
+<!-- CALCULADORAS -->
+<div class="pg" id="pg-calc">
+  <div class="sh"><div><div class="st">Calculadoras</div><div class="sst">Herramientas útiles</div></div></div>
+  <div class="tab-bar">
+    <button class="tab-btn on" id="tab-cl-siem" onclick="calcTab('siembra')">🌱 Siembra</button>
+    <button class="tab-btn" id="tab-cl-rent" onclick="calcTab('rentabilidad')">💰 Rentabilidad</button>
+    <button class="tab-btn" id="tab-cl-dil" onclick="calcTab('dilucion')">🧪 Dilución</button>
+  </div>
+  <div style="padding:0 12px" id="calc-content"></div>
 </div>
 
 <!-- MÁS -->
@@ -289,6 +340,15 @@ body{display:flex;flex-direction:column}
       <button class="btn bs bw bsm" onclick="abrirDrive()">🔗 Configurar conexión</button>
     </div>
     <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Herramientas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <button class="btn bs bsm bw" onclick="irA('reportes');toggleSub()">📊 Reportes</button>
+        <button class="btn bs bsm bw" onclick="irA('biblioteca');toggleSub()">🌱 Biblioteca</button>
+        <button class="btn bs bsm bw" onclick="irA('calc');toggleSub()">🧮 Calculadoras</button>
+        <button class="btn bs bsm bw" onclick="abrirConfig()">🎨 Personalizar</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
       <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Datos</div>
       <button class="btn bs bw bsm" style="margin-bottom:6px" onclick="exportarCSV()">📊 Exportar CSV/Excel</button>
       <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos</button>
@@ -299,12 +359,21 @@ body{display:flex;flex-direction:column}
 
 </div><!-- /cnt -->
 
+<!-- SUBMENU MÁS -->
+<div id="submenu" style="display:none;position:fixed;bottom:72px;right:0;left:0;background:var(--g1);border-top:1px solid var(--borde);z-index:50;padding:8px 12px;display:none">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+    <button class="nb" id="nb-reportes" onclick="irA('reportes');toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">📊</span><span>Reportes</span></button>
+    <button class="nb" id="nb-biblioteca" onclick="irA('biblioteca');toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">🌱</span><span>Cultivos</span></button>
+    <button class="nb" id="nb-calc" onclick="irA('calc');toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">🧮</span><span>Calc.</span></button>
+    <button class="nb" id="nb-config-btn" onclick="abrirConfig();toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">🎨</span><span>Diseño</span></button>
+  </div>
+</div>
 <nav id="nav">
   <button class="nb on" id="nb-inicio" onclick="irA('inicio')"><span class="ico">🏠</span><span>Inicio</span></button>
   <button class="nb" id="nb-ciclos" onclick="irA('ciclos')"><span class="ico">📅</span><span>Ciclos</span></button>
   <button class="nb" id="nb-ambiente" onclick="irA('ambiente')"><span class="ico">🌡️</span><span>Ambiente</span></button>
   <button class="nb" id="nb-finanzas" onclick="irA('finanzas')"><span class="ico">💰</span><span>Finanzas</span></button>
-  <button class="nb" id="nb-mas" onclick="irA('mas')"><span class="ico">⚙️</span><span>Más</span></button>
+  <button class="nb" id="nb-mas" onclick="toggleSub()"><span class="ico">⚙️</span><span>Más</span></button>
 </nav>
 
 <div id="toast"></div>
@@ -503,6 +572,134 @@ body{display:flex;flex-direction:column}
   <div class="mbdy" id="b-rec"></div>
 </div></div>
 
+<!-- FOTO CICLO -->
+<div class="mf" id="m-foto">
+  <div class="modal">
+    <div class="masa"></div>
+    <div class="mcab"><span class="mtit">📸 Fotos del ciclo</span><button class="hbtn" onclick="cm('m-foto')">✕</button></div>
+    <div class="mbdy">
+      <div style="font-size:13px;color:var(--text3);margin-bottom:12px" id="foto-ciclo-nombre"></div>
+      <div id="foto-galeria" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"></div>
+      <div class="fg">
+        <label class="fl">Agregar foto</label>
+        <input type="file" id="foto-input" accept="image/*" capture="environment" class="fi" style="padding:8px">
+      </div>
+      <div class="fg"><label class="fl">Descripción (opcional)</label><input class="fi" id="foto-desc" type="text" placeholder="Ej: Día 15 de crecimiento"></div>
+      <button class="btn bp bw" onclick="subirFoto()">📤 Subir foto</button>
+      <div id="foto-status" style="margin-top:8px;font-size:13px;color:var(--text3);text-align:center"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CULTIVO BIBLIOTECA -->
+<div class="mf" id="m-cultivo">
+  <div class="modal">
+    <div class="masa"></div>
+    <div class="mcab"><span class="mtit" id="t-cultivo">Nuevo cultivo</span><button class="hbtn" onclick="cm('m-cultivo')">✕</button></div>
+    <div class="mbdy">
+      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="cult-n" type="text" placeholder="Ej: Lechuga Butter"></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Días almácigo</label><input class="fi" id="cult-da" type="number" placeholder="25" min="1"></div>
+        <div class="fg"><label class="fl">Días trasplante</label><input class="fi" id="cult-dt" type="number" placeholder="45" min="1"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">pH mínimo</label><input class="fi" id="cult-phmin" type="number" placeholder="5.5" step="0.1"></div>
+        <div class="fg"><label class="fl">pH máximo</label><input class="fi" id="cult-phmax" type="number" placeholder="6.5" step="0.1"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">EC mínimo</label><input class="fi" id="cult-ecmin" type="number" placeholder="1.4" step="0.1"></div>
+        <div class="fg"><label class="fl">EC máximo</label><input class="fi" id="cult-ecmax" type="number" placeholder="2.0" step="0.1"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Temp. ideal (°C)</label><input class="fi" id="cult-temp" type="number" placeholder="22" step="1"></div>
+        <div class="fg"><label class="fl">Dificultad</label>
+          <select class="fi" id="cult-dif">
+            <option value="Fácil">🟢 Fácil</option>
+            <option value="Media">🟡 Media</option>
+            <option value="Difícil">🔴 Difícil</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Consejos</label><textarea class="fi" id="cult-cons" placeholder="Tips de cultivo..." rows="2"></textarea></div>
+      <div class="fg"><label class="fl">Problemas comunes</label><textarea class="fi" id="cult-prob" placeholder="Ej: Susceptible a pulgón..." rows="2"></textarea></div>
+      <input type="hidden" id="cult-eid">
+    </div>
+    <div class="mpie">
+      <button class="btn bs" style="flex:1" onclick="cm('m-cultivo')">Cancelar</button>
+      <button class="btn bp" style="flex:2" onclick="guardarCultivo()">Guardar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- CONFIG APP -->
+<div class="mf" id="m-config">
+  <div class="modal">
+    <div class="masa"></div>
+    <div class="mcab"><span class="mtit">🎨 Personalizar</span><button class="hbtn" onclick="cm('m-config')">✕</button></div>
+    <div class="mbdy">
+      <div class="fg"><label class="fl">Nombre de la app</label><input class="fi" id="cfg-nombre" type="text" placeholder="HidroApp" maxlength="20"></div>
+      <div class="fg"><label class="fl">Subtítulo</label><input class="fi" id="cfg-sub" type="text" placeholder="Gestión Hidropónica" maxlength="30"></div>
+      <div class="fg">
+        <label class="fl">Color principal</label>
+        <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap" id="cfg-colores">
+          <div class="color-opt on" data-cfg="#4ade80" style="background:#4ade80;width:34px;height:34px;border-radius:8px"></div>
+          <div class="color-opt" data-cfg="#60a5fa" style="background:#60a5fa;width:34px;height:34px;border-radius:8px"></div>
+          <div class="color-opt" data-cfg="#c084fc" style="background:#c084fc;width:34px;height:34px;border-radius:8px"></div>
+          <div class="color-opt" data-cfg="#fb923c" style="background:#fb923c;width:34px;height:34px;border-radius:8px"></div>
+          <div class="color-opt" data-cfg="#f472b6" style="background:#f472b6;width:34px;height:34px;border-radius:8px"></div>
+          <div class="color-opt" data-cfg="#34d399" style="background:#34d399;width:34px;height:34px;border-radius:8px"></div>
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Modo</label>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="btn bs bsm" id="modo-oscuro-btn" onclick="setModo('oscuro')" style="flex:1">🌙 Oscuro</button>
+          <button class="btn bs bsm" id="modo-claro-btn" onclick="setModo('claro')" style="flex:1">☀️ Claro</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px;padding:10px;background:var(--card2);border-radius:var(--rsm)">
+        💡 Los cambios se aplican de inmediato y se guardan en el dispositivo
+      </div>
+    </div>
+    <div class="mpie">
+      <button class="btn bs" style="flex:1" onclick="cm('m-config')">Cerrar</button>
+      <button class="btn bp" style="flex:2" onclick="guardarConfig()">Aplicar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- DETALLE ENFERMEDAD -->
+<div class="mf" id="m-enf-detalle">
+  <div class="modal">
+    <div class="masa"></div>
+    <div class="mcab"><span class="mtit" id="t-enf-det">Enfermedad</span><button class="hbtn" onclick="cm('m-enf-detalle')">✕</button></div>
+    <div class="mbdy" id="b-enf-det"></div>
+    <div style="padding:0 14px 10px;display:flex;gap:8px">
+      <button class="btn bp bw" id="enf-reg-btn" onclick="registrarEnfermedad()">+ Registrar en mis camas</button>
+    </div>
+    <div style="height:6px"></div>
+  </div>
+</div>
+
+<!-- FOTO PLAGA/ENFERMEDAD -->
+<div class="mf" id="m-foto-enf">
+  <div class="modal">
+    <div class="masa"></div>
+    <div class="mcab"><span class="mtit">📸 Foto del problema</span><button class="hbtn" onclick="cm('m-foto-enf')">✕</button></div>
+    <div class="mbdy">
+      <div style="font-size:13px;color:var(--text3);margin-bottom:10px" id="foto-enf-nombre"></div>
+      <div id="foto-enf-galeria" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"></div>
+      <div class="fg"><label class="fl">Agregar foto del problema</label>
+        <input type="file" id="foto-enf-input" accept="image/*" capture="environment" class="fi" style="padding:8px">
+      </div>
+      <button class="btn bp bw" onclick="subirFotoEnf()">📤 Subir foto</button>
+      <div id="foto-enf-status" style="margin-top:8px;font-size:13px;color:var(--text3);text-align:center"></div>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRMAR -->
 <div class="mf" id="m-conf"><div class="modal"><div class="masa"></div>
   <div class="mcab"><span class="mtit" id="conf-t">Confirmar</span></div>
@@ -518,7 +715,7 @@ body{display:flex;flex-direction:column}
 <script>
 // ═══ DATOS ═══
 const KEY='ha3',KURL='ha3_url';
-let D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[]};
+let D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[],fotos:[],biblioteca:[]};
 let SURL=localStorage.getItem(KURL)||'https://script.google.com/macros/s/AKfycbxLY9K-6pv-5lbDYhrhyshFDimTo8_KfQ-WX1Ovgi0aFmTL7p9bQmGqclNYtIciTZgk/exec';
 let filtroCama='todas',pagActual='inicio',finTabAct='v',ambTabAct='clima',recTabAct='hoy',finMes='',stimer=null,usrAct='',colorSel='#4ade80';
 
@@ -529,7 +726,7 @@ const RECETAS=[
 ];
 
 // ═══ LOCAL ═══
-function leerL(){try{const r=localStorage.getItem(KEY);if(r){const p=JSON.parse(r);Object.keys(D).forEach(k=>{if(p[k])D[k]=p[k];});['compras','ambiente','riego','plagas','tareas','usuarios'].forEach(k=>{if(!D[k])D[k]=[];});}}catch(e){}}
+function leerL(){try{const r=localStorage.getItem(KEY);if(r){const p=JSON.parse(r);Object.keys(D).forEach(k=>{if(p[k])D[k]=p[k];});['compras','ambiente','riego','plagas','tareas','usuarios','fotos','biblioteca'].forEach(k=>{if(!D[k])D[k]=[];});}}catch(e){}}
 function guardarL(){localStorage.setItem(KEY,JSON.stringify(D));progSync();}
 function nid(a){return a.length?Math.max(...a.map(x=>parseInt(x.id)||0))+1:1;}
 
@@ -573,9 +770,22 @@ function irA(p){
   const nb=document.getElementById('nb-'+p);
   if(pg)pg.classList.add('on');
   if(nb)nb.classList.add('on');
+  else document.getElementById('nb-mas').classList.add('on');
   pagActual=p;renderPA();
 }
-function renderPA(){({inicio:renderInicio,ciclos:renderCiclos,nutricion:renderNut,stock:renderStock,finanzas:renderFin,ambiente:renderAmb,recordatorios:renderRec,mas:renderMas})[pagActual]?.();}
+function toggleSub(){
+  const s=document.getElementById('submenu');
+  s.style.display=s.style.display==='none'||!s.style.display?'block':'none';
+}
+// Close submenu when tapping outside
+document.addEventListener('click',function(e){
+  const sub=document.getElementById('submenu');
+  const masBtn=document.getElementById('nb-mas');
+  if(sub&&masBtn&&!sub.contains(e.target)&&!masBtn.contains(e.target)){
+    sub.style.display='none';
+  }
+});
+function renderPA(){({inicio:renderInicio,ciclos:renderCiclos,nutricion:renderNut,stock:renderStock,finanzas:renderFin,ambiente:renderAmb,recordatorios:renderRec,reportes:renderReportes,biblioteca:renderBiblioteca,calc:renderCalc,mas:renderMas})[pagActual]?.();}
 
 // ═══ UTILS ═══
 function toast(m,d=2200){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),d);}
@@ -690,8 +900,9 @@ function renderCiclos(){
       '<div style="display:flex;gap:12px;font-size:11px;color:var(--text3);margin-bottom:8px"><span>🌱 '+fmt(c.fechaAlmacigo)+'</span><span>🪴 '+fmt(c.fechaTrasplante)+'</span><span>🌾 '+fmt(c.fechaCosecha)+'</span></div>'+
       '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px"><span>Progreso</span><span>'+pr+'%</span></div><div class="pb"><div class="pf" style="width:'+pr+'%"></div></div></div>'+
       '<div style="display:flex;gap:7px">'+
-        '<button class="btn bs bsm" onclick="abrirCiclo('+c.id+')" style="flex:1">✏️ Editar</button>'+
-        (c.estado!=='cosechado'?'<button class="btn bp bsm" onclick="prepCos('+c.id+')" style="flex:1">🌾 Cosechar</button>':'<span style="flex:1;text-align:center;font-size:13px;color:var(--acc);align-self:center">⚖️ '+kg.toFixed(1)+' kg</span>')+
+        '<button class="btn bs bsm" onclick="abrirCiclo('+c.id+')" style="flex:1">✏️</button>'+
+        '<button class="btn bs bsm" onclick="abrirFotos('+c.id+')" style="flex:1">📸</button>'+
+        (c.estado!=='cosechado'?'<button class="btn bp bsm" onclick="prepCos('+c.id+')" style="flex:2">🌾 Cosechar</button>':'<span style="flex:2;text-align:center;font-size:13px;color:var(--acc);align-self:center">⚖️ '+kg.toFixed(1)+' kg</span>')+
         '<button class="btn br bsm" onclick="elimCiclo('+c.id+')">🗑</button>'+
       '</div>'+
     '</div>';
@@ -853,18 +1064,22 @@ function elimC(id){confirmar('Eliminar compra','¿Eliminar esta compra?',functio
 // ═══ AMBIENTE ═══
 function ambTab(t){
   ambTabAct=t;
-  // show/hide panels
-  document.getElementById('amb-clima').style.display=t==='clima'?'block':'none';
-  document.getElementById('amb-riego').style.display=t==='riego'?'block':'none';
-  document.getElementById('amb-plagas').style.display=t==='plagas'?'block':'none';
-  // toggle tab buttons
+  ['clima','riego','plagas','enfermedades'].forEach(function(x){
+    document.getElementById('amb-'+x).style.display=x===t?'block':'none';
+  });
   document.getElementById('tab-amb-btn').classList.toggle('on',t==='clima');
   document.getElementById('tab-riego-btn').classList.toggle('on',t==='riego');
   document.getElementById('tab-plaga-btn').classList.toggle('on',t==='plagas');
+  document.getElementById('tab-enf-btn').classList.toggle('on',t==='enfermedades');
   renderAmbTab();
 }
 function renderAmb(){renderAmbTab();}
-function renderAmbTab(){if(ambTabAct==='clima')renderClima();else if(ambTabAct==='riego')renderRiego();else renderPlagas();}
+function renderAmbTab(){
+  if(ambTabAct==='clima')renderClima();
+  else if(ambTabAct==='riego')renderRiego();
+  else if(ambTabAct==='plagas')renderPlagas();
+  else if(ambTabAct==='enfermedades')renderEnfermedades();
+}
 function renderClima(){
   const ult=[...D.ambiente].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)))[0];
   let alertas='';
@@ -995,6 +1210,927 @@ function guardarUsr(){const n=document.getElementById('usr-n').value.trim();cons
 function elimUsr(n){if(n===usrAct){toast('⚠️ No puedes eliminar el usuario activo');return;}confirmar('Eliminar usuario','¿Eliminar a "'+n+'"?',function(){D.usuarios=D.usuarios.filter(u=>u.nombre!==n);guardarL();renderLstUsr();});}
 document.addEventListener('click',function(e){if(e.target.classList.contains('color-opt')){document.querySelectorAll('.color-opt').forEach(c=>c.classList.remove('on'));e.target.classList.add('on');colorSel=e.target.dataset.c;}});
 
+// ═══ SUBMENU ═══
+// (toggleSub is defined in irA block)
+
+// ═══ FOTOS ═══
+let fotoCicloId = null;
+
+function abrirFotos(cicloId) {
+  fotoCicloId = cicloId;
+  const c = D.ciclos.find(x => parseInt(x.id) === parseInt(cicloId));
+  document.getElementById('foto-ciclo-nombre').textContent = c ? c.cultivo + ' · ' + c.cama : '';
+  document.getElementById('foto-desc').value = '';
+  document.getElementById('foto-input').value = '';
+  document.getElementById('foto-status').textContent = '';
+  renderGaleria(cicloId);
+  om('m-foto');
+}
+
+function renderGaleria(cicloId) {
+  const fotos = D.fotos.filter(f => parseInt(f.cicloId) === parseInt(cicloId));
+  const el = document.getElementById('foto-galeria');
+  if (!fotos.length) {
+    el.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-size:13px">Sin fotos aún — agrega la primera 📸</div>';
+    return;
+  }
+  el.innerHTML = fotos.map(function(f){
+    const fid = f.id;
+    const fdesc = (f.desc||'').replace(/'/g,"\'");
+    return '<div style="position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--card2)">' +
+      '<img src="' + f.url + '" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="verFotoIdx(' + fid + ')">' +
+      '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);padding:4px 6px;font-size:10px;color:#fff;display:flex;justify-content:space-between">' +
+        '<span>' + (f.desc || fmt(f.fecha)) + '</span>' +
+        '<span>' + (f.nube ? '☁️' : '📱') + '</span>' +
+      '</div>' +
+      '<button onclick="elimFoto(' + fid + ')" style="position:absolute;top:4px;right:4px;background:rgba(248,113,113,.8);border:none;border-radius:50%;width:22px;height:22px;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">&#x2715;</button>' +
+    '</div>';
+  }).join('');
+}
+
+function verFotoGrande(url, desc) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:20px';
+  const img = document.createElement('img');
+  img.src = url;
+  img.style.cssText = 'max-width:95%;max-height:80vh;border-radius:10px;object-fit:contain';
+  overlay.appendChild(img);
+  if (desc) {
+    const d = document.createElement('div');
+    d.style.cssText = 'color:#fff;margin-top:12px;font-size:14px;text-align:center';
+    d.textContent = desc;
+    overlay.appendChild(d);
+  }
+  const hint = document.createElement('div');
+  hint.style.cssText = 'color:rgba(255,255,255,.5);margin-top:16px;font-size:13px';
+  hint.textContent = 'Toca para cerrar';
+  overlay.appendChild(hint);
+  overlay.onclick = function() { document.body.removeChild(overlay); };
+  document.body.appendChild(overlay);
+}
+function verFotoIdx(id) {
+  const f = D.fotos.find(function(x){ return parseInt(x.id) === parseInt(id); });
+  if (f) verFotoGrande(f.url, f.desc || fmt(f.fecha));
+}
+
+// Imgur Client ID (gratis, sin cuenta necesaria)
+const IMGUR_CID = 'f4e8d5c3b2a1e6f7'; // fallback local si falla
+
+async function subirFoto() {
+  const input = document.getElementById('foto-input');
+  const desc = document.getElementById('foto-desc').value.trim();
+  const status = document.getElementById('foto-status');
+  if (!input.files || !input.files[0]) { toast('⚠️ Selecciona una foto'); return; }
+  if (!fotoCicloId) return;
+
+  const file = input.files[0];
+  status.innerHTML = '<span style="color:var(--warn)">📤 Subiendo a la nube...</span>';
+
+  // Comprimir primero
+  const compressed = await comprimirImagen(file, 1200, 0.85);
+
+  // Intentar subir a Imgur
+  try {
+    const formData = new FormData();
+    formData.append('image', compressed.split(',')[1]);
+    formData.append('type', 'base64');
+
+    const resp = await fetch('https://api.imgur.com/3/image', {
+      method: 'POST',
+      headers: { 'Authorization': 'Client-ID 546c25a59c58ad7' },
+      body: formData
+    });
+    const data = await resp.json();
+
+    if (data.success && data.data && data.data.link) {
+      // Éxito — guardar URL de Imgur
+      D.fotos.push({ id:nid(D.fotos), cicloId:fotoCicloId, url:data.data.link, desc:desc, fecha:hoy(), nube:true });
+      guardarL();
+      status.innerHTML = '<span style="color:var(--acc)">✅ Foto subida a la nube</span>';
+      input.value = ''; document.getElementById('foto-desc').value = '';
+      renderGaleria(fotoCicloId);
+      toast('📸 Foto guardada en la nube');
+      return;
+    }
+  } catch(e) {}
+
+  // Fallback: guardar local en base64
+  D.fotos.push({ id:nid(D.fotos), cicloId:fotoCicloId, url:compressed, desc:desc, fecha:hoy(), nube:false });
+  guardarL();
+  status.innerHTML = '<span style="color:var(--warn)">💾 Guardada localmente (sin internet)</span>';
+  input.value = ''; document.getElementById('foto-desc').value = '';
+  renderGaleria(fotoCicloId);
+  toast('📸 Foto guardada');
+}
+
+function comprimirImagen(file, maxSize, quality) {
+  return new Promise(function(resolve) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+        if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function elimFoto(id) {
+  D.fotos = D.fotos.filter(f => parseInt(f.id) !== parseInt(id));
+  guardarL();
+  renderGaleria(fotoCicloId);
+  toast('🗑 Foto eliminada');
+}
+
+// ═══ BIBLIOTECA DE CULTIVOS ═══
+const CULTIVOS_BASE = [
+  {id:1, nombre:'Lechuga Butter',   da:25, dt:40, phMin:5.5, phMax:6.5, ecMin:1.2, ecMax:2.0, temp:20, dif:'Fácil',   cons:'Evitar exceso de calor. Cosechar antes de que espigue.',         prob:'Pulgón, quemadura de bordes por EC alto'},
+  {id:2, nombre:'Lechuga Costina',  da:25, dt:40, phMin:5.5, phMax:6.5, ecMin:1.2, ecMax:2.0, temp:20, dif:'Fácil',   cons:'Muy adaptable. Ideal para principiantes.',                      prob:'Pulgón, pudrición de raíz'},
+  {id:3, nombre:'Albahaca',         da:20, dt:35, phMin:5.5, phMax:6.5, ecMin:1.0, ecMax:1.6, temp:24, dif:'Fácil',   cons:'Necesita mucha luz. Pinzar flores para más hojas.',             prob:'Araña roja en clima seco'},
+  {id:4, nombre:'Espinaca',         da:20, dt:35, phMin:6.0, phMax:7.0, ecMin:1.8, ecMax:2.3, temp:18, dif:'Fácil',   cons:'Prefiere temperaturas frescas. No tolera calor.',               prob:'Clorosis por pH alto'},
+  {id:5, nombre:'Cilantro',         da:15, dt:30, phMin:5.5, phMax:6.5, ecMin:1.2, ecMax:1.8, temp:22, dif:'Fácil',   cons:'Crecimiento rápido. Cosechar hojas jóvenes.',                   prob:'Espiga rápido con calor'},
+  {id:6, nombre:'Tomate Cherry',    da:30, dt:60, phMin:5.8, phMax:6.8, ecMin:2.5, ecMax:3.5, temp:24, dif:'Media',   cons:'Necesita soporte. Polinizar manualmente en interior.',          prob:'Botrytis, araña roja, deficiencia Ca'},
+  {id:7, nombre:'Pimiento',         da:35, dt:70, phMin:5.8, phMax:6.8, ecMin:2.0, ecMax:3.0, temp:26, dif:'Media',   cons:'Temperatura constante importante. Riego uniforme.',            prob:'Virus mosaico, araña roja'},
+  {id:8, nombre:'Pepino',           da:15, dt:45, phMin:5.8, phMax:6.0, ecMin:1.7, ecMax:2.5, temp:25, dif:'Media',   cons:'Crecimiento muy rápido. Necesita soporte.',                     prob:'Mildiu, mosca blanca'},
+  {id:9, nombre:'Frutilla',         da:0,  dt:90, phMin:5.5, phMax:6.5, ecMin:1.0, ecMax:1.4, temp:20, dif:'Media',   cons:'Renovar plantas cada 2-3 años. Cuidar estolones.',              prob:'Botrytis, ácaro'},
+  {id:10,nombre:'Rúcula',           da:10, dt:25, phMin:6.0, phMax:7.0, ecMin:1.0, ecMax:1.5, temp:18, dif:'Fácil',   cons:'Muy rápida. Cosecha continua cortando hojas exteriores.',       prob:'Escarabajo de pulga'},
+  {id:11,nombre:'Menta',            da:0,  dt:45, phMin:6.5, phMax:7.0, ecMin:1.2, ecMax:1.6, temp:20, dif:'Fácil',   cons:'Muy invasiva. Mantener en recipiente separado.',               prob:'Roya'},
+  {id:12,nombre:'Perejil',          da:25, dt:60, phMin:5.5, phMax:6.0, ecMin:1.0, ecMax:1.5, temp:20, dif:'Media',   cons:'Germinación lenta. Paciencia en almácigo.',                    prob:'Marchitez por exceso agua'},
+];
+
+function getBiblioteca() {
+  // Merge base + custom
+  const customNames = D.biblioteca.map(c => c.nombre);
+  return [...CULTIVOS_BASE.filter(c => !customNames.includes(c.nombre)), ...D.biblioteca];
+}
+
+function renderBiblioteca() {
+  const todos = getBiblioteca();
+  const dif = {'Fácil':'<span class="tag tv">🟢 Fácil</span>','Media':'<span class="tag ta">🟡 Media</span>','Difícil':'<span class="tag tr">🔴 Difícil</span>'};
+  document.getElementById('lst-biblioteca').innerHTML = todos.map(c =>
+    '<div style="padding:12px 14px;border-bottom:1px solid var(--borde);cursor:pointer" onclick="verCultivo(' + c.id + ')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">' +
+        '<div style="font-size:15px;font-weight:600">' + c.nombre + '</div>' +
+        (dif[c.dif] || '') +
+      '</div>' +
+      '<div style="display:flex;gap:12px;font-size:12px;color:var(--text3);margin-bottom:6px">' +
+        '<span>🌱 ' + c.da + 'd almácigo</span>' +
+        '<span>🪴 ' + c.dt + 'd trasplante</span>' +
+        '<span>🌡️ ' + c.temp + '°C</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;font-size:11px">' +
+        '<span class="tag tv">pH ' + c.phMin + '–' + c.phMax + '</span>' +
+        '<span class="tag tb">EC ' + c.ecMin + '–' + c.ecMax + '</span>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function verCultivo(id) {
+  const c = getBiblioteca().find(x => parseInt(x.id) === parseInt(id));
+  if (!c) return;
+  document.getElementById('t-cultivo').textContent = c.nombre;
+  document.getElementById('cult-n').value = c.nombre;
+  document.getElementById('cult-da').value = c.da;
+  document.getElementById('cult-dt').value = c.dt;
+  document.getElementById('cult-phmin').value = c.phMin;
+  document.getElementById('cult-phmax').value = c.phMax;
+  document.getElementById('cult-ecmin').value = c.ecMin;
+  document.getElementById('cult-ecmax').value = c.ecMax;
+  document.getElementById('cult-temp').value = c.temp;
+  document.getElementById('cult-dif').value = c.dif;
+  document.getElementById('cult-cons').value = c.cons || '';
+  document.getElementById('cult-prob').value = c.prob || '';
+  document.getElementById('cult-eid').value = id;
+  om('m-cultivo');
+}
+
+function abrirEditCultivo() {
+  ['cult-n','cult-da','cult-dt','cult-phmin','cult-phmax','cult-ecmin','cult-ecmax','cult-temp','cult-cons','cult-prob'].forEach(f => document.getElementById(f).value = '');
+  document.getElementById('cult-eid').value = '';
+  document.getElementById('t-cultivo').textContent = 'Nuevo cultivo';
+  om('m-cultivo');
+}
+
+function guardarCultivo() {
+  const n = document.getElementById('cult-n').value.trim();
+  if (!n) { toast('⚠️ Ingresa el nombre'); return; }
+  const eid = document.getElementById('cult-eid').value;
+  const obj = {
+    nombre: n,
+    da: parseInt(document.getElementById('cult-da').value) || 25,
+    dt: parseInt(document.getElementById('cult-dt').value) || 45,
+    phMin: parseFloat(document.getElementById('cult-phmin').value) || 5.5,
+    phMax: parseFloat(document.getElementById('cult-phmax').value) || 6.5,
+    ecMin: parseFloat(document.getElementById('cult-ecmin').value) || 1.4,
+    ecMax: parseFloat(document.getElementById('cult-ecmax').value) || 2.0,
+    temp: parseInt(document.getElementById('cult-temp').value) || 22,
+    dif: document.getElementById('cult-dif').value,
+    cons: document.getElementById('cult-cons').value.trim(),
+    prob: document.getElementById('cult-prob').value.trim(),
+  };
+  if (eid) {
+    const idx = D.biblioteca.findIndex(x => parseInt(x.id) === parseInt(eid));
+    if (idx >= 0) { D.biblioteca[idx] = { ...D.biblioteca[idx], ...obj }; }
+    else D.biblioteca.push({ id: nid(D.biblioteca), ...obj });
+  } else {
+    D.biblioteca.push({ id: nid(D.biblioteca), ...obj });
+  }
+  guardarL(); cm('m-cultivo'); toast('✅ Cultivo guardado'); renderBiblioteca();
+}
+
+// Autocompletar días al crear ciclo desde biblioteca
+function autocompletarCultivo() {
+  const nombre = document.getElementById('c-cult').value.trim();
+  if (!nombre) return;
+  const c = getBiblioteca().find(x => x.nombre.toLowerCase() === nombre.toLowerCase());
+  if (c) {
+    document.getElementById('c-da').value = c.da;
+    document.getElementById('c-dt').value = c.dt;
+    toast('🌱 Días completados desde biblioteca');
+  }
+}
+
+// ═══ CALCULADORAS ═══
+let calcTabAct = 'siembra';
+
+function calcTab(t) {
+  calcTabAct = t;
+  document.getElementById('tab-cl-siem').classList.toggle('on', t === 'siembra');
+  document.getElementById('tab-cl-rent').classList.toggle('on', t === 'rentabilidad');
+  document.getElementById('tab-cl-dil').classList.toggle('on', t === 'dilucion');
+  renderCalc();
+}
+
+function renderCalc() {
+  if (calcTabAct === 'siembra') renderCalcSiembra();
+  else if (calcTabAct === 'rentabilidad') renderCalcRent();
+  else renderCalcDil();
+}
+
+function renderCalcSiembra() {
+  document.getElementById('calc-content').innerHTML =
+    '<div class="card" style="margin-top:4px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:14px">🌱 Densidad de siembra</div>' +
+      '<div class="fr">' +
+        '<div class="fg"><label class="fl">Largo (m)</label><input class="fi" id="cs-l" type="number" placeholder="3.0" step="0.1" oninput="calcSiembra()"></div>' +
+        '<div class="fg"><label class="fl">Ancho (m)</label><input class="fi" id="cs-a" type="number" placeholder="1.0" step="0.1" oninput="calcSiembra()"></div>' +
+      '</div>' +
+      '<div class="fr">' +
+        '<div class="fg"><label class="fl">Espaciado X (cm)</label><input class="fi" id="cs-ex" type="number" placeholder="25" oninput="calcSiembra()"></div>' +
+        '<div class="fg"><label class="fl">Espaciado Y (cm)</label><input class="fi" id="cs-ey" type="number" placeholder="20" oninput="calcSiembra()"></div>' +
+      '</div>' +
+      '<div id="cs-result" style="margin-top:12px"></div>' +
+    '</div>' +
+    '<div class="card" style="margin-top:10px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:14px">⚖️ Producción estimada</div>' +
+      '<div class="fr">' +
+        '<div class="fg"><label class="fl">N° plantas</label><input class="fi" id="cp-pl" type="number" placeholder="30" oninput="calcProd()"></div>' +
+        '<div class="fg"><label class="fl">Peso/planta (g)</label><input class="fi" id="cp-pp" type="number" placeholder="300" oninput="calcProd()"></div>' +
+      '</div>' +
+      '<div id="cp-result" style="margin-top:10px"></div>' +
+    '</div>';
+}
+
+function calcSiembra() {
+  const l = parseFloat(document.getElementById('cs-l').value) || 0;
+  const a = parseFloat(document.getElementById('cs-a').value) || 0;
+  const ex = parseFloat(document.getElementById('cs-ex').value) || 0;
+  const ey = parseFloat(document.getElementById('cs-ey').value) || 0;
+  if (!l || !a || !ex || !ey) return;
+  const plantas = Math.floor((l * 100 / ex)) * Math.floor((a * 100 / ey));
+  document.getElementById('cs-result').innerHTML =
+    '<div style="background:var(--card2);border-radius:var(--rsm);padding:14px;text-align:center">' +
+    '<div style="font-size:28px;font-weight:700;color:var(--acc)">' + plantas + '</div>' +
+    '<div style="font-size:13px;color:var(--text3)">plantas en ' + (l*a).toFixed(1) + ' m²</div>' +
+    '<div style="font-size:12px;color:var(--text3);margin-top:4px">' + (plantas/(l*a)).toFixed(0) + ' plantas/m²</div>' +
+    '</div>';
+}
+
+function calcProd() {
+  const pl = parseFloat(document.getElementById('cp-pl').value) || 0;
+  const pp = parseFloat(document.getElementById('cp-pp').value) || 0;
+  if (!pl || !pp) return;
+  const kg = (pl * pp / 1000).toFixed(2);
+  document.getElementById('cp-result').innerHTML =
+    '<div style="background:var(--card2);border-radius:var(--rsm);padding:14px;text-align:center">' +
+    '<div style="font-size:28px;font-weight:700;color:var(--acc)">' + kg + ' kg</div>' +
+    '<div style="font-size:13px;color:var(--text3)">producción estimada</div>' +
+    '</div>';
+}
+
+function renderCalcRent() {
+  document.getElementById('calc-content').innerHTML =
+    '<div class="card" style="margin-top:4px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:14px">💰 Punto de equilibrio</div>' +
+      '<div class="fg"><label class="fl">Costo total del ciclo ($)</label><input class="fi" id="cr-costo" type="number" placeholder="0" oninput="calcRent()"></div>' +
+      '<div class="fr">' +
+        '<div class="fg"><label class="fl">Kg producidos</label><input class="fi" id="cr-kg" type="number" placeholder="0" step="0.1" oninput="calcRent()"></div>' +
+        '<div class="fg"><label class="fl">Precio venta ($/kg)</label><input class="fi" id="cr-precio" type="number" placeholder="0" oninput="calcRent()"></div>' +
+      '</div>' +
+      '<div id="cr-result" style="margin-top:12px"></div>' +
+    '</div>' +
+    '<div class="card" style="margin-top:10px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:14px">📊 Basado en tus datos reales</div>' +
+      '<div id="cr-real"></div>' +
+    '</div>';
+  // Fill real data
+  const vT = D.ventas.reduce((s,v)=>s+(parseFloat(v.total)||0),0);
+  const cT = D.compras.reduce((s,c)=>s+(parseFloat(c.costo)||0),0);
+  const kgT = D.cosechas.reduce((s,c)=>s+(parseFloat(c.kg)||0),0);
+  const g = vT - cT;
+  const ckg = kgT > 0 ? (cT/kgT).toFixed(0) : '—';
+  const pkg = kgT > 0 ? (vT/kgT).toFixed(0) : '—';
+  document.getElementById('cr-real').innerHTML =
+    ['💰 Ventas totales|$'+Math.round(vT).toLocaleString('es-CL'),
+     '🛒 Compras totales|$'+Math.round(cT).toLocaleString('es-CL'),
+     '⚖️ Kg producidos|'+kgT.toFixed(1)+' kg',
+     '📦 Costo real/kg|$'+ckg,
+     '💵 Precio venta/kg|$'+pkg,
+     '📊 Ganancia neta|$'+Math.round(g).toLocaleString('es-CL')
+    ].map(r=>{const[l,v]=r.split('|');return'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--borde)"><span style="font-size:13px;color:var(--text2)">'+l+'</span><span style="font-weight:600">'+v+'</span></div>';}).join('');
+}
+
+function calcRent() {
+  const costo = parseFloat(document.getElementById('cr-costo').value) || 0;
+  const kg = parseFloat(document.getElementById('cr-kg').value) || 0;
+  const precio = parseFloat(document.getElementById('cr-precio').value) || 0;
+  if (!costo || !precio) return;
+  const ingreso = kg * precio;
+  const ganancia = ingreso - costo;
+  const kgNecesario = costo / precio;
+  const margen = ingreso > 0 ? ((ganancia/ingreso)*100).toFixed(1) : 0;
+  document.getElementById('cr-result').innerHTML =
+    '<div style="background:var(--card2);border-radius:var(--rsm);padding:14px">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text2)">Ingreso total</span><span style="color:var(--acc);font-weight:600">$'+Math.round(ingreso).toLocaleString('es-CL')+'</span></div>' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text2)">Ganancia</span><span style="color:'+(ganancia>=0?'var(--acc)':'var(--danger)')+';font-weight:700;font-size:16px">$'+Math.round(ganancia).toLocaleString('es-CL')+'</span></div>' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--text2)">Margen</span><span style="font-weight:600">'+margen+'%</span></div>' +
+    '<div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Kg mínimo para no perder</span><span style="font-weight:600">'+kgNecesario.toFixed(1)+' kg</span></div>' +
+    '</div>';
+}
+
+function renderCalcDil() {
+  document.getElementById('calc-content').innerHTML =
+    '<div class="card" style="margin-top:4px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:14px">🧪 Calculadora de dilución</div>' +
+      '<div class="fg"><label class="fl">Concentración original (%)</label><input class="fi" id="cd-c1" type="number" placeholder="Ej: 50" step="0.1" oninput="calcDil()"></div>' +
+      '<div class="fg"><label class="fl">Concentración deseada (%)</label><input class="fi" id="cd-c2" type="number" placeholder="Ej: 2" step="0.1" oninput="calcDil()"></div>' +
+      '<div class="fg"><label class="fl">Volumen final deseado (L)</label><input class="fi" id="cd-vf" type="number" placeholder="Ej: 10" step="0.5" oninput="calcDil()"></div>' +
+      '<div id="cd-result" style="margin-top:12px"></div>' +
+    '</div>' +
+    '<div class="card" style="margin-top:10px">' +
+      '<div style="font-size:14px;font-weight:600;margin-bottom:10px">💡 Fórmula C1·V1 = C2·V2</div>' +
+      '<div style="font-size:13px;color:var(--text3);line-height:1.8">' +
+        'C1 = concentración original<br>V1 = volumen a tomar<br>C2 = concentración deseada<br>V2 = volumen final<br><br>' +
+        '<b style="color:var(--acc2)">V1 = (C2 × V2) / C1</b>' +
+      '</div>' +
+    '</div>';
+}
+
+function calcDil() {
+  const c1 = parseFloat(document.getElementById('cd-c1').value) || 0;
+  const c2 = parseFloat(document.getElementById('cd-c2').value) || 0;
+  const vf = parseFloat(document.getElementById('cd-vf').value) || 0;
+  if (!c1 || !c2 || !vf) return;
+  if (c2 > c1) { document.getElementById('cd-result').innerHTML = '<div class="alerta-box">⚠️ La concentración deseada no puede ser mayor que la original</div>'; return; }
+  const v1 = (c2 * vf) / c1;
+  const agua = vf - v1;
+  document.getElementById('cd-result').innerHTML =
+    '<div style="background:var(--card2);border-radius:var(--rsm);padding:14px">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--text2)">Producto a tomar</span><span style="color:var(--acc);font-weight:700;font-size:18px">'+v1.toFixed(2)+' L</span></div>' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--text2)">Agua a agregar</span><span style="color:var(--info);font-weight:700;font-size:18px">'+agua.toFixed(2)+' L</span></div>' +
+    '<div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Volumen final</span><span style="font-weight:600">'+vf+' L al '+c2+'%</span></div>' +
+    '</div>';
+}
+
+// ═══ REPORTES ═══
+let repTabAct = 'produccion';
+
+function repTab(t) {
+  repTabAct = t;
+  document.getElementById('tab-rp-prod').classList.toggle('on', t === 'produccion');
+  document.getElementById('tab-rp-rent').classList.toggle('on', t === 'rentabilidad');
+  document.getElementById('tab-rp-camas').classList.toggle('on', t === 'camas');
+  renderReportes();
+}
+
+function renderReportes() {
+  if (repTabAct === 'produccion') renderRepProd();
+  else if (repTabAct === 'rentabilidad') renderRepRent();
+  else renderRepCamas();
+}
+
+function renderRepProd() {
+  const meses = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth() - i);
+    meses.push({ k: d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'), l: d.toLocaleDateString('es-CL',{month:'short'}) });
+  }
+  const vals = meses.map(m => D.cosechas.filter(c => c.fecha && String(c.fecha).startsWith(m.k)).reduce((s,c) => s+(parseFloat(c.kg)||0), 0));
+  const maxV = Math.max(...vals, 0.1);
+  const total = vals.reduce((s,v) => s+v, 0);
+  const mejorIdx = vals.indexOf(Math.max(...vals));
+  const peorIdx = vals.indexOf(Math.min(...vals.filter(v=>v>0)));
+
+  // Por cultivo
+  const cultivos = [...new Set(D.cosechas.map(c => { const ci = D.ciclos.find(x => parseInt(x.id) === parseInt(c.cicloId)); return ci ? ci.cultivo : null; }).filter(Boolean))];
+  const porCultivo = cultivos.map(cult => {
+    const kg = D.cosechas.filter(c => { const ci = D.ciclos.find(x => parseInt(x.id) === parseInt(c.cicloId)); return ci && ci.cultivo === cult; }).reduce((s,c) => s+(parseFloat(c.kg)||0), 0);
+    return { cult, kg };
+  }).sort((a,b) => b.kg - a.kg);
+
+  document.getElementById('rep-content').innerHTML =
+    '<div class="card" style="margin-top:4px;margin-bottom:10px">' +
+      '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Últimos 12 meses</div>' +
+      '<div class="bc" style="height:100px">' +
+        meses.map((m,i) => '<div class="bcc"><div class="bcb" style="height:'+Math.max((vals[i]/maxV)*88,3)+'px;background:'+(i===mejorIdx?'var(--acc)':i===peorIdx&&vals[i]>0?'var(--danger)':'var(--info)')+'" title="'+vals[i].toFixed(1)+' kg"></div><span class="bcl">'+m.l+'</span></div>').join('') +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-top:10px;font-size:13px">' +
+        '<span style="color:var(--text3)">Total: <b style="color:var(--acc)">' + total.toFixed(1) + ' kg</b></span>' +
+        (mejorIdx>=0&&vals[mejorIdx]>0?'<span style="color:var(--acc)">🏆 Mejor: ' + meses[mejorIdx].l + ' (' + vals[mejorIdx].toFixed(1) + ' kg)</span>':'') +
+      '</div>' +
+    '</div>' +
+    (porCultivo.length ?
+      '<div class="card">' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Por cultivo</div>' +
+        porCultivo.map(c => {
+          const pct = total > 0 ? Math.round((c.kg/total)*100) : 0;
+          return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>' + c.cult + '</span><span style="color:var(--acc)">' + c.kg.toFixed(1) + ' kg (' + pct + '%)</span></div><div class="pb"><div class="pf" style="width:' + pct + '%"></div></div></div>';
+        }).join('') +
+      '</div>' : '<div class="vacio"><div class="vi">📊</div><div class="vt">Sin cosechas registradas</div></div>');
+}
+
+function renderRepRent() {
+  const vT = D.ventas.reduce((s,v)=>s+(parseFloat(v.total)||0),0);
+  const cT = D.compras.reduce((s,c)=>s+(parseFloat(c.costo)||0),0);
+  const g = vT - cT;
+  const kgT = D.cosechas.reduce((s,c)=>s+(parseFloat(c.kg)||0),0);
+
+  // Por tipo de venta
+  const tipos = [...new Set(D.ventas.map(v => v.tipo || 'Directa'))];
+  const porTipo = tipos.map(t => ({ tipo: t, total: D.ventas.filter(v => (v.tipo||'Directa') === t).reduce((s,v) => s+(parseFloat(v.total)||0),0) })).sort((a,b)=>b.total-a.total);
+
+  // Meses
+  const meses = [];
+  for (let i = 5; i >= 0; i--) { const d = new Date(); d.setMonth(d.getMonth()-i); meses.push({ k: d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'), l: d.toLocaleDateString('es-CL',{month:'short'}) }); }
+
+  document.getElementById('rep-content').innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;margin-bottom:10px">' +
+      ['💰 Ventas|$'+Math.round(vT).toLocaleString('es-CL'),'🛒 Compras|$'+Math.round(cT).toLocaleString('es-CL'),
+       '📊 Ganancia|$'+Math.round(g).toLocaleString('es-CL'),'📦 Costo/kg|$'+(kgT>0?(cT/kgT).toFixed(0):'—')
+      ].map(r=>{const[l,v]=r.split('|');return'<div class="mc"><div class="num" style="font-size:15px">'+v+'</div><div class="lbl">'+l+'</div></div>';}).join('') +
+    '</div>' +
+    (porTipo.length ?
+      '<div class="card" style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Por canal de venta</div>' +
+      porTipo.map(t => {
+        const pct = vT > 0 ? Math.round((t.total/vT)*100) : 0;
+        return '<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>'+t.tipo+'</span><span style="color:var(--acc)">$'+Math.round(t.total).toLocaleString('es-CL')+' ('+pct+'%)</span></div><div class="pb"><div class="pf" style="width:'+pct+'%"></div></div></div>';
+      }).join('') + '</div>' : '') +
+    '<div class="card"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Balance mensual</div>' +
+    meses.map(m => {
+      const vm = D.ventas.filter(v=>v.fecha&&String(v.fecha).startsWith(m.k)).reduce((s,v)=>s+(parseFloat(v.total)||0),0);
+      const cm2 = D.compras.filter(c=>c.fecha&&String(c.fecha).startsWith(m.k)).reduce((s,c)=>s+(parseFloat(c.costo)||0),0);
+      const gm = vm - cm2;
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--borde)"><span style="font-size:13px;color:var(--text2)">'+m.l+'</span><div style="display:flex;gap:12px;font-size:12px"><span style="color:var(--acc)">+$'+Math.round(vm).toLocaleString('es-CL')+'</span><span style="color:var(--danger)">-$'+Math.round(cm2).toLocaleString('es-CL')+'</span><span style="color:'+(gm>=0?'var(--acc)':'var(--danger)')+';font-weight:600">$'+Math.round(gm).toLocaleString('es-CL')+'</span></div></div>';
+    }).join('') + '</div>';
+}
+
+function renderRepCamas() {
+  const camas = D.camas;
+  if (!camas.length) { document.getElementById('rep-content').innerHTML = '<div class="vacio" style="margin-top:20px"><div class="vi">🛏</div><div class="vt">Sin camas configuradas</div></div>'; return; }
+
+  document.getElementById('rep-content').innerHTML = camas.map(cam => {
+    const ciclosCam = D.ciclos.filter(c => c.cama === cam.nombre);
+    const cosechasCam = D.cosechas.filter(cos => { const ci = D.ciclos.find(x => parseInt(x.id) === parseInt(cos.cicloId)); return ci && ci.cama === cam.nombre; });
+    const kgCam = cosechasCam.reduce((s,c) => s+(parseFloat(c.kg)||0), 0);
+    const ciclosAct = ciclosCam.filter(c => c.estado !== 'cosechado').length;
+    const cultivos = [...new Set(ciclosCam.map(c => c.cultivo))];
+
+    return '<div class="card" style="margin-top:8px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+        '<div><div style="font-size:15px;font-weight:600">'+cam.nombre+'</div><div style="font-size:12px;color:var(--text3)">'+cam.sistema+' · '+cam.largo+'×'+cam.ancho+'m</div></div>' +
+        '<span class="tag tv">'+ciclosAct+' activo'+(ciclosAct!==1?'s':'')+'</span>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">' +
+        '<div class="mc"><div class="num" style="font-size:16px">'+ciclosCam.length+'</div><div class="lbl">Ciclos</div></div>' +
+        '<div class="mc"><div class="num" style="font-size:16px">'+kgCam.toFixed(1)+'</div><div class="lbl">kg total</div></div>' +
+        '<div class="mc"><div class="num" style="font-size:16px">'+(cam.capacidad||'—')+'</div><div class="lbl">plantas</div></div>' +
+      '</div>' +
+      (cultivos.length ? '<div style="font-size:12px;color:var(--text3)">Cultivos: '+cultivos.join(', ')+'</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+// ═══ CONFIG / PERSONALIZACIÓN ═══
+let cfgColorSel = '#4ade80';
+
+function cargarConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
+    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v3.5';
+    if (cfg.color) {
+      document.documentElement.style.setProperty('--acc', cfg.color);
+      document.documentElement.style.setProperty('--acc2', cfg.color + 'cc');
+      cfgColorSel = cfg.color;
+    }
+    if (cfg.modo === 'claro') aplicarModoClaro();
+  } catch(e) {}
+}
+
+function abrirConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
+    document.getElementById('cfg-nombre').value = cfg.nombre || 'HidroApp';
+    document.getElementById('cfg-sub').value = cfg.sub || 'Gestión Hidropónica';
+  } catch(e) {}
+  om('m-config');
+}
+
+function guardarConfig() {
+  const nombre = document.getElementById('cfg-nombre').value.trim() || 'HidroApp';
+  const sub = document.getElementById('cfg-sub').value.trim() || 'Gestión Hidropónica';
+  const cfg = { nombre, sub, color: cfgColorSel };
+  try { const old = JSON.parse(localStorage.getItem('ha3_cfg') || '{}'); cfg.modo = old.modo || 'oscuro'; } catch(e) {}
+  localStorage.setItem('ha3_cfg', JSON.stringify(cfg));
+  document.getElementById('cab-sub').textContent = nombre + ' · v3.5';
+  document.documentElement.style.setProperty('--acc', cfgColorSel);
+  document.documentElement.style.setProperty('--acc2', cfgColorSel + 'cc');
+  cm('m-config');
+  toast('✅ Configuración guardada');
+}
+
+function setModo(modo) {
+  if (modo === 'claro') aplicarModoClaro();
+  else aplicarModoOscuro();
+  try {
+    const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
+    cfg.modo = modo;
+    localStorage.setItem('ha3_cfg', JSON.stringify(cfg));
+  } catch(e) {}
+}
+
+function aplicarModoClaro() {
+  document.documentElement.style.setProperty('--g0', '#f0fdf4');
+  document.documentElement.style.setProperty('--g1', '#dcfce7');
+  document.documentElement.style.setProperty('--g2', '#bbf7d0');
+  document.documentElement.style.setProperty('--g3', '#86efac');
+  document.documentElement.style.setProperty('--g4', '#4ade80');
+  document.documentElement.style.setProperty('--text', '#14532d');
+  document.documentElement.style.setProperty('--text2', '#166534');
+  document.documentElement.style.setProperty('--text3', '#15803d');
+  document.documentElement.style.setProperty('--card', 'rgba(220,252,231,.9)');
+  document.documentElement.style.setProperty('--card2', 'rgba(187,247,208,.8)');
+  document.getElementById('modo-claro-btn').classList.add('bp');
+  document.getElementById('modo-oscuro-btn').classList.remove('bp');
+}
+
+function aplicarModoOscuro() {
+  document.documentElement.style.setProperty('--g0', '#0d2b1a');
+  document.documentElement.style.setProperty('--g1', '#0f3320');
+  document.documentElement.style.setProperty('--g2', '#143d26');
+  document.documentElement.style.setProperty('--g3', '#1a4d30');
+  document.documentElement.style.setProperty('--g4', '#22613c');
+  document.documentElement.style.setProperty('--text', '#f0fdf4');
+  document.documentElement.style.setProperty('--text2', '#bbf7d0');
+  document.documentElement.style.setProperty('--text3', '#6ee7b7');
+  document.documentElement.style.setProperty('--card', 'rgba(20,61,38,.8)');
+  document.documentElement.style.setProperty('--card2', 'rgba(26,77,48,.6)');
+  document.getElementById('modo-oscuro-btn').classList.add('bp');
+  document.getElementById('modo-claro-btn').classList.remove('bp');
+}
+
+// Handle config color picker
+document.addEventListener('click', function(e) {
+  if (e.target.dataset.cfg) {
+    document.querySelectorAll('[data-cfg]').forEach(c => c.classList.remove('on'));
+    e.target.classList.add('on');
+    cfgColorSel = e.target.dataset.cfg;
+    // Live preview
+    document.documentElement.style.setProperty('--acc', cfgColorSel);
+  }
+});
+
+// Autocomplete cultivo al escribir en modal ciclo
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'c-cult') autocompletarCultivo();
+});
+
+// ═══ ENFERMEDADES Y HONGOS ═══
+let enfFiltroAct = 'todos';
+let enfSeleccionada = null;
+let plagaFotoId = null;
+
+const ENFERMEDADES_DB = [
+  // HONGOS
+  { id:1, nombre:'Botrytis (Moho gris)', tipo:'Hongo', emoji:'🍄',
+    sintomas:'Manchas marrones con pelusa gris en hojas, tallos y frutos. Aparece con alta humedad.',
+    condiciones:'Humedad >85%, temperatura 15-25°C, falta de ventilación.',
+    tratamiento:'Retirar partes afectadas. Fungicida cúprico o a base de Bacillus subtilis.',
+    dosis:'2-3 mL/L. Aplicar cada 7 días por 3 semanas.',
+    prevencion:'Buena ventilación. No mojar follaje. Espaciado entre plantas.',
+    urgencia:'Alta', cultivos:['Tomate','Frutilla','Pimiento','Lechuga'],
+    color:'#c084fc' },
+
+  { id:2, nombre:'Mildiu polvoriento (Oídio)', tipo:'Hongo', emoji:'🍄',
+    sintomas:'Polvo blanco harinoso en el haz de las hojas. Hojas se deforman y amarillean.',
+    condiciones:'Humedad moderada, temperaturas entre 20-27°C, días secos y noches húmedas.',
+    tratamiento:'Azufre mojable, bicarbonato de sodio (5g/L) o fungicida sistémico.',
+    dosis:'Bicarbonato 5g/L + unas gotas de jabón. Cada 5-7 días.',
+    prevencion:'Evitar exceso de nitrógeno. Buena circulación de aire.',
+    urgencia:'Media', cultivos:['Pepino','Tomate','Pimiento','Calabaza'],
+    color:'#c084fc' },
+
+  { id:3, nombre:'Mildiu velloso (Peronospora)', tipo:'Hongo', emoji:'🍄',
+    sintomas:'Manchas amarillas en el haz, pelusa gris-violeta en el envés. Hojas se secan.',
+    condiciones:'Alta humedad (>90%), temperaturas frescas 15-20°C.',
+    tratamiento:'Fungicida cúprico (caldo bordelés) o mancozeb.',
+    dosis:'3-4 g/L de caldo bordelés. Cada 10 días.',
+    prevencion:'No mojar follaje. Riego por goteo. Ventilación.',
+    urgencia:'Alta', cultivos:['Lechuga','Espinaca','Albahaca','Pepino'],
+    color:'#c084fc' },
+
+  { id:4, nombre:'Fusarium (Marchitez)', tipo:'Hongo', emoji:'🍄',
+    sintomas:'Plantas se marchitan de repente. Raíces con coloración marrón-rojiza. Tejido vascular oscuro.',
+    condiciones:'Suelo/sustrato contaminado. Temperaturas altas >25°C. Estrés hídrico.',
+    tratamiento:'No tiene cura. Eliminar plantas afectadas. Desinfectar sistema con agua oxigenada.',
+    dosis:'H2O2 al 3%: 10 mL/L para desinfección del sistema.',
+    prevencion:'Desinfectar entre ciclos. pH estable. Agua limpia.',
+    urgencia:'Crítica', cultivos:['Tomate','Pimiento','Albahaca','Pepino'],
+    color:'#f87171' },
+
+  { id:5, nombre:'Pythium (Pudrición raíz)', tipo:'Hongo', emoji:'🍄',
+    sintomas:'Raíces marrones y viscosas. Plantas decaídas. Olor desagradable en solución.',
+    condiciones:'Agua estancada, poca oxigenación, temperatura solución >24°C.',
+    tratamiento:'Agua oxigenada H2O2, agentes biológicos (Trichoderma).',
+    dosis:'H2O2 al 3%: 3 mL/L. Cambio completo de solución.',
+    prevencion:'Aireación constante. Temperatura solución 18-22°C. Tanque limpio.',
+    urgencia:'Crítica', cultivos:['Lechuga','Espinaca','Albahaca','Todas'],
+    color:'#f87171' },
+
+  { id:6, nombre:'Alternaria', tipo:'Hongo', emoji:'🍄',
+    sintomas:'Manchas circulares oscuras con anillos concéntricos. Bordes amarillos. En hojas viejas primero.',
+    condiciones:'Humedad alta, temperatura 25-30°C. Plantas estresadas.',
+    tratamiento:'Fungicida a base de cobre o mancozeb.',
+    dosis:'Caldo bordelés 3g/L. Cada 10-14 días.',
+    prevencion:'Eliminar hojas enfermas. Evitar estrés. Riego controlado.',
+    urgencia:'Media', cultivos:['Tomate','Pimiento','Zanahoria'],
+    color:'#c084fc' },
+
+  // BACTERIAS
+  { id:7, nombre:'Xanthomonas (Mancha bacteriana)', tipo:'Bacteria', emoji:'🦠',
+    sintomas:'Manchas aceitosas pequeñas que se vuelven marrones. Bordes amarillos. En hojas y frutos.',
+    condiciones:'Humedad alta, salpicaduras de agua, heridas en planta.',
+    tratamiento:'Caldo bordelés, productos a base de cobre. No tiene cura química efectiva.',
+    dosis:'Caldo bordelés 3g/L preventivo.',
+    prevencion:'No mojar follaje. Herramientas limpias. Evitar heridas.',
+    urgencia:'Media', cultivos:['Tomate','Pimiento','Pepino'],
+    color:'#60a5fa' },
+
+  { id:8, nombre:'Erwinia (Podredumbre blanda)', tipo:'Bacteria', emoji:'🦠',
+    sintomas:'Tejidos blandos, acuosos y malolientes. Avance rápido. Colapso total.',
+    condiciones:'Humedad extrema, heridas, temperatura alta.',
+    tratamiento:'No tiene cura. Eliminar inmediatamente. Desinfectar con cloro.',
+    dosis:'Cloro 1mL/L para desinfección de superficies.',
+    prevencion:'Evitar heridas. No regar en exceso. Ventilación.',
+    urgencia:'Crítica', cultivos:['Lechuga','Apio','Pepino'],
+    color:'#f87171' },
+
+  // DEFICIENCIAS
+  { id:9, nombre:'Deficiencia de Nitrógeno (N)', tipo:'Deficiencia', emoji:'⚗️',
+    sintomas:'Hojas viejas amarillan uniformemente de abajo hacia arriba. Crecimiento lento.',
+    condiciones:'EC muy baja, pH alto (>7), exceso de riego.',
+    tratamiento:'Aumentar EC de la solución. Agregar nitrato de calcio o potasio.',
+    dosis:'Aumentar EC en 0.3-0.5 mS/cm. Revisar pH (5.5-6.5).',
+    prevencion:'Mantener EC correcta según cultivo. Revisar solución regularmente.',
+    urgencia:'Media', cultivos:['Todas'],
+    color:'#fbbf24' },
+
+  { id:10, nombre:'Deficiencia de Hierro (Fe)', tipo:'Deficiencia', emoji:'⚗️',
+    sintomas:'Hojas jóvenes amarillan entre nervios (clorosis internerval). Nervios permanecen verdes.',
+    condiciones:'pH >6.5 bloquea absorción de hierro.',
+    tratamiento:'Bajar pH a 5.5-6.0. Aplicar quelato de hierro EDDHA.',
+    dosis:'Quelato Fe: 1-2 g por 100L. Revisar pH primero.',
+    prevencion:'Mantener pH entre 5.5-6.5. Usar quelato en lugar de sulfato.',
+    urgencia:'Media', cultivos:['Todas'],
+    color:'#fbbf24' },
+
+  { id:11, nombre:'Deficiencia de Calcio (Ca)', tipo:'Deficiencia', emoji:'⚗️',
+    sintomas:'Bordes de hojas jóvenes marrones. Pudrición apical en tomates. Hojas deformadas.',
+    condiciones:'pH incorrecto, humedad baja, EC desequilibrada.',
+    tratamiento:'Revisar pH. Agregar nitrato de calcio. Aumentar humedad.',
+    dosis:'Nitrato de calcio 0.5-1 g/L adicional.',
+    prevencion:'pH estable 5.5-6.5. Solución balanceada. Humedad >60%.',
+    urgencia:'Media', cultivos:['Tomate','Pimiento','Lechuga'],
+    color:'#fbbf24' },
+
+  { id:12, nombre:'Deficiencia de Magnesio (Mg)', tipo:'Deficiencia', emoji:'⚗️',
+    sintomas:'Clorosis internerval en hojas viejas. Nervios verdes, entre nervios amarillo-naranja.',
+    condiciones:'Exceso de potasio o calcio que bloquea el Mg. pH incorrecto.',
+    tratamiento:'Aplicar sulfato de magnesio foliar o en solución.',
+    dosis:'Sulfato de magnesio: 1-2 g/L.',
+    prevencion:'Solución nutritiva balanceada. No excederse en K o Ca.',
+    urgencia:'Baja', cultivos:['Tomate','Pimiento','Pepino'],
+    color:'#fbbf24' },
+
+  // PLAGAS
+  { id:13, nombre:'Pulgón', tipo:'Plaga', emoji:'🐛',
+    sintomas:'Insectos pequeños verdes, negros o amarillos en brotes y hojas. Melaza pegajosa. Hojas deformadas.',
+    condiciones:'Temperaturas suaves 15-25°C. Aparece con fertilización nitrogenada alta.',
+    tratamiento:'Jabón potásico, aceite de neem, insecticida piretrina.',
+    dosis:'Jabón potásico: 15-20 mL/L. Cada 3-5 días hasta eliminar.',
+    prevencion:'Evitar exceso de N. Revisar plantas regularmente. Trampas amarillas.',
+    urgencia:'Media', cultivos:['Lechuga','Albahaca','Tomate','Pimiento'],
+    color:'#fb923c' },
+
+  { id:14, nombre:'Mosca blanca', tipo:'Plaga', emoji:'🐛',
+    sintomas:'Nubecilla blanca al mover plantas. Puntos amarillos en hojas. Melaza y fumagina negra.',
+    condiciones:'Temperaturas altas >25°C. Baja humedad. Falta de ventilación.',
+    tratamiento:'Jabón potásico, aceite de neem, insecticida sistémico.',
+    dosis:'Jabón potásico: 20 mL/L. Trampas amarillas pegajosas.',
+    prevencion:'Trampas amarillas preventivas. Ventilación. Revisar plantas importadas.',
+    urgencia:'Media', cultivos:['Tomate','Pimiento','Pepino','Albahaca'],
+    color:'#fb923c' },
+
+  { id:15, nombre:'Araña roja (Tetranychus)', tipo:'Plaga', emoji:'🐛',
+    sintomas:'Puntos amarillos en hojas. Tela de araña fina. Hojas se secan. Visible con lupa.',
+    condiciones:'Temperatura alta >28°C, humedad baja <40%, ambiente seco.',
+    tratamiento:'Acaricida (abamectina), aceite de neem, agua a presión en envés.',
+    dosis:'Abamectina: 1 mL/L. Neem: 3-5 mL/L.',
+    prevencion:'Humedad >60%. Evitar calor extremo. Revisar envés regularmente.',
+    urgencia:'Alta', cultivos:['Tomate','Pimiento','Frutilla','Pepino'],
+    color:'#fb923c' },
+
+  { id:16, nombre:'Trips', tipo:'Plaga', emoji:'🐛',
+    sintomas:'Líneas o manchas plateadas en hojas. Flores deformadas. Insectos muy pequeños.',
+    condiciones:'Temperatura alta, baja humedad, ambiente seco.',
+    tratamiento:'Spinosad, abamectina, jabón potásico. Trampas azules.',
+    dosis:'Spinosad: 0.5 mL/L. Trampas azules pegajosas.',
+    prevencion:'Trampas azules preventivas. Revisión semanal.',
+    urgencia:'Alta', cultivos:['Pimiento','Tomate','Frutilla'],
+    color:'#fb923c' },
+];
+
+function enfFiltro(f) {
+  enfFiltroAct = f;
+  ['todos','hongos','bact','def','plaga'].forEach(function(x) {
+    document.getElementById('tab-enf-'+x).classList.toggle('on', x === f ||
+      (f==='todos'&&x==='todos') );
+  });
+  // fix active states
+  document.getElementById('tab-enf-todos').classList.toggle('on', f==='todos');
+  document.getElementById('tab-enf-hongos').classList.toggle('on', f==='Hongo');
+  document.getElementById('tab-enf-bact').classList.toggle('on', f==='Bacteria');
+  document.getElementById('tab-enf-def').classList.toggle('on', f==='Deficiencia');
+  document.getElementById('tab-enf-plaga').classList.toggle('on', f==='Plaga');
+  renderEnfermedades();
+}
+
+function renderEnfermedades() {
+  const buscar = (document.getElementById('enf-buscar') ? document.getElementById('enf-buscar').value.trim().toLowerCase() : '');
+  let lista = ENFERMEDADES_DB;
+  if (enfFiltroAct !== 'todos') lista = lista.filter(function(e){ return e.tipo === enfFiltroAct; });
+  if (buscar) lista = lista.filter(function(e){ return e.nombre.toLowerCase().includes(buscar) || e.sintomas.toLowerCase().includes(buscar) || e.cultivos.some(function(c){ return c.toLowerCase().includes(buscar); }); });
+
+  const urgCol = {'Baja':'var(--acc)','Media':'var(--warn)','Alta':'var(--danger)','Crítica':'var(--danger)'};
+  const urgTag = {'Baja':'<span class="tag tv">🟢 Baja</span>','Media':'<span class="tag ta">🟡 Media</span>','Alta':'<span class="tag tr">🔴 Alta</span>','Crítica':'<span class="tag tr">🚨 Crítica</span>'};
+
+  document.getElementById('lst-enfermedades').innerHTML = lista.length
+    ? lista.map(function(e) {
+        // Count registered cases in my camas
+        const casos = D.plagas.filter(function(p){ return p.nombre === e.nombre; }).length;
+        return '<div style="padding:12px 0;border-bottom:1px solid var(--borde);cursor:pointer" onclick="verEnfermedad('+e.id+')">' +
+          '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">' +
+            '<div style="width:38px;height:38px;border-radius:10px;background:'+e.color+'22;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">'+e.emoji+'</div>' +
+            '<div style="flex:1">' +
+              '<div style="font-size:14px;font-weight:600">'+e.nombre+'</div>' +
+              '<div style="font-size:11px;color:var(--text3)">'+e.tipo+(casos?' · <span style="color:var(--warn)">'+casos+' caso'+(casos>1?'s':'')+' en mis camas</span>':'')+'</div>' +
+            '</div>' +
+            (urgTag[e.urgencia]||'') +
+          '</div>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">' +
+            e.cultivos.slice(0,4).map(function(c){ return '<span class="tag tv" style="font-size:10px">'+c+'</span>'; }).join('') +
+          '</div>' +
+          '<div style="font-size:12px;color:var(--text3);line-height:1.5">'+e.sintomas.substring(0,80)+'...</div>' +
+        '</div>';
+      }).join('')
+    : '<div class="vacio"><div class="vi">🦠</div><div class="vt">Sin resultados</div></div>';
+}
+
+function verEnfermedad(id) {
+  const e = ENFERMEDADES_DB.find(function(x){ return x.id === id; });
+  if (!e) return;
+  enfSeleccionada = e;
+  document.getElementById('t-enf-det').textContent = e.emoji + ' ' + e.nombre;
+
+  const urgCol = {'Baja':'var(--acc)','Media':'var(--warn)','Alta':'var(--danger)','Crítica':'var(--danger)'};
+  const fotos = D.fotos.filter(function(f){ return f.enfId === id; });
+
+  document.getElementById('b-enf-det').innerHTML =
+    '<div style="display:flex;gap:8px;margin-bottom:14px">' +
+      '<span class="tag" style="background:'+e.color+'22;color:'+e.color+'">'+e.tipo+'</span>' +
+      '<span class="tag" style="background:'+urgCol[e.urgencia]+'22;color:'+urgCol[e.urgencia]+'">'+e.urgencia+'</span>' +
+    '</div>' +
+
+    '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Cultivos afectados</div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">' +
+      e.cultivos.map(function(c){ return '<span class="tag tv">'+c+'</span>'; }).join('') +
+    '</div>' +
+
+    seccionEnf('🔍 Síntomas', e.sintomas) +
+    seccionEnf('🌡️ Condiciones que la favorecen', e.condiciones) +
+    seccionEnf('💊 Tratamiento', e.tratamiento) +
+    seccionEnf('⚖️ Dosis recomendada', e.dosis) +
+    seccionEnf('🛡️ Prevención', e.prevencion) +
+
+    '<div style="margin-top:14px">' +
+      '<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">📸 Fotos de referencia en mis camas</div>' +
+      (fotos.length
+        ? '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">' +
+            fotos.map(function(f){ return '<div style="border-radius:8px;overflow:hidden;aspect-ratio:1;cursor:pointer" onclick="verFotoIdx('+f.id+')"><img src="'+f.url+'" style="width:100%;height:100%;object-fit:cover"></div>'; }).join('') +
+          '</div>'
+        : '<div style="font-size:13px;color:var(--text3);margin-bottom:8px">Sin fotos aún</div>'
+      ) +
+      '<button class="btn bs bsm" onclick="abrirFotoEnf('+id+')">📸 Agregar foto de referencia</button>' +
+    '</div>';
+
+  om('m-enf-detalle');
+}
+
+function seccionEnf(titulo, texto) {
+  return '<div style="margin-bottom:12px">' +
+    '<div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">'+titulo+'</div>' +
+    '<div style="font-size:14px;color:var(--text2);line-height:1.6;background:var(--card2);border-radius:var(--rsm);padding:10px 12px">'+texto+'</div>' +
+  '</div>';
+}
+
+function registrarEnfermedad() {
+  if (!enfSeleccionada) return;
+  cm('m-enf-detalle');
+  // Pre-fill plaga modal with enfermedad data
+  selCamas('pl-cam');
+  document.getElementById('pl-n').value = enfSeleccionada.nombre;
+  document.getElementById('pl-f').value = hoy();
+  document.getElementById('pl-tr').value = enfSeleccionada.tratamiento;
+  document.getElementById('pl-dos').value = enfSeleccionada.dosis;
+  document.getElementById('t-plaga').textContent = '🦠 Registrar: ' + enfSeleccionada.nombre;
+  document.getElementById('pl-eid').value = '';
+  om('m-plaga');
+}
+
+function abrirFotoEnf(enfId) {
+  plagaFotoId = enfId;
+  const e = ENFERMEDADES_DB.find(function(x){ return x.id === enfId; });
+  document.getElementById('foto-enf-nombre').textContent = e ? e.emoji + ' ' + e.nombre : '';
+  document.getElementById('foto-enf-input').value = '';
+  document.getElementById('foto-enf-status').textContent = '';
+  const fotos = D.fotos.filter(function(f){ return f.enfId === enfId; });
+  document.getElementById('foto-enf-galeria').innerHTML = fotos.length
+    ? fotos.map(function(f){ return '<div style="border-radius:8px;overflow:hidden;aspect-ratio:1;cursor:pointer" onclick="verFotoIdx('+f.id+')"><img src="'+f.url+'" style="width:100%;height:100%;object-fit:cover"></div>'; }).join('')
+    : '<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--text3);font-size:13px">Sin fotos aún</div>';
+  om('m-foto-enf');
+}
+
+async function subirFotoEnf() {
+  const input = document.getElementById('foto-enf-input');
+  const status = document.getElementById('foto-enf-status');
+  if (!input.files || !input.files[0]) { toast('⚠️ Selecciona una foto'); return; }
+  status.innerHTML = '<span style="color:var(--warn)">📤 Subiendo...</span>';
+  const compressed = await comprimirImagen(input.files[0], 1200, 0.85);
+  try {
+    const formData = new FormData();
+    formData.append('image', compressed.split(',')[1]);
+    formData.append('type', 'base64');
+    const resp = await fetch('https://api.imgur.com/3/image', {
+      method: 'POST',
+      headers: { 'Authorization': 'Client-ID 546c25a59c58ad7' },
+      body: formData
+    });
+    const data = await resp.json();
+    if (data.success && data.data && data.data.link) {
+      D.fotos.push({ id:nid(D.fotos), enfId:plagaFotoId, url:data.data.link, desc:'', fecha:hoy(), nube:true });
+      guardarL();
+      status.innerHTML = '<span style="color:var(--acc)">✅ Subida</span>';
+      toast('📸 Foto de referencia guardada');
+      cm('m-foto-enf');
+      if (enfSeleccionada && enfSeleccionada.id === plagaFotoId) verEnfermedad(plagaFotoId);
+      return;
+    }
+  } catch(e) {}
+  D.fotos.push({ id:nid(D.fotos), enfId:plagaFotoId, url:compressed, desc:'', fecha:hoy(), nube:false });
+  guardarL();
+  status.innerHTML = '<span style="color:var(--warn)">💾 Local</span>';
+  toast('📸 Foto guardada');
+  cm('m-foto-enf');
+}
+
 // ═══ EXPORTAR ═══
 function exportarCSV(){
   let c='\uFEFF';c+='HIDROAPP v3 — REPORTE\n'+new Date().toLocaleDateString('es-CL')+'\n\n';
@@ -1044,7 +2180,7 @@ if(!D.camas.length&&!D.ciclos.length){
   localStorage.setItem(KEY,JSON.stringify(D));
 }
 if(SURL){setSS('ok','Sheets');setTimeout(()=>cargarSheets(),500);}else{setSS('','Local');}
-iniciarUsr();updDrive();renderInicio();
+iniciarUsr();cargarConfig();updDrive();renderInicio();
 </script>
 </body>
 </html>
