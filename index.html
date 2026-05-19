@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.0</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.3</div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -602,42 +602,38 @@ function renderInicio(){
   const plagasAct=D.plagas.filter(p=>p.estado!=='Resuelto');
   const ventasT=D.ventas.reduce((s,v)=>s+(parseFloat(v.total)||0),0);
 
-  // Stats principales
-  document.getElementById('d-stats').innerHTML=[
-    {n:D.camas.length||0, l:'Camas',      i:'🛏', c:'var(--acc)'},
-    {n:act.length||0,     l:'Ciclos activos', i:'🌿', c:'var(--acc)'},
-    {n:kgT.toFixed(1),    l:'Kg cosechados',  i:'⚖️', c:'var(--acc)'},
-    {n:'$'+Math.round(ventasT).toLocaleString('es-CL'), l:'Ventas totales', i:'💰', c:'var(--acc)'},
-  ].map(s=>'<div class="mc" style="cursor:pointer"><div style="font-size:20px;margin-bottom:4px">'+s.i+'</div><div class="num" style="font-size:20px;color:'+s.c+'">'+s.n+'</div><div class="lbl">'+s.l+'</div></div>').join('');
+  // Stats — 4 tarjetas clickeables
+  const stats=[
+    {n:D.camas.length||0,   l:'Camas',         i:'🛏', dest:'mas'},
+    {n:act.length||0,       l:'Ciclos activos', i:'🌿', dest:'ciclos'},
+    {n:kgT.toFixed(1)+' kg',l:'Cosechados',     i:'⚖️', dest:'ciclos'},
+    {n:'$'+Math.round(ventasT).toLocaleString('es-CL'), l:'Ventas', i:'💰', dest:'finanzas'},
+  ];
+  document.getElementById('d-stats').innerHTML=stats.map(function(s){
+    return '<div class="mc" onclick="irA(\"'+s.dest+'\")" style="cursor:pointer">'+
+    '<div style="font-size:20px;margin-bottom:4px">'+s.i+'</div>'+
+    '<div class="num" style="font-size:18px">'+s.n+'</div>'+
+    '<div class="lbl">'+s.l+'</div></div>';
+  }).join('');
 
-  // Alertas — siempre mostrar algo
-  let alertasHTML='';
-
-  // Stock bajo
-  stockBajo.forEach(i=>{
-    alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('stock')">📦 Stock bajo: <b>'+i.nombre+'</b> — quedan '+i.stock+' '+i.unidad+'</div>';
-  });
-
-  // Plagas activas
-  plagasAct.forEach(p=>{
-    alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">🐛 Plaga activa: <b>'+p.nombre+'</b> en '+p.cama+' ('+p.estado+')</div>';
-  });
-
-  // Clima
+  // Alertas
+  const alertas=[];
+  stockBajo.forEach(i=>alertas.push({tipo:'stock',   msg:'📦 Stock bajo: '+i.nombre+' — '+i.stock+' '+i.unidad+' restantes'}));
+  plagasAct.forEach(p=>alertas.push({tipo:'ambiente',msg:'🐛 Plaga activa: '+p.nombre+' en '+p.cama}));
   const ultAmb=[...D.ambiente].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)))[0];
   if(ultAmb){
-    if(parseFloat(ultAmb.temp)>30) alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">🌡️ Temperatura alta: <b>'+ultAmb.temp+'°C</b> — revisa ventilación</div>';
-    if(parseFloat(ultAmb.temp)<10) alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">🥶 Temperatura baja: <b>'+ultAmb.temp+'°C</b></div>';
-    if(parseFloat(ultAmb.hum)>90)  alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">💧 Humedad muy alta: <b>'+ultAmb.hum+'%</b> — riesgo de hongos</div>';
+    if(parseFloat(ultAmb.temp)>30) alertas.push({tipo:'ambiente',msg:'🌡️ Temperatura alta: '+ultAmb.temp+'°C'});
+    if(parseFloat(ultAmb.temp)<10) alertas.push({tipo:'ambiente',msg:'🥶 Temperatura baja: '+ultAmb.temp+'°C'});
+    if(parseFloat(ultAmb.hum)>90)  alertas.push({tipo:'ambiente',msg:'💧 Humedad muy alta: '+ultAmb.hum+'%'});
   }
-
-  // Ciclos vencidos
   D.ciclos.filter(c=>c.estado!=='cosechado').forEach(c=>{
     const d=diasH(c.fechaCosecha);
-    if(d!==null&&d<0) alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ciclos')">🌾 Cosecha vencida: <b>'+c.cultivo+'</b> en '+c.cama+' ('+Math.abs(d)+'d atrasada)</div>';
+    if(d!==null&&d<0) alertas.push({tipo:'ciclos',msg:'🌾 Cosecha vencida: '+c.cultivo+' en '+c.cama+' ('+Math.abs(d)+'d)'});
   });
 
-  // Si todo está bien
+  document.getElementById('d-alertas').innerHTML=alertas.length
+    ? alertas.map(function(a){return '<div class="alerta-box" onclick="irA(\"'+a.tipo+'\")" style="cursor:pointer">'+a.msg+'</div>';}).join('')
+    : '<div class="ok-box">✅ Todo en orden — sin alertas activas</div>';
   if(!alertasHTML) alertasHTML='<div class="ok-box">✅ Todo en orden — sin alertas activas</div>';
 
   document.getElementById('d-alertas').innerHTML=alertasHTML;
@@ -811,7 +807,16 @@ function renderFin(){
   document.getElementById('sub-fin').textContent=D.ventas.length+' ventas · '+D.compras.length+' compras';
   renderFinTab();
 }
-function finTab(t){finTabAct=t;['v','c','b'].forEach(x=>{document.getElementById('fin-'+x).style.display=x===t?'block':'none';document.getElementById('tab-'+x+'-btn').classList.toggle('on',x===t);});renderFinTab();}
+function finTab(t){
+  finTabAct=t;
+  document.getElementById('fin-v').style.display=t==='v'?'block':'none';
+  document.getElementById('fin-c').style.display=t==='c'?'block':'none';
+  document.getElementById('fin-b').style.display=t==='b'?'block':'none';
+  document.getElementById('tab-v-btn').classList.toggle('on',t==='v');
+  document.getElementById('tab-c-btn').classList.toggle('on',t==='c');
+  document.getElementById('tab-b-btn').classList.toggle('on',t==='b');
+  renderFinTab();
+}
 function renderFinTab(){if(finTabAct==='v')renderFV();else if(finTabAct==='c')renderFC();else renderFB();}
 function renderFV(){
   const lst=[...D.ventas].filter(v=>!finMes||(v.fecha&&String(v.fecha).startsWith(finMes))).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
@@ -846,7 +851,18 @@ function elimV(id){confirmar('Eliminar venta','¿Eliminar esta venta?',function(
 function elimC(id){confirmar('Eliminar compra','¿Eliminar esta compra?',function(){D.compras=D.compras.filter(c=>parseInt(c.id)!==parseInt(id));guardarL();renderFin();});}
 
 // ═══ AMBIENTE ═══
-function ambTab(t){ambTabAct=t;['clima','riego','plagas'].forEach(x=>{document.getElementById('amb-'+x).style.display=x===t?'block':'none';document.getElementById('tab-'+x+(x==='clima'?'-amb':'')+'-btn').style.display='';});document.getElementById('tab-amb-btn').classList.toggle('on',t==='clima');document.getElementById('tab-riego-btn').classList.toggle('on',t==='riego');document.getElementById('tab-plaga-btn').classList.toggle('on',t==='plagas');renderAmbTab();}
+function ambTab(t){
+  ambTabAct=t;
+  // show/hide panels
+  document.getElementById('amb-clima').style.display=t==='clima'?'block':'none';
+  document.getElementById('amb-riego').style.display=t==='riego'?'block':'none';
+  document.getElementById('amb-plagas').style.display=t==='plagas'?'block':'none';
+  // toggle tab buttons
+  document.getElementById('tab-amb-btn').classList.toggle('on',t==='clima');
+  document.getElementById('tab-riego-btn').classList.toggle('on',t==='riego');
+  document.getElementById('tab-plaga-btn').classList.toggle('on',t==='plagas');
+  renderAmbTab();
+}
 function renderAmb(){renderAmbTab();}
 function renderAmbTab(){if(ambTabAct==='clima')renderClima();else if(ambTabAct==='riego')renderRiego();else renderPlagas();}
 function renderClima(){
@@ -942,7 +958,14 @@ function renderRec(){
   });
   document.getElementById('lst-rec-auto').innerHTML=auto.length?auto.map(a=>{const bx=a.d<0?'<span class="tag tr">Vencida</span>':a.d===0?'<span class="tag ta">Hoy</span>':a.d<=3?'<span class="tag ta">En '+a.d+'d</span>':'<span class="tag tb">En '+a.d+'d</span>';return'<div class="tarea-item"><div style="font-size:20px">'+a.ico+'</div><div class="iinf"><div class="it">'+a.t+'</div><div class="is">'+a.cam+' · '+fmt(a.f)+'</div></div>'+bx+'</div>';}).join(''):'<div style="padding:10px 14px;font-size:13px;color:var(--text3)">Sin tareas de ciclos esta semana</div>';
 }
-function recTab(t){recTabAct=t;['hoy','semana','todas','hechas'].forEach(x=>{document.getElementById('tab-rec-'+x).classList.toggle('on',x===t);});renderRec();}
+function recTab(t){
+  recTabAct=t;
+  document.getElementById('tab-rec-hoy').classList.toggle('on',t==='hoy');
+  document.getElementById('tab-rec-sem').classList.toggle('on',t==='semana');
+  document.getElementById('tab-rec-all').classList.toggle('on',t==='todas');
+  document.getElementById('tab-rec-done').classList.toggle('on',t==='hechas');
+  renderRec();
+}
 function abrirTarea(){selCamas('t-cam',true);document.getElementById('t-f').value=hoy();['t-desc','t-not'].forEach(f=>document.getElementById(f).value='');om('m-tarea');}
 function guardarTarea(){
   const d=document.getElementById('t-desc').value.trim();if(!d){toast('⚠️ Describe la tarea');return;}
