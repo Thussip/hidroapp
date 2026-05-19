@@ -9,1474 +9,967 @@
 <meta name="theme-color" content="#0d2b1a">
 <title>HidroApp</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-:root {
-  --verde: #4ade80; --verde2: #86efac; --fondo: #0d2b1a; --fondo2: #0f3320;
-  --fondo3: #143d26; --fondo4: #1a4d30; --borde: rgba(74,222,128,0.2);
-  --texto: #f0fdf4; --texto2: #bbf7d0; --texto3: #6ee7b7;
-  --tarj: rgba(20,61,38,0.8); --warn: #fbbf24; --rojo: #f87171; --azul: #60a5fa;
-  --r: 14px; --rsm: 9px;
-  --safe-t: env(safe-area-inset-top, 0px);
-  --safe-b: env(safe-area-inset-bottom, 0px);
-}
-html, body { height: 100%; background: var(--fondo); color: var(--texto); font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 15px; overflow: hidden; }
-body { display: flex; flex-direction: column; }
-
-/* HEADER */
-#cabecera {
-  background: var(--fondo2);
-  padding: calc(var(--safe-t) + 12px) 16px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--borde); flex-shrink: 0;
-}
-#cabecera h1 { font-size: 19px; font-weight: 700; color: var(--verde); letter-spacing: -0.5px; }
-#cabecera h1 span { color: var(--texto); font-weight: 300; }
-.hbtn { background: rgba(74,222,128,0.1); border: 1px solid var(--borde); color: var(--texto2); border-radius: 50%; width: 36px; height: 36px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.hbtn:active { opacity: 0.7; }
-
-/* CONTENIDO */
-#contenido { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-bottom: 72px; }
-
-/* NAV */
-#nav {
-  background: var(--fondo2); border-top: 1px solid var(--borde);
-  display: flex; justify-content: space-around;
-  padding: 6px 0 calc(var(--safe-b) + 6px); flex-shrink: 0;
-}
-.nbtn { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; color: var(--texto3); font-size: 10px; font-weight: 500; cursor: pointer; padding: 4px 10px; min-width: 52px; font-family: inherit; }
-.nbtn .ico { font-size: 22px; transition: transform 0.15s; }
-.nbtn.activo { color: var(--verde); }
-.nbtn.activo .ico { transform: translateY(-2px); }
-
-/* PAGINAS */
-.pag { display: none; }
-.pag.activa { display: block; animation: aparecer 0.2s ease; }
-@keyframes aparecer { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-/* CARDS */
-.card { background: var(--tarj); border: 1px solid var(--borde); border-radius: var(--r); padding: 14px; }
-.mini-card { background: rgba(26,77,48,0.6); border: 1px solid var(--borde); border-radius: var(--rsm); padding: 12px; text-align: center; }
-.num { font-size: 24px; font-weight: 700; color: var(--verde); font-variant-numeric: tabular-nums; }
-.lbl { font-size: 11px; color: var(--texto3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
-
-/* BADGES */
-.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
-.tag-v { background: rgba(74,222,128,0.15); color: var(--verde); }
-.tag-a { background: rgba(251,191,36,0.15); color: var(--warn); }
-.tag-r { background: rgba(248,113,113,0.15); color: var(--rojo); }
-.tag-b { background: rgba(96,165,250,0.15); color: var(--azul); }
-
-/* BOTONES */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 16px; border-radius: var(--rsm); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s; }
-.btn:active { opacity: 0.75; }
-.btn-p { background: var(--verde); color: var(--fondo); }
-.btn-s { background: rgba(74,222,128,0.1); color: var(--texto2); border: 1px solid var(--borde); }
-.btn-r { background: rgba(248,113,113,0.1); color: var(--rojo); border: 1px solid rgba(248,113,113,0.25); }
-.btn-full { width: 100%; }
-.btn-sm { padding: 7px 12px; font-size: 13px; }
-
-/* FORMULARIOS */
-.fg { margin-bottom: 12px; }
-.fl { display: block; font-size: 11px; color: var(--texto3); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-.fi { width: 100%; padding: 10px 12px; background: rgba(26,77,48,0.6); border: 1px solid var(--borde); border-radius: var(--rsm); color: var(--texto); font-family: inherit; font-size: 15px; outline: none; }
-.fi:focus { border-color: var(--verde); }
-select.fi option { background: var(--fondo3); }
-textarea.fi { resize: vertical; min-height: 70px; }
-.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-/* ENCABEZADO DE SECCIÓN */
-.sec-h { padding: 16px 16px 10px; display: flex; align-items: center; justify-content: space-between; }
-.sec-t { font-size: 20px; font-weight: 700; }
-.sec-s { font-size: 12px; color: var(--texto3); margin-top: 2px; }
-
-/* ITEMS DE LISTA */
-.item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--borde); }
-.item:last-child { border-bottom: none; }
-.item:active { background: rgba(74,222,128,0.05); }
-.item-ico { width: 40px; height: 40px; border-radius: 10px; background: rgba(26,77,48,0.8); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.item-info { flex: 1; min-width: 0; }
-.item-t { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.item-s { font-size: 12px; color: var(--texto3); margin-top: 1px; }
-
-/* BARRA DE PROGRESO */
-.progbar { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
-.progfill { height: 100%; background: linear-gradient(90deg, var(--verde), var(--verde2)); border-radius: 3px; }
-
-/* MODAL */
-.modal-fondo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 99; align-items: flex-end; justify-content: center; }
-.modal-fondo.abierto { display: flex; }
-.modal { background: var(--fondo3); border: 1px solid var(--borde); border-radius: 20px 20px 0 0; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; padding-bottom: calc(var(--safe-b) + 12px); }
-.modal-asa { width: 36px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 10px auto 0; }
-.modal-cab { padding: 12px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--borde); }
-.modal-tit { font-size: 17px; font-weight: 700; }
-.modal-cuerpo { padding: 16px; }
-.modal-pie { padding: 0 16px; display: flex; gap: 8px; }
-
-/* CHIPS */
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.chip { padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--borde); color: var(--texto3); background: none; font-family: inherit; }
-.chip.sel { background: var(--verde); color: var(--fondo); border-color: var(--verde); }
-
-/* GAUGE */
-.gauge-fila { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.gauge-lbl { font-size: 12px; color: var(--texto2); width: 26px; }
-.gauge-bar { flex: 1; height: 7px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-.gauge-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
-.gauge-val { font-size: 12px; color: var(--verde); width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
-
-/* GRAFICO BARRAS */
-.grafico { display: flex; align-items: flex-end; gap: 5px; height: 80px; }
-.g-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.g-barra { width: 100%; background: var(--verde); border-radius: 3px 3px 0 0; opacity: 0.8; min-height: 3px; }
-.g-lbl { font-size: 9px; color: var(--texto3); }
-
-/* TOAST */
-#toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); background: var(--fondo4); border: 1px solid var(--borde); color: var(--texto); padding: 9px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 200; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; }
-#toast.visible { opacity: 1; }
-
-/* VACIO */
-.vacio { text-align: center; padding: 40px 20px; color: var(--texto3); }
-.vacio-ico { font-size: 42px; margin-bottom: 10px; opacity: 0.5; }
-.vacio-t { font-size: 15px; color: var(--texto2); margin-bottom: 4px; }
-
-/* SECCION CATEGORÍA */
-.cat-lbl { padding: 10px 16px 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--texto3); }
+:root{--g0:#0d2b1a;--g1:#0f3320;--g2:#143d26;--g3:#1a4d30;--g4:#22613c;--acc:#4ade80;--acc2:#86efac;--warn:#fbbf24;--danger:#f87171;--info:#60a5fa;--purple:#c084fc;--orange:#fb923c;--text:#f0fdf4;--text2:#bbf7d0;--text3:#6ee7b7;--card:rgba(20,61,38,.8);--card2:rgba(26,77,48,.6);--borde:rgba(74,222,128,.18);--borde2:rgba(74,222,128,.35);--r:14px;--rsm:9px;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--g0);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;font-size:15px;overflow:hidden}
+body{display:flex;flex-direction:column}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--g4);border-radius:3px}
+#cab{background:var(--g1);padding:calc(var(--st)+10px) 14px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid var(--borde)}
+#cab h1{font-size:18px;font-weight:700;color:var(--acc);letter-spacing:-.5px}
+#cab h1 span{color:var(--text);font-weight:300}
+.cab-sub{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:.3px}
+.cab-r{display:flex;align-items:center;gap:6px}
+.ss{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);padding:4px 9px;border-radius:20px;background:rgba(74,222,128,.07);border:1px solid var(--borde);cursor:pointer}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.sdot.ok{background:var(--acc);box-shadow:0 0 4px var(--acc)}.sdot.sy{background:var(--warn);animation:pulse 1s infinite}.sdot.er{background:var(--danger)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hbtn{width:32px;height:32px;border-radius:50%;border:1px solid var(--borde2);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:.15s;flex-shrink:0}
+.hbtn:active{opacity:.7}
+#cnt{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:76px}
+#nav{background:var(--g1);border-top:1px solid var(--borde);display:flex;justify-content:space-around;padding:5px 0 calc(var(--sb)+5px);flex-shrink:0}
+.nb{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--text3);font-size:10px;font-weight:500;cursor:pointer;padding:3px 8px;min-width:48px;font-family:inherit;transition:.15s;border-radius:8px}
+.nb .ico{font-size:20px;transition:.2s}.nb.on{color:var(--acc)}.nb.on .ico{transform:translateY(-2px)}
+.pg{display:none}.pg.on{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--borde);border-radius:var(--r);padding:14px;backdrop-filter:blur(8px)}
+.mc{background:var(--card2);border:1px solid var(--borde);border-radius:var(--rsm);padding:12px;text-align:center}
+.num{font-size:22px;font-weight:700;color:var(--acc);line-height:1.1}
+.lbl{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.tv{background:rgba(74,222,128,.15);color:var(--acc)}.ta{background:rgba(251,191,36,.15);color:var(--warn)}.tr{background:rgba(248,113,113,.15);color:var(--danger)}.tb{background:rgba(96,165,250,.15);color:var(--info)}.tp{background:rgba(192,132,252,.15);color:var(--purple)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 15px;border-radius:var(--rsm);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.btn:active{opacity:.75}.bp{background:var(--acc);color:var(--g0)}.bs{background:var(--card2);color:var(--text2);border:1px solid var(--borde2)}.br{background:rgba(248,113,113,.1);color:var(--danger);border:1px solid rgba(248,113,113,.25)}.bw{width:100%}.bsm{padding:6px 12px;font-size:13px}
+.fg{margin-bottom:11px}.fl{display:block;font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.fi{width:100%;padding:10px 12px;background:var(--card2);border:1px solid var(--borde2);border-radius:var(--rsm);color:var(--text);font-family:inherit;font-size:15px;outline:none;transition:.15s}
+.fi:focus{border-color:var(--acc);}select.fi option{background:var(--g2)}textarea.fi{resize:vertical;min-height:64px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sh{padding:14px 14px 8px;display:flex;align-items:center;justify-content:space-between}
+.st{font-size:19px;font-weight:700;letter-spacing:-.3px}.sst{font-size:12px;color:var(--text3);margin-top:2px}
+.item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--borde);transition:.12s}
+.item:last-child{border-bottom:none}.item:active{background:var(--card2)}
+.iico{width:38px;height:38px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.iinf{flex:1;min-width:0}.it{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.is{font-size:11px;color:var(--text3);margin-top:1px}
+.pb{height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}.pf{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:3px;transition:.4s}
+.mf{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99;align-items:flex-end;justify-content:center}
+.mf.on{display:flex;animation:fi .18s}
+.modal{background:var(--g2);border:1px solid var(--borde2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;padding-bottom:calc(var(--sb)+12px)}
+.masa{width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:9px auto 0}
+.mcab{padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--borde)}
+.mtit{font-size:16px;font-weight:700}.mbdy{padding:14px}.mpie{padding:0 14px;display:flex;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.chip{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--borde);color:var(--text3);background:none;font-family:inherit}
+.chip.on{background:var(--acc);color:var(--g0);border-color:var(--acc)}
+.gfila{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.glbl{font-size:12px;color:var(--text2);width:26px}.gbar{flex:1;height:7px;background:var(--g4);border-radius:4px;overflow:hidden}.gfill{height:100%;border-radius:4px;transition:.4s}.gval{font-size:12px;color:var(--acc);width:40px;text-align:right}
+.bc{display:flex;align-items:flex-end;gap:4px;height:80px}
+.bcc{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bcb{width:100%;border-radius:3px 3px 0 0;opacity:.85;min-height:3px}.bcl{font-size:9px;color:var(--text3)}
+#toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:var(--g4);border:1px solid var(--borde2);color:var(--text);padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;z-index:200;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1}
+.vacio{text-align:center;padding:38px 16px;color:var(--text3)}.vi{font-size:40px;margin-bottom:8px;opacity:.5}.vt{font-size:14px;color:var(--text2);margin-bottom:3px}
+.cat-lbl{padding:9px 14px 3px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)}
+.color-opt{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s}
+.color-opt.on{border-color:white;transform:scale(1.15)}
+.fin-chip{padding:5px 11px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--borde);color:var(--text3);background:none;white-space:nowrap;font-family:inherit}
+.fin-chip.on{background:var(--acc);color:var(--g0);border-color:var(--acc)}
+.usr-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.alerta-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:var(--rsm);padding:9px 12px;margin-bottom:7px;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--danger)}
+.ok-box{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:var(--rsm);padding:9px 12px;margin-bottom:7px;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--acc)}
+/* TABS */
+.tab-bar{display:flex;gap:5px;padding:0 14px 10px;overflow-x:auto}
+.tab-btn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--borde);color:var(--text3);background:none;white-space:nowrap;font-family:inherit;transition:.15s}
+.tab-btn.on{background:var(--acc);color:var(--g0);border-color:var(--acc)}
+/* TAREAS */
+.tarea-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--borde)}
+.tarea-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--borde2);background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:.15s}
+.tarea-check.done{background:var(--acc);border-color:var(--acc);color:var(--g0)}
+/* GRAFICO LINE */
+.linechart{position:relative;height:100px;display:flex;align-items:flex-end;gap:0}
+.lc-col{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.lc-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);position:absolute;bottom:0;transform:translateX(-50%)}
 </style>
 </head>
 <body>
 
-<div id="cabecera">
+<div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div style="font-size:10px;color:var(--texto3);margin-top:1px;letter-spacing:0.3px">Gestión Hidropónica · v2.1</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.0</div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center">
-    <span id="sync-estado" style="font-size:11px;color:var(--texto3);padding:4px 10px;border-radius:20px;background:rgba(74,222,128,0.08);border:1px solid var(--borde)">💾 Local</span>
-    <button class="hbtn" onclick="exportarCSV()" title="Exportar datos">📊</button>
+  <div class="cab-r">
+    <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
+    <button class="hbtn" onclick="exportarCSV()" title="Exportar">📊</button>
+    <button class="hbtn" id="usr-btn" onclick="abrirUsuarios()" title="Usuario">👤</button>
   </div>
 </div>
 
-<div id="contenido">
+<div id="cnt">
 
-  <!-- INICIO -->
-  <div class="pag activa" id="pag-inicio">
-    <div style="margin:12px;padding:18px;background:linear-gradient(135deg,var(--fondo4),var(--fondo3));border:1px solid var(--borde);border-radius:var(--r)">
-      <div style="font-size:11px;color:var(--texto3)" id="fecha-hoy"></div>
-      <div style="font-size:20px;font-weight:700;color:var(--verde);margin-top:3px" id="saludo"></div>
-      <div style="font-size:13px;color:var(--texto2);margin-top:4px" id="resumen-ciclos"></div>
+<!-- INICIO -->
+<div class="pg on" id="pg-inicio">
+  <div style="margin:10px 12px;padding:16px;background:linear-gradient(135deg,var(--g3),var(--g2));border:1px solid var(--borde2);border-radius:var(--r);position:relative;overflow:hidden">
+    <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:rgba(74,222,128,.07);border-radius:50%"></div>
+    <div style="font-size:11px;color:var(--text3)" id="h-date"></div>
+    <div style="font-size:19px;font-weight:700;color:var(--acc);margin-top:2px" id="h-sal"></div>
+    <div style="font-size:13px;color:var(--text2);margin-top:3px" id="h-sub"></div>
+  </div>
+  <div style="padding:0 12px;margin-top:8px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="d-stats"></div></div>
+  <div id="d-alertas" style="padding:0 12px;margin-top:8px"></div>
+  <div style="margin-top:10px">
+    <div class="sh" style="padding-bottom:4px">
+      <span style="font-size:14px;font-weight:600">Tareas del día</span>
+      <button class="btn bsm bs" onclick="irA('recordatorios')">Ver todo</button>
     </div>
-
-    <div style="padding:0 12px;margin-top:10px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="stats-inicio"></div>
-    </div>
-
-    <div style="margin-top:14px">
-      <div class="sec-h" style="padding-bottom:6px">
-        <span style="font-size:15px;font-weight:600">Próximas tareas</span>
-        <button class="btn btn-sm btn-s" onclick="irA('ciclos')">Ver todo</button>
-      </div>
-      <div id="tareas-proximas"></div>
-    </div>
-
-    <div style="padding:12px">
-      <div style="font-size:13px;font-weight:600;color:var(--texto2);margin-bottom:8px">Producción últimos 6 meses (kg)</div>
-      <div class="card" style="padding:10px">
-        <div class="grafico" id="grafico-prod"></div>
-      </div>
-    </div>
-
-    <div style="margin:0 12px 12px;padding:12px 14px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:var(--rsm);cursor:pointer" onclick="abrirDrive()">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:22px">☁️</span>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--azul)" id="drive-titulo">Conectar Google Sheets</div>
-          <div style="font-size:11px;color:var(--texto3)" id="drive-subtitulo">Sincroniza entre iOS, Android y PC</div>
-        </div>
-        <span style="color:var(--texto3);margin-left:auto">›</span>
-      </div>
+    <div id="d-tareas"></div>
+  </div>
+  <div style="padding:10px 12px">
+    <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px">Producción mensual (kg)</div>
+    <div class="card" style="padding:10px"><div class="bc" id="d-chart"></div></div>
+  </div>
+  <div style="margin:0 12px 12px;padding:11px 13px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:var(--rsm);cursor:pointer" onclick="abrirDrive()">
+    <div style="display:flex;align-items:center;gap:9px">
+      <span style="font-size:20px">☁️</span>
+      <div><div style="font-size:13px;font-weight:600;color:var(--info)" id="drive-tit">Conectar Google Sheets</div>
+      <div style="font-size:11px;color:var(--text3)" id="drive-sub">Sincroniza entre iOS, Android y PC</div></div>
+      <span style="color:var(--text3);margin-left:auto">›</span>
     </div>
   </div>
-
-  <!-- CICLOS -->
-  <div class="pag" id="pag-ciclos">
-    <div class="sec-h">
-      <div><div class="sec-t">Ciclos</div><div class="sec-s" id="sub-ciclos">—</div></div>
-      <button class="btn btn-sm btn-p" onclick="abrirModalCiclo()">+ Nuevo</button>
-    </div>
-    <div style="padding:0 12px 10px"><div class="chips" id="chips-filtro"></div></div>
-    <div id="lista-ciclos"></div>
-  </div>
-
-  <!-- NUTRICIÓN -->
-  <div class="pag" id="pag-nutricion">
-    <div class="sec-h">
-      <div><div class="sec-t">Nutrición</div><div class="sec-s">pH · EC · Soluciones</div></div>
-      <button class="btn btn-sm btn-p" onclick="abrirModalNutricion()">+ Registro</button>
-    </div>
-    <div style="padding:0 12px">
-      <div class="card" style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Último registro</div>
-        <div class="gauge-fila"><span class="gauge-lbl">pH</span><div class="gauge-bar"><div class="gauge-fill" id="g-ph" style="background:linear-gradient(90deg,#60a5fa,#34d399);width:0%"></div></div><span class="gauge-val" id="v-ph">—</span></div>
-        <div class="gauge-fila"><span class="gauge-lbl">EC</span><div class="gauge-bar"><div class="gauge-fill" id="g-ec" style="background:linear-gradient(90deg,#fbbf24,#4ade80);width:0%"></div></div><span class="gauge-val" id="v-ec">—</span></div>
-        <div class="gauge-fila"><span class="gauge-lbl">T°</span><div class="gauge-bar"><div class="gauge-fill" id="g-temp" style="background:linear-gradient(90deg,#f87171,#fbbf24);width:0%"></div></div><span class="gauge-val" id="v-temp">—</span></div>
-      </div>
-      <div style="font-size:14px;font-weight:600;margin-bottom:10px">Recetas</div>
-      <div id="lista-recetas"></div>
-      <div style="font-size:14px;font-weight:600;margin:14px 0 8px">Historial</div>
-      <div id="lista-nutricion-hist"></div>
-    </div>
-  </div>
-
-  <!-- INVENTARIO -->
-  <div class="pag" id="pag-stock">
-    <div class="sec-h">
-      <div><div class="sec-t">Stock</div><div class="sec-s">Insumos y materiales</div></div>
-      <button class="btn btn-sm btn-p" onclick="abrirModalInsumo()">+ Agregar</button>
-    </div>
-    <div id="alertas-stock" style="padding:0 12px 6px"></div>
-    <div id="lista-inventario"></div>
-  </div>
-
-  <!-- MÁS -->
-  <div class="pag" id="pag-mas">
-    <div class="sec-h"><div class="sec-t">Más</div></div>
-    <div style="padding:0 12px">
-
-      <div class="card" style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Economía</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px" id="econ-stats"></div>
-      <div id="lista-cosechas-mas" style="margin-bottom:10px"></div>
-        <button class="btn btn-s btn-full btn-sm" onclick="abrirModalVenta()">💰 Registrar venta</button>
-        <div id="lista-ventas" style="margin-top:10px"></div>
-      </div>
-
-      <div class="card" style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Camas / Sistemas</div>
-        <div id="lista-camas-mas"></div>
-        <button class="btn btn-s btn-full btn-sm" style="margin-top:10px" onclick="abrirModalCama()">🛏 Nueva cama</button>
-      </div>
-
-      <div class="card" style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Google Sheets</div>
-        <div style="font-size:13px;margin-bottom:10px" id="drive-estado-mas">—</div>
-        <button class="btn btn-s btn-full btn-sm" style="margin-bottom:8px" onclick="sincronizarAhora()">☁️ Sincronizar ahora</button>
-        <button class="btn btn-s btn-full btn-sm" onclick="abrirDrive()">🔗 Configurar conexión</button>
-      </div>
-
-      <div class="card" style="margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Datos</div>
-        <button class="btn btn-s btn-full btn-sm" style="margin-bottom:8px" onclick="exportarCSV()">📊 Exportar a CSV/Excel</button>
-        <button class="btn btn-r btn-full btn-sm" onclick="borrarTodo()">🗑 Borrar todos los datos</button>
-      </div>
-
-      <div style="text-align:center;padding:10px;font-size:11px;color:var(--texto3)">HidroApp v2.0</div>
-    </div>
-  </div>
-
 </div>
+
+<!-- CICLOS -->
+<div class="pg" id="pg-ciclos">
+  <div class="sh">
+    <div><div class="st">Ciclos</div><div class="sst" id="sub-cic">—</div></div>
+    <button class="btn bsm bp" onclick="abrirCiclo()">+ Nuevo</button>
+  </div>
+  <div style="padding:0 12px 8px"><div class="chips" id="chips-c"></div></div>
+  <div id="lst-cic"></div>
+</div>
+
+<!-- NUTRICIÓN -->
+<div class="pg" id="pg-nutricion">
+  <div class="sh">
+    <div><div class="st">Nutrición</div><div class="sst">pH · EC · Soluciones</div></div>
+    <button class="btn bsm bp" onclick="abrirNut()">+ Registro</button>
+  </div>
+  <div style="padding:0 12px">
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Último registro</div>
+      <div class="gfila"><span class="glbl">pH</span><div class="gbar"><div class="gfill" id="g-ph" style="background:linear-gradient(90deg,#60a5fa,#34d399)"></div></div><span class="gval" id="v-ph">—</span></div>
+      <div class="gfila"><span class="glbl">EC</span><div class="gbar"><div class="gfill" id="g-ec" style="background:linear-gradient(90deg,#fbbf24,#4ade80)"></div></div><span class="gval" id="v-ec">—</span></div>
+      <div class="gfila"><span class="glbl">T°</span><div class="gbar"><div class="gfill" id="g-tmp" style="background:linear-gradient(90deg,#f87171,#fbbf24)"></div></div><span class="gval" id="v-tmp">—</span></div>
+    </div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:8px">Recetas base</div>
+    <div id="lst-rec"></div>
+    <div style="font-size:14px;font-weight:600;margin:12px 0 8px">Historial</div>
+    <div id="lst-nut"></div>
+  </div>
+</div>
+
+<!-- STOCK -->
+<div class="pg" id="pg-stock">
+  <div class="sh">
+    <div><div class="st">Stock</div><div class="sst">Insumos y materiales</div></div>
+    <button class="btn bsm bp" onclick="abrirIns()">+ Agregar</button>
+  </div>
+  <div id="alerta-s" style="padding:0 12px 4px"></div>
+  <div id="lst-inv"></div>
+</div>
+
+<!-- FINANZAS -->
+<div class="pg" id="pg-finanzas">
+  <div class="sh">
+    <div><div class="st">Finanzas</div><div class="sst" id="sub-fin">Ventas · Compras · Ganancias</div></div>
+    <div style="display:flex;gap:5px">
+      <button class="btn bsm bs" onclick="abrirCompra()">📥</button>
+      <button class="btn bsm bp" onclick="abrirVentaFin()">📤 Venta</button>
+    </div>
+  </div>
+  <div style="padding:0 12px 8px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="fin-stats"></div></div>
+  <div style="padding:0 12px 8px">
+    <div class="card">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Resultado del mes</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text2);font-size:13px">💰 Ventas</span><span style="color:var(--acc);font-weight:600" id="fin-vm">$0</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--text2);font-size:13px">🛒 Compras</span><span style="color:var(--danger);font-weight:600" id="fin-cm">$0</span></div>
+      <div style="height:1px;background:var(--borde);margin:8px 0"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600">📊 Ganancia</span><span style="font-size:17px;font-weight:700" id="fin-gm">$0</span></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:5px;padding:0 12px 8px;overflow-x:auto" id="fin-meses"></div>
+  <div class="tab-bar" id="fin-tabs">
+    <button class="tab-btn on" id="tab-v-btn" onclick="finTab('v')">💰 Ventas</button>
+    <button class="tab-btn" id="tab-c-btn" onclick="finTab('c')">🛒 Compras</button>
+    <button class="tab-btn" id="tab-b-btn" onclick="finTab('b')">📊 Balance</button>
+  </div>
+  <div id="fin-v"><div id="lst-fv"></div></div>
+  <div id="fin-c" style="display:none"><div id="lst-fc"></div></div>
+  <div id="fin-b" style="display:none"><div style="padding:0 12px" id="lst-fb"></div></div>
+</div>
+
+<!-- AMBIENTE -->
+<div class="pg" id="pg-ambiente">
+  <div class="sh">
+    <div><div class="st">Ambiente</div><div class="sst">Temperatura · Humedad · Riego · Plagas</div></div>
+    <button class="btn bsm bp" onclick="abrirAmbiente()">+ Registro</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn on" id="tab-amb-btn" onclick="ambTab('clima')">🌡️ Clima</button>
+    <button class="tab-btn" id="tab-riego-btn" onclick="ambTab('riego')">💧 Riego</button>
+    <button class="tab-btn" id="tab-plaga-btn" onclick="ambTab('plagas')">🐛 Plagas</button>
+  </div>
+  <div id="amb-clima">
+    <div style="padding:0 12px 8px" id="amb-alertas"></div>
+    <div style="padding:0 12px">
+      <div class="card" style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Hoy</div>
+        <div class="gfila"><span class="glbl" style="width:32px">T°C</span><div class="gbar"><div class="gfill" id="ga-tmp" style="background:linear-gradient(90deg,#60a5fa,#f87171)"></div></div><span class="gval" id="va-tmp">—</span></div>
+        <div class="gfila"><span class="glbl" style="width:32px">Hum</span><div class="gbar"><div class="gfill" id="ga-hum" style="background:linear-gradient(90deg,#60a5fa,#4ade80)"></div></div><span class="gval" id="va-hum">—</span></div>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px">Evolución temperatura (°C)</div>
+      <div class="card" style="padding:10px;margin-bottom:10px"><div class="bc" id="chart-tmp"></div></div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px">Historial</div>
+      <div id="lst-ambiente"></div>
+    </div>
+  </div>
+  <div id="amb-riego" style="display:none">
+    <div style="padding:0 12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:600">Registros de riego</span>
+        <button class="btn bsm bp" onclick="abrirRiego()">+ Riego</button>
+      </div>
+      <div id="lst-riego"></div>
+    </div>
+  </div>
+  <div id="amb-plagas" style="display:none">
+    <div style="padding:0 12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:600">Problemas detectados</span>
+        <button class="btn bsm bp" onclick="abrirPlaga()">+ Plaga</button>
+      </div>
+      <div id="lst-plagas"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RECORDATORIOS -->
+<div class="pg" id="pg-recordatorios">
+  <div class="sh">
+    <div><div class="st">Tareas</div><div class="sst" id="sub-rec">Pendientes y completadas</div></div>
+    <button class="btn bsm bp" onclick="abrirTarea()">+ Tarea</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn on" id="tab-rec-hoy" onclick="recTab('hoy')">📌 Hoy</button>
+    <button class="tab-btn" id="tab-rec-sem" onclick="recTab('semana')">📅 Esta semana</button>
+    <button class="tab-btn" id="tab-rec-all" onclick="recTab('todas')">📋 Todas</button>
+    <button class="tab-btn" id="tab-rec-done" onclick="recTab('hechas')">✅ Hechas</button>
+  </div>
+  <div id="lst-rec-main"></div>
+  <div style="padding:14px 14px 4px;font-size:13px;font-weight:600;color:var(--text3)">Tareas automáticas (de ciclos)</div>
+  <div id="lst-rec-auto"></div>
+</div>
+
+<!-- MÁS -->
+<div class="pg" id="pg-mas">
+  <div class="sh"><div class="st">Más</div></div>
+  <div style="padding:0 12px">
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Usuarios</div>
+      <div id="mas-usuarios"></div>
+      <button class="btn bs bw bsm" style="margin-top:8px" onclick="abrirUsuarios()">👤 Gestionar usuarios</button>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Mis camas</div>
+      <div id="mas-camas"></div>
+      <button class="btn bs bw bsm" style="margin-top:8px" onclick="abrirCama()">🛏 Nueva cama</button>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Google Sheets</div>
+      <div style="font-size:13px;margin-bottom:8px" id="mas-cloud"></div>
+      <button class="btn bs bw bsm" style="margin-bottom:6px" onclick="syncAhora()">☁️ Sincronizar ahora</button>
+      <button class="btn bs bw bsm" onclick="abrirDrive()">🔗 Configurar conexión</button>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Datos</div>
+      <button class="btn bs bw bsm" style="margin-bottom:6px" onclick="exportarCSV()">📊 Exportar CSV/Excel</button>
+      <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos</button>
+    </div>
+    <div style="text-align:center;padding:10px;font-size:11px;color:var(--text3)">HidroApp v3.0 · Google Sheets Sync</div>
+  </div>
+</div>
+
+</div><!-- /cnt -->
 
 <nav id="nav">
-  <button class="nbtn activo" id="nb-inicio" onclick="irA('inicio')"><span class="ico">🏠</span><span>Inicio</span></button>
-  <button class="nbtn" id="nb-ciclos" onclick="irA('ciclos')"><span class="ico">📅</span><span>Ciclos</span></button>
-  <button class="nbtn" id="nb-nutricion" onclick="irA('nutricion')"><span class="ico">🧪</span><span>Nutrición</span></button>
-  <button class="nbtn" id="nb-stock" onclick="irA('stock')"><span class="ico">📦</span><span>Stock</span></button>
-  <button class="nbtn" id="nb-mas" onclick="irA('mas')"><span class="ico">⚙️</span><span>Más</span></button>
+  <button class="nb on" id="nb-inicio" onclick="irA('inicio')"><span class="ico">🏠</span><span>Inicio</span></button>
+  <button class="nb" id="nb-ciclos" onclick="irA('ciclos')"><span class="ico">📅</span><span>Ciclos</span></button>
+  <button class="nb" id="nb-ambiente" onclick="irA('ambiente')"><span class="ico">🌡️</span><span>Ambiente</span></button>
+  <button class="nb" id="nb-finanzas" onclick="irA('finanzas')"><span class="ico">💰</span><span>Finanzas</span></button>
+  <button class="nb" id="nb-mas" onclick="irA('mas')"><span class="ico">⚙️</span><span>Más</span></button>
 </nav>
 
 <div id="toast"></div>
 
-<!-- MODAL: CICLO -->
-<div class="modal-fondo" id="m-ciclo">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit" id="tit-ciclo">Nuevo ciclo</span>
-      <button class="hbtn" onclick="cerrarModal('m-ciclo')">✕</button>
-    </div>
-    <div class="modal-cuerpo">
-      <div class="fg"><label class="fl">Cultivo</label>
-        <input class="fi" id="c-cultivo" type="text" placeholder="Ej: Lechuga Butter" list="dl-cult" autocomplete="off">
-        <datalist id="dl-cult"><option value="Lechuga Butter"><option value="Lechuga Costina"><option value="Espinaca"><option value="Albahaca"><option value="Cilantro"><option value="Perejil"><option value="Tomate Cherry"><option value="Pimiento"><option value="Pepino"><option value="Frutilla"><option value="Rúcula"><option value="Menta"></datalist>
-      </div>
-      <div class="fg"><label class="fl">Cama</label><select class="fi" id="c-cama"></select></div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Fecha almácigo</label><input class="fi" id="c-fecha" type="date"></div>
-        <div class="fg"><label class="fl">N° plantas</label><input class="fi" id="c-plantas" type="number" placeholder="20" min="1"></div>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Días almácigo</label><input class="fi" id="c-da" type="number" value="25" min="1"></div>
-        <div class="fg"><label class="fl">Días trasplante</label><input class="fi" id="c-dt" type="number" value="45" min="1"></div>
-      </div>
-      <div class="fg"><label class="fl">Receta de solución</label>
-        <select class="fi" id="c-receta">
-          <option value="">Sin asignar</option>
-          <option value="1">Solución Universal</option>
-          <option value="2">Tomate / Pimiento</option>
-          <option value="3">Almácigo / Plantín</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="c-notas" placeholder="Observaciones opcionales..."></textarea></div>
-      <input type="hidden" id="c-editid">
-    </div>
-    <div class="modal-pie">
-      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-ciclo')">Cancelar</button>
-      <button class="btn btn-p" style="flex:2" onclick="guardarCiclo()">Guardar</button>
-    </div>
-    <div style="height:10px"></div>
+<!-- MODALES -->
+<!-- CICLO -->
+<div class="mf" id="m-cic"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit" id="t-cic">Nuevo ciclo</span><button class="hbtn" onclick="cm('m-cic')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Cultivo</label><input class="fi" id="c-cult" type="text" placeholder="Ej: Lechuga Butter" list="dl-c" autocomplete="off"><datalist id="dl-c"><option value="Lechuga Butter"><option value="Lechuga Costina"><option value="Espinaca"><option value="Albahaca"><option value="Cilantro"><option value="Perejil"><option value="Tomate Cherry"><option value="Pimiento"><option value="Pepino"><option value="Frutilla"><option value="Rúcula"><option value="Menta"></datalist></div>
+    <div class="fg"><label class="fl">Cama</label><select class="fi" id="c-cam"></select></div>
+    <div class="fr"><div class="fg"><label class="fl">Fecha almácigo</label><input class="fi" id="c-fa" type="date"></div><div class="fg"><label class="fl">N° plantas</label><input class="fi" id="c-pl" type="number" placeholder="20" min="1"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Días almácigo</label><input class="fi" id="c-da" type="number" value="25" min="1"></div><div class="fg"><label class="fl">Días trasplante</label><input class="fi" id="c-dt" type="number" value="45" min="1"></div></div>
+    <div class="fg"><label class="fl">Receta</label><select class="fi" id="c-rec"><option value="">Sin asignar</option><option value="1">Solución Universal</option><option value="2">Tomate/Pimiento</option><option value="3">Almácigo</option></select></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="c-not" placeholder="Opcional..."></textarea></div>
+    <input type="hidden" id="c-eid">
   </div>
-</div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-cic')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarCiclo()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
 
-<!-- MODAL: COSECHA -->
-<div class="modal-fondo" id="m-cosecha">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit">Registrar cosecha</span>
-      <button class="hbtn" onclick="cerrarModal('m-cosecha')">✕</button>
-    </div>
-    <div class="modal-cuerpo">
-      <div class="fg"><label class="fl">Ciclo</label><input class="fi" id="cos-nombre" type="text" readonly style="opacity:.6"></div>
-      <input type="hidden" id="cos-ciclo-id">
-      <div class="fila">
-        <div class="fg"><label class="fl">Kilos cosechados</label><input class="fi" id="cos-kg" type="number" placeholder="0.0" step="0.1" min="0"></div>
-        <div class="fg"><label class="fl">Fecha</label><input class="fi" id="cos-fecha" type="date"></div>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Precio ($/kg)</label><input class="fi" id="cos-precio" type="number" placeholder="0" min="0"></div>
-        <div class="fg"><label class="fl">Calidad</label>
-          <select class="fi" id="cos-calidad">
-            <option value="Excelente">⭐ Excelente</option>
-            <option value="Buena" selected>👍 Buena</option>
-            <option value="Regular">👌 Regular</option>
-            <option value="Baja">⚠️ Baja</option>
-          </select>
-        </div>
-      </div>
-      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="cos-notas" placeholder="Observaciones..."></textarea></div>
-    </div>
-    <div class="modal-pie">
-      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-cosecha')">Cancelar</button>
-      <button class="btn btn-p" style="flex:2" onclick="guardarCosecha()">Registrar</button>
-    </div>
-    <div style="height:10px"></div>
+<!-- COSECHA -->
+<div class="mf" id="m-cos"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">Registrar cosecha</span><button class="hbtn" onclick="cm('m-cos')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Ciclo</label><input class="fi" id="cos-n" readonly style="opacity:.6"></div>
+    <input type="hidden" id="cos-id">
+    <div class="fr"><div class="fg"><label class="fl">Kilos</label><input class="fi" id="cos-kg" type="number" placeholder="0.0" step="0.1" min="0"></div><div class="fg"><label class="fl">Fecha</label><input class="fi" id="cos-f" type="date"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Precio ($/kg)</label><input class="fi" id="cos-p" type="number" placeholder="0" min="0"></div><div class="fg"><label class="fl">Calidad</label><select class="fi" id="cos-c"><option value="Excelente">⭐ Excelente</option><option value="Buena" selected>👍 Buena</option><option value="Regular">👌 Regular</option><option value="Baja">⚠️ Baja</option></select></div></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="cos-not" placeholder="Opcional..."></textarea></div>
   </div>
-</div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-cos')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarCosecha()">Registrar</button></div>
+  <div style="height:10px"></div>
+</div></div>
 
-<!-- MODAL: NUTRICION -->
-<div class="modal-fondo" id="m-nutricion">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit">Registro de nutrición</span>
-      <button class="hbtn" onclick="cerrarModal('m-nutricion')">✕</button>
-    </div>
-    <div class="modal-cuerpo">
-      <div class="fg"><label class="fl">Cama / Sistema</label><select class="fi" id="n-cama"></select></div>
-      <div class="fila">
-        <div class="fg"><label class="fl">pH</label><input class="fi" id="n-ph" type="number" placeholder="6.0" step="0.1" min="0" max="14"></div>
-        <div class="fg"><label class="fl">EC (mS/cm)</label><input class="fi" id="n-ec" type="number" placeholder="1.8" step="0.1" min="0"></div>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Temperatura °C</label><input class="fi" id="n-temp" type="number" placeholder="20" step="0.5"></div>
-        <div class="fg"><label class="fl">Volumen (L)</label><input class="fi" id="n-vol" type="number" placeholder="50" min="0"></div>
-      </div>
-      <div class="fg"><label class="fl">Acciones</label>
-        <div class="chips" id="chips-acc">
-          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Cambio solución</button>
-          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Ajuste pH</button>
-          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Ajuste EC</button>
-          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Limpieza tanque</button>
-          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Aireación</button>
-          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Poda</button>
-        </div>
-      </div>
-      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="n-notas" placeholder="Observaciones..."></textarea></div>
-    </div>
-    <div class="modal-pie">
-      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-nutricion')">Cancelar</button>
-      <button class="btn btn-p" style="flex:2" onclick="guardarNutricion()">Guardar</button>
-    </div>
-    <div style="height:10px"></div>
+<!-- NUTRICION -->
+<div class="mf" id="m-nut"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">Nutrición</span><button class="hbtn" onclick="cm('m-nut')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Cama</label><select class="fi" id="n-cam"></select></div>
+    <div class="fr"><div class="fg"><label class="fl">pH</label><input class="fi" id="n-ph" type="number" placeholder="6.0" step="0.1" min="0" max="14"></div><div class="fg"><label class="fl">EC (mS/cm)</label><input class="fi" id="n-ec" type="number" placeholder="1.8" step="0.1" min="0"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Temperatura °C</label><input class="fi" id="n-tmp" type="number" placeholder="20" step="0.5"></div><div class="fg"><label class="fl">Volumen (L)</label><input class="fi" id="n-vol" type="number" placeholder="50" min="0"></div></div>
+    <div class="fg"><label class="fl">Acciones</label><div class="chips" id="chips-acc"><button type="button" class="chip" onclick="this.classList.toggle('on')">Cambio solución</button><button type="button" class="chip" onclick="this.classList.toggle('on')">Ajuste pH</button><button type="button" class="chip" onclick="this.classList.toggle('on')">Ajuste EC</button><button type="button" class="chip" onclick="this.classList.toggle('on')">Limpieza</button><button type="button" class="chip" onclick="this.classList.toggle('on')">Aireación</button><button type="button" class="chip" onclick="this.classList.toggle('on')">Poda</button></div></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="n-not" placeholder="Opcional..."></textarea></div>
   </div>
-</div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-nut')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarNut()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
 
-<!-- MODAL: INSUMO -->
-<div class="modal-fondo" id="m-insumo">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit">Insumo</span>
-      <button class="hbtn" onclick="cerrarModal('m-insumo')">✕</button>
-    </div>
-    <div class="modal-cuerpo">
-      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="i-nombre" type="text" placeholder="Ej: Nitrato de Calcio"></div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Categoría</label>
-          <select class="fi" id="i-cat">
-            <option>Nutriente</option><option>Semilla</option><option>Sustrato</option>
-            <option>Herramienta</option><option>Químico</option><option>Otro</option>
-          </select>
-        </div>
-        <div class="fg"><label class="fl">Unidad</label>
-          <select class="fi" id="i-uni">
-            <option>kg</option><option>g</option><option>L</option><option>mL</option><option>unidad</option><option>paquete</option>
-          </select>
-        </div>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Stock actual</label><input class="fi" id="i-stock" type="number" placeholder="0" step="0.1" min="0"></div>
-        <div class="fg"><label class="fl">Stock mínimo</label><input class="fi" id="i-min" type="number" placeholder="0" step="0.1" min="0"></div>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Costo ($)</label><input class="fi" id="i-costo" type="number" placeholder="0" min="0"></div>
-        <div class="fg"><label class="fl">Proveedor</label><input class="fi" id="i-prov" type="text" placeholder="Opcional"></div>
-      </div>
-      <input type="hidden" id="i-editid">
-    </div>
-    <div class="modal-pie">
-      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-insumo')">Cancelar</button>
-      <button class="btn btn-p" style="flex:2" onclick="guardarInsumo()">Guardar</button>
-    </div>
-    <div style="height:10px"></div>
+<!-- INSUMO -->
+<div class="mf" id="m-ins"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">Insumo</span><button class="hbtn" onclick="cm('m-ins')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Nombre</label><input class="fi" id="i-n" type="text" placeholder="Ej: Nitrato de Calcio"></div>
+    <div class="fr"><div class="fg"><label class="fl">Categoría</label><select class="fi" id="i-c"><option>Nutriente</option><option>Semilla</option><option>Sustrato</option><option>Herramienta</option><option>Químico</option><option>Otro</option></select></div><div class="fg"><label class="fl">Unidad</label><select class="fi" id="i-u"><option>kg</option><option>g</option><option>L</option><option>mL</option><option>unidad</option><option>paquete</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Stock</label><input class="fi" id="i-s" type="number" placeholder="0" step="0.1" min="0"></div><div class="fg"><label class="fl">Mínimo</label><input class="fi" id="i-m" type="number" placeholder="0" step="0.1" min="0"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Costo ($)</label><input class="fi" id="i-co" type="number" placeholder="0" min="0"></div><div class="fg"><label class="fl">Proveedor</label><input class="fi" id="i-pr" type="text" placeholder="Opcional"></div></div>
+    <input type="hidden" id="i-eid">
   </div>
-</div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-ins')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarIns()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
 
-<!-- MODAL: CAMA -->
-<div class="modal-fondo" id="m-cama">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit">Nueva cama</span>
-      <button class="hbtn" onclick="cerrarModal('m-cama')">✕</button>
-    </div>
-    <div class="modal-cuerpo">
-      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="cam-nombre" type="text" placeholder="Ej: Cama 1"></div>
-      <div class="fg"><label class="fl">Sistema</label>
-        <select class="fi" id="cam-sistema">
-          <option>NFT</option><option>DWC</option><option>Kratky</option><option>Aeroponía</option><option>Sustrato</option><option>Otro</option>
-        </select>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Largo (m)</label><input class="fi" id="cam-largo" type="number" placeholder="2.0" step="0.1" min="0.1"></div>
-        <div class="fg"><label class="fl">Ancho (m)</label><input class="fi" id="cam-ancho" type="number" placeholder="1.0" step="0.1" min="0.1"></div>
-      </div>
-      <div class="fg"><label class="fl">Capacidad (plantas)</label><input class="fi" id="cam-cap" type="number" placeholder="20" min="1"></div>
-    </div>
-    <div class="modal-pie">
-      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-cama')">Cancelar</button>
-      <button class="btn btn-p" style="flex:2" onclick="guardarCama()">Guardar</button>
-    </div>
-    <div style="height:10px"></div>
+<!-- CAMA -->
+<div class="mf" id="m-cam"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">Nueva cama</span><button class="hbtn" onclick="cm('m-cam')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Nombre</label><input class="fi" id="cam-n" type="text" placeholder="Ej: Cama 1"></div>
+    <div class="fg"><label class="fl">Sistema</label><select class="fi" id="cam-s"><option>NFT</option><option>DWC</option><option>Kratky</option><option>Aeroponía</option><option>Sustrato</option><option>Otro</option></select></div>
+    <div class="fr"><div class="fg"><label class="fl">Largo (m)</label><input class="fi" id="cam-l" type="number" placeholder="2.0" step="0.1" min="0.1"></div><div class="fg"><label class="fl">Ancho (m)</label><input class="fi" id="cam-a" type="number" placeholder="1.0" step="0.1" min="0.1"></div></div>
+    <div class="fg"><label class="fl">Capacidad (plantas)</label><input class="fi" id="cam-c" type="number" placeholder="20" min="1"></div>
   </div>
-</div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-cam')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarCama()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
 
-<!-- MODAL: VENTA -->
-<div class="modal-fondo" id="m-venta">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit">Registrar venta</span>
-      <button class="hbtn" onclick="cerrarModal('m-venta')">✕</button>
-    </div>
-    <div class="modal-cuerpo">
-      <div class="fg"><label class="fl">Producto</label><input class="fi" id="v-prod" type="text" placeholder="Ej: Lechuga Butter"></div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Kilos</label><input class="fi" id="v-kg" type="number" placeholder="0.0" step="0.1" min="0"></div>
-        <div class="fg"><label class="fl">Precio ($/kg)</label><input class="fi" id="v-precio" type="number" placeholder="0" min="0"></div>
-      </div>
-      <div class="fila">
-        <div class="fg"><label class="fl">Cliente</label><input class="fi" id="v-cliente" type="text" placeholder="Opcional"></div>
-        <div class="fg"><label class="fl">Fecha</label><input class="fi" id="v-fecha" type="date"></div>
-      </div>
-    </div>
-    <div class="modal-pie">
-      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-venta')">Cancelar</button>
-      <button class="btn btn-p" style="flex:2" onclick="guardarVenta()">Registrar</button>
-    </div>
-    <div style="height:10px"></div>
+<!-- VENTA FIN -->
+<div class="mf" id="m-vf"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">💰 Registrar venta</span><button class="hbtn" onclick="cm('m-vf')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Producto</label><input class="fi" id="vf-p" type="text" placeholder="Ej: Lechuga Butter" list="dl-cult2"><datalist id="dl-cult2"><option value="Lechuga Butter"><option value="Albahaca"><option value="Espinaca"><option value="Cilantro"><option value="Tomate Cherry"></datalist></div>
+    <div class="fr"><div class="fg"><label class="fl">Kilos</label><input class="fi" id="vf-kg" type="number" placeholder="0.0" step="0.1" min="0"></div><div class="fg"><label class="fl">Precio ($/kg)</label><input class="fi" id="vf-pr" type="number" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Cliente</label><input class="fi" id="vf-cl" type="text" placeholder="Nombre o negocio"></div><div class="fg"><label class="fl">Fecha</label><input class="fi" id="vf-f" type="date"></div></div>
+    <div class="fg"><label class="fl">Tipo</label><select class="fi" id="vf-t"><option value="Directa">🧑 Directa</option><option value="Feria">🏪 Feria</option><option value="Restaurante">🍽 Restaurante</option><option value="Supermercado">🛒 Supermercado</option><option value="Online">📱 Online</option><option value="Otro">Otro</option></select></div>
+    <div class="fg"><label class="fl">Usuario</label><select class="fi" id="vf-u"></select></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="vf-not" placeholder="Opcional..."></textarea></div>
   </div>
-</div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-vf')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarVF()">Registrar</button></div>
+  <div style="height:10px"></div>
+</div></div>
 
-<!-- MODAL: DRIVE -->
-<div class="modal-fondo" id="m-drive">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit">☁️ Google Sheets</span>
-      <button class="hbtn" onclick="cerrarModal('m-drive')">✕</button>
+<!-- COMPRA -->
+<div class="mf" id="m-cp"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">🛒 Registrar compra</span><button class="hbtn" onclick="cm('m-cp')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Producto</label><input class="fi" id="cp-p" type="text" placeholder="Ej: Nitrato de Calcio"></div>
+    <div class="fr"><div class="fg"><label class="fl">Categoría</label><select class="fi" id="cp-c"><option>Nutriente</option><option>Semilla</option><option>Sustrato</option><option>Herramienta</option><option>Energía</option><option>Transporte</option><option>Otro</option></select></div><div class="fg"><label class="fl">Cantidad</label><input class="fi" id="cp-q" type="number" placeholder="1" step="0.1" min="0"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Costo total ($)</label><input class="fi" id="cp-co" type="number" placeholder="0" min="0"></div><div class="fg"><label class="fl">Fecha</label><input class="fi" id="cp-f" type="date"></div></div>
+    <div class="fg"><label class="fl">Proveedor</label><input class="fi" id="cp-pr" type="text" placeholder="Opcional"></div>
+    <div class="fg"><label class="fl">Usuario</label><select class="fi" id="cp-u"></select></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="cp-not" placeholder="Opcional..."></textarea></div>
+  </div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-cp')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarCP()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
+
+<!-- AMBIENTE -->
+<div class="mf" id="m-amb"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">🌡️ Registro clima</span><button class="hbtn" onclick="cm('m-amb')">✕</button></div>
+  <div class="mbdy">
+    <div class="fr"><div class="fg"><label class="fl">Temperatura (°C)</label><input class="fi" id="a-tmp" type="number" placeholder="22" step="0.5"></div><div class="fg"><label class="fl">Humedad (%)</label><input class="fi" id="a-hum" type="number" placeholder="65" step="1" min="0" max="100"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Fecha</label><input class="fi" id="a-f" type="date"></div><div class="fg"><label class="fl">Hora</label><input class="fi" id="a-h" type="time"></div></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="a-not" placeholder="Condiciones del día..."></textarea></div>
+  </div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-amb')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarAmb()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
+
+<!-- RIEGO -->
+<div class="mf" id="m-riego"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">💧 Registro de riego</span><button class="hbtn" onclick="cm('m-riego')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Cama</label><select class="fi" id="r-cam"></select></div>
+    <div class="fr"><div class="fg"><label class="fl">Litros usados</label><input class="fi" id="r-l" type="number" placeholder="0" step="0.5" min="0"></div><div class="fg"><label class="fl">Duración (min)</label><input class="fi" id="r-d" type="number" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Fecha</label><input class="fi" id="r-f" type="date"></div><div class="fg"><label class="fl">Costo agua ($)</label><input class="fi" id="r-c" type="number" placeholder="0" step="0.1" min="0"></div></div>
+    <div class="fg"><label class="fl">Tipo</label><select class="fi" id="r-t"><option value="Manual">Manual</option><option value="Automático">Automático</option><option value="Goteo">Goteo</option></select></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="r-not" placeholder="Opcional..."></textarea></div>
+  </div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-riego')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarRiego()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
+
+<!-- PLAGA -->
+<div class="mf" id="m-plaga"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit" id="t-plaga">🐛 Registrar problema</span><button class="hbtn" onclick="cm('m-plaga')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Problema detectado</label><input class="fi" id="pl-n" type="text" placeholder="Ej: Pulgón, Mildiu, Clorosis..." list="dl-pl"><datalist id="dl-pl"><option value="Pulgón"><option value="Mosca blanca"><option value="Araña roja"><option value="Mildiu"><option value="Botrytis"><option value="Clorosis"><option value="Marchitez"><option value="Deficiencia de N"><option value="Deficiencia de Fe"><option value="Otro"></datalist></div>
+    <div class="fg"><label class="fl">Cama afectada</label><select class="fi" id="pl-cam"></select></div>
+    <div class="fr"><div class="fg"><label class="fl">Fecha detección</label><input class="fi" id="pl-f" type="date"></div><div class="fg"><label class="fl">Severidad</label><select class="fi" id="pl-sev"><option value="Leve">🟡 Leve</option><option value="Moderada">🟠 Moderada</option><option value="Grave">🔴 Grave</option></select></div></div>
+    <div class="fg"><label class="fl">Tratamiento aplicado</label><input class="fi" id="pl-tr" type="text" placeholder="Ej: Jabón potásico 2%, Fungicida..."></div>
+    <div class="fg"><label class="fl">Dosis / cantidad</label><input class="fi" id="pl-dos" type="text" placeholder="Ej: 5mL/L, 2 aplicaciones..."></div>
+    <div class="fg"><label class="fl">Estado</label><select class="fi" id="pl-est"><option value="Activo">🔴 Activo</option><option value="En tratamiento">🟡 En tratamiento</option><option value="Resuelto">🟢 Resuelto</option></select></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="pl-not" placeholder="Observaciones..."></textarea></div>
+    <input type="hidden" id="pl-eid">
+  </div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-plaga')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarPlaga()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
+
+<!-- TAREA -->
+<div class="mf" id="m-tarea"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">🔔 Nueva tarea</span><button class="hbtn" onclick="cm('m-tarea')">✕</button></div>
+  <div class="mbdy">
+    <div class="fg"><label class="fl">Descripción</label><input class="fi" id="t-desc" type="text" placeholder="Ej: Limpiar tanque Cama 1"></div>
+    <div class="fr"><div class="fg"><label class="fl">Fecha</label><input class="fi" id="t-f" type="date"></div><div class="fg"><label class="fl">Prioridad</label><select class="fi" id="t-pri"><option value="Alta">🔴 Alta</option><option value="Normal" selected>🟡 Normal</option><option value="Baja">🟢 Baja</option></select></div></div>
+    <div class="fg"><label class="fl">Cama (opcional)</label><select class="fi" id="t-cam"><option value="">General</option></select></div>
+    <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="t-not" placeholder="Opcional..."></textarea></div>
+  </div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-tarea')">Cancelar</button><button class="btn bp" style="flex:2" onclick="guardarTarea()">Guardar</button></div>
+  <div style="height:10px"></div>
+</div></div>
+
+<!-- USUARIO -->
+<div class="mf" id="m-usr"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">👤 Usuarios</span><button class="hbtn" onclick="cm('m-usr')">✕</button></div>
+  <div class="mbdy">
+    <div id="lst-usr" style="margin-bottom:14px"></div>
+    <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:10px">Agregar usuario</div>
+    <div class="fg"><label class="fl">Nombre</label><input class="fi" id="usr-n" type="text" placeholder="Ej: Juan"></div>
+    <div class="fg"><label class="fl">Rol</label><select class="fi" id="usr-r"><option value="Admin">👑 Administrador</option><option value="Operador">🌿 Operador</option><option value="Vendedor">💰 Vendedor</option></select></div>
+    <div class="fg"><label class="fl">Color</label><div style="display:flex;gap:7px;margin-top:4px" id="cp-colors"><div class="color-opt on" data-c="#4ade80" style="background:#4ade80"></div><div class="color-opt" data-c="#60a5fa" style="background:#60a5fa"></div><div class="color-opt" data-c="#fbbf24" style="background:#fbbf24"></div><div class="color-opt" data-c="#f87171" style="background:#f87171"></div><div class="color-opt" data-c="#c084fc" style="background:#c084fc"></div><div class="color-opt" data-c="#fb923c" style="background:#fb923c"></div></div></div>
+  </div>
+  <div class="mpie"><button class="btn bs" style="flex:1" onclick="cm('m-usr')">Cerrar</button><button class="btn bp" style="flex:2" onclick="guardarUsr()">Agregar</button></div>
+  <div style="height:10px"></div>
+</div></div>
+
+<!-- DRIVE -->
+<div class="mf" id="m-drive"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit">☁️ Google Sheets</span><button class="hbtn" onclick="cm('m-drive')">✕</button></div>
+  <div class="mbdy">
+    <div style="background:var(--card2);border:1px solid var(--borde);border-radius:var(--rsm);padding:12px;margin-bottom:12px;font-size:13px;color:var(--text3);line-height:1.8">
+      <b style="color:var(--acc2)">1.</b> Crea planilla en <b>sheets.google.com</b><br>
+      <b style="color:var(--acc2)">2.</b> <b>Extensiones → Apps Script</b>, pega el archivo <b>apps_script_backend.js</b><br>
+      <b style="color:var(--acc2)">3.</b> <b>Implementar → App web</b>, acceso <b>Cualquier persona</b>, copia URL<br>
+      <b style="color:var(--acc2)">4.</b> Pégala aquí
     </div>
-    <div class="modal-cuerpo">
-      <div style="background:rgba(26,77,48,0.6);border:1px solid var(--borde);border-radius:var(--rsm);padding:14px;margin-bottom:14px;font-size:13px;color:var(--texto3);line-height:1.8">
-        <b style="color:var(--verde2)">Paso 1:</b> Crea una planilla en <b>sheets.google.com</b><br>
-        <b style="color:var(--verde2)">Paso 2:</b> Menú <b>Extensiones → Apps Script</b>, pega el archivo <b>apps_script_backend.js</b> y guarda<br>
-        <b style="color:var(--verde2)">Paso 3:</b> <b>Implementar → Nueva implementación</b>, tipo <b>Aplicación web</b>, acceso <b>Cualquier persona</b>, copia la URL<br>
-        <b style="color:var(--verde2)">Paso 4:</b> Pégala aquí abajo
-      </div>
-      <div class="fg">
-        <label class="fl">URL del Apps Script</label>
-        <input class="fi" id="drive-url" type="url" placeholder="https://script.google.com/macros/s/...">
-      </div>
-      <button class="btn btn-p btn-full" style="margin-bottom:8px" onclick="conectarSheets()">🔗 Conectar</button>
-      <button class="btn btn-s btn-full btn-sm" onclick="cerrarModal('m-drive')">Cancelar — usar solo local</button>
+    <div class="fg"><label class="fl">URL del Apps Script</label><input class="fi" id="drive-url" type="url" placeholder="https://script.google.com/macros/s/..."></div>
+    <button class="btn bp bw" style="margin-bottom:6px" onclick="conectarSheets()">🔗 Conectar</button>
+    <button class="btn bs bw bsm" onclick="cm('m-drive')">Cancelar</button>
+  </div>
+</div></div>
+
+<!-- RECETA -->
+<div class="mf" id="m-rec"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit" id="t-rec">Receta</span><button class="hbtn" onclick="cm('m-rec')">✕</button></div>
+  <div class="mbdy" id="b-rec"></div>
+</div></div>
+
+<!-- CONFIRMAR -->
+<div class="mf" id="m-conf"><div class="modal"><div class="masa"></div>
+  <div class="mcab"><span class="mtit" id="conf-t">Confirmar</span></div>
+  <div class="mbdy">
+    <p style="font-size:15px;color:var(--text2);margin-bottom:18px" id="conf-m"></p>
+    <div style="display:flex;gap:8px">
+      <button class="btn bs" style="flex:1" onclick="cm('m-conf')">Cancelar</button>
+      <button class="btn br" style="flex:2" id="conf-ok">Confirmar</button>
     </div>
   </div>
-</div>
-
-<!-- MODAL: RECETA -->
-
-<!-- MODAL CONFIRMAR -->
-<div class="modal-fondo" id="m-confirm">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab"><span class="modal-tit" id="confirm-tit">Confirmar</span></div>
-    <div class="modal-cuerpo">
-      <p style="font-size:15px;color:var(--texto2);margin-bottom:20px" id="confirm-msg"></p>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-confirm')">Cancelar</button>
-        <button class="btn btn-r" style="flex:2" id="confirm-ok">Confirmar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-fondo" id="m-receta">
-  <div class="modal">
-    <div class="modal-asa"></div>
-    <div class="modal-cab">
-      <span class="modal-tit" id="tit-receta">Receta</span>
-      <button class="hbtn" onclick="cerrarModal('m-receta')">✕</button>
-    </div>
-    <div class="modal-cuerpo" id="body-receta"></div>
-  </div>
-</div>
+</div></div>
 
 <script>
-// ═══════════════════════════════════
-// DATOS
-// ═══════════════════════════════════
-const KEY = 'ha2';
-const KEY_URL = 'ha2_url';
+// ═══ DATOS ═══
+const KEY='ha3',KURL='ha3_url';
+let D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[]};
+let SURL=localStorage.getItem(KURL)||'';
+let filtroCama='todas',pagActual='inicio',finTabAct='v',ambTabAct='clima',recTabAct='hoy',finMes='',stimer=null,usrAct='',colorSel='#4ade80';
 
-let datos = {
-  camas: [], ciclos: [], cosechas: [],
-  nutricion: [], inventario: [], ventas: []
-};
-
-let URL_SHEETS = localStorage.getItem(KEY_URL) || '';
-let filtroCama = 'todas';
-let timerSync = null;
-
-const RECETAS = [
-  { id:1, nombre:'Solución Universal', desc:'Lechuga, albahaca, hojas', ph:[5.5,6.5], ec:[1.4,2.0],
-    cult:['Lechuga','Albahaca','Espinaca','Cilantro'],
-    comp:[{n:'Nitrato de Calcio',g:0.94},{n:'Nitrato de Potasio',g:0.60},{n:'Sulfato de Magnesio',g:0.49},{n:'MKP',g:0.27},{n:'Quelato Fe',g:0.03}] },
-  { id:2, nombre:'Tomate / Pimiento', desc:'Alta concentración para frutos', ph:[5.8,6.8], ec:[2.5,3.5],
-    cult:['Tomate','Pimiento','Pepino'],
-    comp:[{n:'Nitrato de Calcio',g:1.18},{n:'Nitrato de Potasio',g:0.80},{n:'Sulfato de Magnesio',g:0.65},{n:'MKP',g:0.35},{n:'Quelato Fe',g:0.04}] },
-  { id:3, nombre:'Almácigo / Plantín', desc:'Baja concentración, germinación', ph:[5.5,6.0], ec:[0.8,1.2],
-    cult:['Todas las especies'],
-    comp:[{n:'Nitrato de Calcio',g:0.47},{n:'Nitrato de Potasio',g:0.30},{n:'Sulfato de Magnesio',g:0.25},{n:'MKP',g:0.14}] },
+const RECETAS=[
+  {id:1,nombre:'Solución Universal',desc:'Lechuga, albahaca, hojas',ph:[5.5,6.5],ec:[1.4,2.0],cult:['Lechuga','Albahaca','Espinaca','Cilantro'],comp:[{n:'Nitrato de Calcio',g:.94},{n:'Nitrato de Potasio',g:.60},{n:'Sulfato de Magnesio',g:.49},{n:'MKP',g:.27},{n:'Quelato Fe',g:.03}]},
+  {id:2,nombre:'Tomate/Pimiento',desc:'Alta concentración frutos',ph:[5.8,6.8],ec:[2.5,3.5],cult:['Tomate','Pimiento','Pepino'],comp:[{n:'Nitrato de Calcio',g:1.18},{n:'Nitrato de Potasio',g:.80},{n:'Sulfato de Magnesio',g:.65},{n:'MKP',g:.35},{n:'Quelato Fe',g:.04}]},
+  {id:3,nombre:'Almácigo',desc:'Baja concentración germinación',ph:[5.5,6.0],ec:[0.8,1.2],cult:['Todas'],comp:[{n:'Nitrato de Calcio',g:.47},{n:'Nitrato de Potasio',g:.30},{n:'Sulfato de Magnesio',g:.25},{n:'MKP',g:.14}]},
 ];
 
-// ═══════════════════════════════════
-// PERSISTENCIA LOCAL
-// ═══════════════════════════════════
-function cargarLocal() {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const p = JSON.parse(raw);
-      Object.keys(datos).forEach(k => { if (p[k]) datos[k] = p[k]; });
-    }
-  } catch(e) {}
+// ═══ LOCAL ═══
+function leerL(){try{const r=localStorage.getItem(KEY);if(r){const p=JSON.parse(r);Object.keys(D).forEach(k=>{if(p[k])D[k]=p[k];});['compras','ambiente','riego','plagas','tareas','usuarios'].forEach(k=>{if(!D[k])D[k]=[];});}}catch(e){}}
+function guardarL(){localStorage.setItem(KEY,JSON.stringify(D));progSync();}
+function nid(a){return a.length?Math.max(...a.map(x=>parseInt(x.id)||0))+1:1;}
+
+// ═══ SYNC ═══
+function setSS(s,l){document.getElementById('sdot').className='sdot'+(s?' '+s:'');document.getElementById('slbl').textContent=l;}
+async function llamar(ac,datos){
+  if(!SURL)return null;
+  const b={action:ac};if(datos)b.datos=JSON.stringify(datos);
+  const r=await fetch(SURL,{method:'POST',body:JSON.stringify(b),headers:{'Content-Type':'text/plain'}});
+  return r.json();
+}
+async function cargarSheets(){
+  if(!SURL)return;setSS('sy','Cargando...');
+  try{const r=await llamar('cargar');if(r&&r.ok&&r.datos){Object.keys(D).forEach(k=>{if(r.datos[k]&&r.datos[k].length>0)D[k]=r.datos[k];});localStorage.setItem(KEY,JSON.stringify(D));setSS('ok','Sheets');renderPA();}}catch(e){setSS('er','Sin conexión');}
+}
+async function guardarSheets(){
+  if(!SURL)return;setSS('sy','Guardando...');
+  try{const r=await llamar('guardar',D);if(r&&r.ok){setSS('ok','Sheets');return;}}catch(e){}setSS('er','Error sync');
+}
+function progSync(){clearTimeout(stimer);stimer=setTimeout(()=>guardarSheets(),3000);}
+async function syncAhora(){await guardarSheets();toast('☁️ Sincronizado');}
+function abrirDrive(){document.getElementById('drive-url').value=SURL;om('m-drive');}
+async function conectarSheets(){
+  const url=document.getElementById('drive-url').value.trim();
+  if(!url||!url.startsWith('https://script.google.com')){toast('⚠️ URL inválida');return;}
+  setSS('sy','Probando...');
+  try{const r=await fetch(url,{method:'POST',body:JSON.stringify({action:'ping'}),headers:{'Content-Type':'text/plain'}});const d=await r.json();
+    if(d&&d.ok){SURL=url;localStorage.setItem(KURL,url);await fetch(url,{method:'POST',body:JSON.stringify({action:'init'}),headers:{'Content-Type':'text/plain'}});cm('m-drive');setSS('ok','Sheets');updDrive();await guardarSheets();toast('✅ Conectado');}else throw new Error();
+  }catch(e){setSS('er','No conectado');toast('⚠️ No se pudo conectar. Verifica URL y permisos.');}
+}
+function updDrive(){
+  if(SURL){document.getElementById('drive-tit').textContent='✅ Conectado a Google Sheets';document.getElementById('drive-sub').textContent='Sincronización automática activa';}
+  else{document.getElementById('drive-tit').textContent='Conectar Google Sheets';document.getElementById('drive-sub').textContent='Sincroniza entre iOS, Android y PC';}
 }
 
-function guardarLocal() {
-  localStorage.setItem(KEY, JSON.stringify(datos));
-  progSync();
+// ═══ NAV ═══
+function irA(p){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('on'));
+  const pg=document.getElementById('pg-'+p);
+  const nb=document.getElementById('nb-'+p);
+  if(pg)pg.classList.add('on');
+  if(nb)nb.classList.add('on');
+  pagActual=p;renderPA();
 }
+function renderPA(){({inicio:renderInicio,ciclos:renderCiclos,nutricion:renderNut,stock:renderStock,finanzas:renderFin,ambiente:renderAmb,recordatorios:renderRec,mas:renderMas})[pagActual]?.();}
 
-function nuevoId(arr) {
-  if (!arr.length) return 1;
-  return Math.max(...arr.map(x => parseInt(x.id) || 0)) + 1;
-}
+// ═══ UTILS ═══
+function toast(m,d=2200){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),d);}
+function hoy(){return new Date().toISOString().slice(0,10);}
+function fmt(d){if(!d)return'—';const s=String(d);const dt=new Date(s.includes('T')?s:s+'T00:00:00');return dt.toLocaleDateString('es-CL',{day:'2-digit',month:'short'});}
+function addD(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+parseInt(n));return d.toISOString().slice(0,10);}
+function diasH(s){if(!s)return null;return Math.round((new Date(String(s)+'T00:00:00')-new Date(hoy()+'T00:00:00'))/864e5);}
+function cm(id){document.getElementById(id).classList.remove('on');}
+function om(id){document.getElementById(id).classList.add('on');}
+function selCamas(id,addGeneral=false){const el=document.getElementById(id);if(!el)return;el.innerHTML=(addGeneral?'<option value="">General</option>':'')+D.camas.map(c=>'<option value="'+c.nombre+'">'+c.nombre+'</option>').join('')||(addGeneral?'':'<option>Sin camas</option>');}
+function selUsr(id){const el=document.getElementById(id);if(!el)return;el.innerHTML=D.usuarios.length?D.usuarios.map(u=>'<option value="'+u.nombre+'"'+(u.nombre===usrAct?' selected':'')+'>'+u.nombre+'</option>').join(''):'<option value="Admin">Admin</option>';}
+function confirmar(tit,msg,accion,btn='Eliminar'){document.getElementById('conf-t').textContent=tit;document.getElementById('conf-m').textContent=msg;const b=document.getElementById('conf-ok');b.textContent=btn;b.onclick=function(){cm('m-conf');accion();};om('m-conf');}
+function progCiclo(c){if(c.estado==='cosechado')return 100;if(!c.fechaAlmacigo||!c.fechaCosecha)return 0;const p=((Date.now()-new Date(c.fechaAlmacigo+'T00:00:00'))/(new Date(c.fechaCosecha+'T00:00:00')-new Date(c.fechaAlmacigo+'T00:00:00')))*100;return Math.min(100,Math.max(0,Math.round(p)));}
 
-// ═══════════════════════════════════
-// GOOGLE SHEETS SYNC
-// ═══════════════════════════════════
-function setSyncEstado(estado, texto) {
-  const el = document.getElementById('sync-estado');
-  const iconos = { ok: '✅', sync: '🔄', error: '⚠️', local: '💾' };
-  el.textContent = (iconos[estado] || '💾') + ' ' + texto;
-}
+// ═══ INICIO ═══
+function renderInicio(){
+  const h=new Date().getHours();
+  document.getElementById('h-date').textContent=new Date().toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('h-sal').textContent=h<12?'Buenos días 🌅':h<18?'Buenas tardes ☀️':'Buenas noches 🌙';
+  const act=D.ciclos.filter(c=>c.estado!=='cosechado');
+  document.getElementById('h-sub').textContent=act.length?act.length+' ciclo'+(act.length>1?'s':'')+' activo'+(act.length>1?'s':''):'Sin ciclos activos';
+  const kgT=D.cosechas.reduce((s,c)=>s+(parseFloat(c.kg)||0),0);
+  const alS=D.inventario.filter(i=>(parseFloat(i.stock)||0)<=(parseFloat(i.minimo)||0)).length;
+  const plagasAct=D.plagas.filter(p=>p.estado!=='Resuelto').length;
+  document.getElementById('d-stats').innerHTML=[
+    {n:D.camas.length,l:'Camas',i:'🛏'},{n:act.length,l:'Activos',i:'🌿'},
+    {n:kgT.toFixed(1),l:'Kg cosech.',i:'⚖️'},{n:alS+plagasAct,l:'Alertas',i:'⚠️'}
+  ].map(s=>'<div class="mc"><div style="font-size:18px;margin-bottom:3px">'+s.i+'</div><div class="num">'+s.n+'</div><div class="lbl">'+s.l+'</div></div>').join('');
 
-async function llamarScript(accion, payload) {
-  if (!URL_SHEETS) return null;
-  const body = { action: accion };
-  if (payload) body.datos = JSON.stringify(payload);
-  const resp = await fetch(URL_SHEETS, {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: { 'Content-Type': 'text/plain' }
+  // Alertas en inicio
+  let alertasHTML='';
+  D.plagas.filter(p=>p.estado!=='Resuelto').forEach(pl=>{alertasHTML+='<div class="alerta-box">⚠️ '+pl.nombre+' en '+pl.cama+' ('+pl.estado+')</div>';});
+  const ult=D.ambiente.slice(-1)[0];
+  if(ult){if(parseFloat(ult.temp)>30)alertasHTML+='<div class="alerta-box">🌡️ Temperatura alta: '+ult.temp+'°C</div>';if(parseFloat(ult.temp)<10)alertasHTML+='<div class="alerta-box">🥶 Temperatura baja: '+ult.temp+'°C</div>';}
+  document.getElementById('d-alertas').innerHTML=alertasHTML;
+
+  // Tareas del día
+  const tareasHoy=[];
+  D.ciclos.filter(c=>c.estado!=='cosechado').forEach(c=>{
+    if(c.fechaTrasplante)tareasHoy.push({f:c.fechaTrasplante,t:'Trasplante · '+c.cultivo,cam:c.cama,tp:'t',auto:true});
+    if(c.fechaCosecha)tareasHoy.push({f:c.fechaCosecha,t:'Cosecha · '+c.cultivo,cam:c.cama,tp:'c',auto:true});
   });
-  return resp.json();
+  D.tareas.filter(t=>!t.hecho).forEach(t=>tareasHoy.push({f:t.fecha,t:t.desc,cam:t.cama||'',tp:'r',id:t.id}));
+  tareasHoy.sort((a,b)=>a.f.localeCompare(b.f));
+  const el=document.getElementById('d-tareas');
+  if(!tareasHoy.length){el.innerHTML='<div class="vacio"><div class="vi">📅</div><div class="vt">Sin tareas próximas</div></div>';}
+  else{el.innerHTML=tareasHoy.slice(0,6).map(t=>{
+    const d=diasH(t.f);
+    const bx=d<0?'<span class="tag tr">Vencida</span>':d===0?'<span class="tag ta">Hoy</span>':d<=3?'<span class="tag ta">En '+d+'d</span>':'<span class="tag tv">En '+d+'d</span>';
+    const delbtn=d<0?'<button class="hbtn" style="margin-left:4px" onclick="elimTareaAuto(\''+t.tp+'\',\''+t.cam+'\',\''+t.f+'\')">🗑</button>':'';
+    return'<div class="tarea-item"><div class="iico" style="width:34px;height:34px;font-size:15px">'+(t.tp==='c'?'🌾':t.tp==='t'?'🪴':'🔔')+'</div><div class="iinf"><div class="it">'+t.t+'</div><div class="is">'+(t.cam?t.cam+' · ':'')+fmt(t.f)+'</div></div>'+bx+delbtn+'</div>';
+  }).join('');}
+
+  // Gráfico
+  const ms=[];for(let i=5;i>=0;i--){const d=new Date();d.setMonth(d.getMonth()-i);ms.push({k:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),l:d.toLocaleDateString('es-CL',{month:'short'})});}
+  const vs=ms.map(m=>D.cosechas.filter(c=>c.fecha&&String(c.fecha).startsWith(m.k)).reduce((s,c)=>s+(parseFloat(c.kg)||0),0));
+  const mx=Math.max(...vs,.1);
+  document.getElementById('d-chart').innerHTML=ms.map((m,i)=>'<div class="bcc"><div class="bcb" style="height:'+Math.max((vs[i]/mx)*68,3)+'px;background:var(--acc)" title="'+vs[i].toFixed(1)+'kg"></div><span class="bcl">'+m.l+'</span></div>').join('');
+  updDrive();
 }
 
-async function cargarDesdeSheets() {
-  if (!URL_SHEETS) return;
-  setSyncEstado('sync', 'Sincronizando...');
-  try {
-    const res = await llamarScript('cargar');
-    if (res && res.ok && res.datos) {
-      Object.keys(datos).forEach(k => {
-        if (res.datos[k] && res.datos[k].length > 0) datos[k] = res.datos[k];
-      });
-      localStorage.setItem(KEY, JSON.stringify(datos));
-      setSyncEstado('ok', 'Sheets');
-      renderPaginaActual();
-    }
-  } catch(e) {
-    setSyncEstado('error', 'Sin conexión');
-  }
+function elimTareaAuto(tp,cam,fecha){
+  confirmar('Eliminar tarea vencida','¿Eliminar esta tarea vencida del panel de inicio?',function(){
+    if(tp==='t'||tp==='c'){
+      const cic=D.ciclos.find(c=>c.cama===cam&&((tp==='t'&&c.fechaTrasplante===fecha)||(tp==='c'&&c.fechaCosecha===fecha)));
+      if(cic){confirmar('Confirmar','¿Eliminar el ciclo "'+cic.cultivo+'" completo?',function(){D.ciclos=D.ciclos.filter(c=>c.id!==cic.id);guardarL();renderInicio();toast('🗑 Ciclo eliminado');});}
+    }else{D.tareas=D.tareas.filter(t=>!(t.fecha===fecha&&t.hecho===false));guardarL();renderInicio();toast('🗑 Tarea eliminada');}
+  },'Eliminar');
 }
 
-async function guardarEnSheets() {
-  if (!URL_SHEETS) return;
-  setSyncEstado('sync', 'Guardando...');
-  try {
-    const res = await llamarScript('guardar', datos);
-    if (res && res.ok) { setSyncEstado('ok', 'Sheets'); return; }
-  } catch(e) {}
-  setSyncEstado('error', 'Error sync');
-}
-
-function progSync() {
-  clearTimeout(timerSync);
-  timerSync = setTimeout(() => guardarEnSheets(), 3000);
-}
-
-function sincronizarAhora() {
-  guardarEnSheets().then(() => toast('☁️ Datos sincronizados'));
-}
-
-// ═══════════════════════════════════
-// SETUP SHEETS
-// ═══════════════════════════════════
-function abrirDrive() {
-  document.getElementById('drive-url').value = URL_SHEETS;
-  abrirModal('m-drive');
-}
-
-async function conectarSheets() {
-  const url = document.getElementById('drive-url').value.trim();
-  if (!url || !url.startsWith('https://script.google.com')) {
-    toast('⚠️ URL inválida'); return;
-  }
-  setSyncEstado('sync', 'Probando...');
-  try {
-    const r = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'ping' }),
-      headers: { 'Content-Type': 'text/plain' }
-    });
-    const d = await r.json();
-    if (d && d.ok) {
-      URL_SHEETS = url;
-      localStorage.setItem(KEY_URL, url);
-      await llamarScript('init');
-      cerrarModal('m-drive');
-      setSyncEstado('ok', 'Sheets');
-      actualizarDrive();
-      await guardarEnSheets();
-      toast('✅ Conectado a Google Sheets');
-    } else throw new Error();
-  } catch(e) {
-    setSyncEstado('error', 'No se pudo conectar');
-    toast('⚠️ No se pudo conectar. Verifica la URL y los permisos.');
-  }
-}
-
-function actualizarDrive() {
-  if (URL_SHEETS) {
-    document.getElementById('drive-titulo').textContent = '✅ Conectado a Google Sheets';
-    document.getElementById('drive-subtitulo').textContent = 'Tus datos se sincronizan automáticamente';
-    document.getElementById('drive-estado-mas').innerHTML = '<span style="color:var(--verde)">✅ Sincronizado con Google Sheets</span>';
-  } else {
-    document.getElementById('drive-titulo').textContent = 'Conectar Google Sheets';
-    document.getElementById('drive-subtitulo').textContent = 'Sincroniza entre iOS, Android y PC';
-    document.getElementById('drive-estado-mas').innerHTML = '<span style="color:var(--texto3)">💾 Solo local — datos en este dispositivo</span>';
-  }
-}
-
-// ═══════════════════════════════════
-// NAVEGACIÓN
-// ═══════════════════════════════════
-let paginaActual = 'inicio';
-
-function irA(pag) {
-  document.querySelectorAll('.pag').forEach(p => p.classList.remove('activa'));
-  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('activo'));
-  document.getElementById('pag-' + pag).classList.add('activa');
-  document.getElementById('nb-' + pag).classList.add('activo');
-  paginaActual = pag;
-  renderPaginaActual();
-}
-
-function renderPaginaActual() {
-  const renders = {
-    inicio: renderInicio, ciclos: renderCiclos,
-    nutricion: renderNutricion, stock: renderStock, mas: renderMas
-  };
-  if (renders[paginaActual]) renders[paginaActual]();
-}
-
-// ═══════════════════════════════════
-// UTILIDADES
-// ═══════════════════════════════════
-function toast(msg, dur) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('visible');
-  setTimeout(() => t.classList.remove('visible'), dur || 2200);
-}
-
-function hoy() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function fmtFecha(d) {
-  if (!d) return '—';
-  const s = String(d);
-  const dt = new Date(s.includes('T') ? s : s + 'T00:00:00');
-  return dt.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
-}
-
-function sumarDias(fechaStr, dias) {
-  const d = new Date(fechaStr + 'T00:00:00');
-  d.setDate(d.getDate() + parseInt(dias));
-  return d.toISOString().slice(0, 10);
-}
-
-function diasHasta(fechaStr) {
-  if (!fechaStr) return null;
-  const diff = new Date(String(fechaStr) + 'T00:00:00') - new Date(hoy() + 'T00:00:00');
-  return Math.round(diff / 86400000);
-}
-
-function progresoCiclo(c) {
-  if (c.estado === 'cosechado') return 100;
-  if (!c.fechaAlmacigo || !c.fechaCosecha) return 0;
-  const ini = new Date(c.fechaAlmacigo + 'T00:00:00').getTime();
-  const fin = new Date(c.fechaCosecha + 'T00:00:00').getTime();
-  const ahora = Date.now();
-  if (ahora <= ini) return 0;
-  if (ahora >= fin) return 100;
-  return Math.round(((ahora - ini) / (fin - ini)) * 100);
-}
-
-function abrirModal(id) { document.getElementById(id).classList.add('abierto'); }
-function cerrarModal(id) { document.getElementById(id).classList.remove('abierto'); }
-
-function llenarSelectCamas(elId) {
-  const sel = document.getElementById(elId);
-  sel.innerHTML = datos.camas.length
-    ? datos.camas.map(c => '<option value="' + c.nombre + '">' + c.nombre + '</option>').join('')
-    : '<option value="">— Agrega una cama primero —</option>';
-}
-
-// ═══════════════════════════════════
-// PANTALLA INICIO
-// ═══════════════════════════════════
-function renderInicio() {
-  const h = new Date().getHours();
-  document.getElementById('fecha-hoy').textContent =
-    new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
-  document.getElementById('saludo').textContent =
-    h < 12 ? 'Buenos días 🌅' : h < 18 ? 'Buenas tardes ☀️' : 'Buenas noches 🌙';
-
-  const activos = datos.ciclos.filter(c => c.estado !== 'cosechado');
-  document.getElementById('resumen-ciclos').textContent = activos.length
-    ? activos.length + ' ciclo' + (activos.length > 1 ? 's' : '') + ' activo' + (activos.length > 1 ? 's' : '') + ' en curso'
-    : 'Sin ciclos activos — agrega uno';
-
-  const kgTotal = datos.cosechas.reduce((s, c) => s + (parseFloat(c.kg) || 0), 0);
-  const alertas = datos.inventario.filter(i => (parseFloat(i.stock) || 0) <= (parseFloat(i.minimo) || 0)).length;
-
-  document.getElementById('stats-inicio').innerHTML = [
-    { n: datos.camas.length, l: 'Camas', i: '🛏' },
-    { n: activos.length, l: 'Activos', i: '🌿' },
-    { n: kgTotal.toFixed(1), l: 'Kg cosechados', i: '⚖️' },
-    { n: alertas, l: 'Alertas stock', i: '⚠️' },
-  ].map(s =>
-    '<div class="mini-card"><div style="font-size:20px;margin-bottom:4px">' + s.i + '</div>' +
-    '<div class="num">' + s.n + '</div><div class="lbl">' + s.l + '</div></div>'
-  ).join('');
-
-  // Tareas próximas
-  const tareas = [];
-  datos.ciclos.filter(c => c.estado !== 'cosechado').forEach(c => {
-    if (c.fechaTrasplante) tareas.push({ f: c.fechaTrasplante, t: 'Trasplante · ' + c.cultivo, cam: c.cama, tp: 't' });
-    if (c.fechaCosecha)    tareas.push({ f: c.fechaCosecha,    t: 'Cosecha · '    + c.cultivo, cam: c.cama, tp: 'c' });
-  });
-  tareas.sort((a, b) => a.f.localeCompare(b.f));
-
-  const ct = document.getElementById('tareas-proximas');
-  if (!tareas.length) {
-    ct.innerHTML = '<div class="vacio"><div class="vacio-ico">📅</div><div class="vacio-t">Sin tareas próximas</div></div>';
-  } else {
-    ct.innerHTML = tareas.slice(0, 5).map(t => {
-      const d = diasHasta(t.f);
-      const tag = d < 0 ? '<span class="tag tag-r">Vencida</span>'
-        : d === 0 ? '<span class="tag tag-a">Hoy</span>'
-        : d <= 3  ? '<span class="tag tag-a">En ' + d + 'd</span>'
-        : '<span class="tag tag-v">En ' + d + 'd</span>';
-      return '<div class="item">' +
-        '<div class="item-ico">' + (t.tp === 'c' ? '🌾' : '🪴') + '</div>' +
-        '<div class="item-info"><div class="item-t">' + t.t + '</div><div class="item-s">' + t.cam + ' · ' + fmtFecha(t.f) + '</div></div>' +
-        tag + '</div>';
-    }).join('');
-  }
-
-  // Gráfico 6 meses
-  const meses = [];
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(); d.setMonth(d.getMonth() - i);
-    const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-    const l = d.toLocaleDateString('es-CL', { month: 'short' });
-    meses.push({ k, l });
-  }
-  const vals = meses.map(m =>
-    datos.cosechas.filter(c => c.fecha && String(c.fecha).startsWith(m.k))
-      .reduce((s, c) => s + (parseFloat(c.kg) || 0), 0)
-  );
-  const maxVal = Math.max(...vals, 0.1);
-  document.getElementById('grafico-prod').innerHTML = meses.map((m, i) => {
-    const h = Math.max((vals[i] / maxVal) * 68, 3);
-    return '<div class="g-col"><div class="g-barra" style="height:' + h + 'px" title="' + vals[i].toFixed(1) + ' kg"></div><span class="g-lbl">' + m.l + '</span></div>';
-  }).join('');
-
-  actualizarDrive();
-}
-
-// ═══════════════════════════════════
-// CICLOS
-// ═══════════════════════════════════
-function renderCiclos() {
-  const allCamas = ['todas', ...datos.camas.map(c => c.nombre)];
-  document.getElementById('chips-filtro').innerHTML = allCamas.map(c =>
-    '<button class="chip' + (filtroCama === c ? ' sel' : '') + '" onclick="filtroCama=\'' + c + '\';renderCiclos()">' +
-    (c === 'todas' ? 'Todas' : c) + '</button>'
-  ).join('');
-
-  const lista = filtroCama === 'todas' ? datos.ciclos : datos.ciclos.filter(c => c.cama === filtroCama);
-  const act = lista.filter(c => c.estado !== 'cosechado').length;
-  document.getElementById('sub-ciclos').textContent = act + ' activo' + (act !== 1 ? 's' : '') + ' · ' + lista.length + ' total';
-
-  if (!lista.length) {
-    document.getElementById('lista-ciclos').innerHTML =
-      '<div class="vacio"><div class="vacio-ico">🌱</div><div class="vacio-t">Sin ciclos</div>' +
-      '<p style="font-size:13px">Toca "+ Nuevo" para planificar tu primer cultivo</p></div>';
-    return;
-  }
-
-  const sorted = [...lista].sort((a, b) => (b.fechaAlmacigo || '').localeCompare(a.fechaAlmacigo || ''));
-  document.getElementById('lista-ciclos').innerHTML = sorted.map(c => {
-    const d = diasHasta(c.fechaCosecha);
-    const estado = c.estado === 'cosechado'
-      ? '<span class="tag tag-v">✅ Cosechado</span>'
-      : d !== null && d < 0 ? '<span class="tag tag-r">Atrasado ' + Math.abs(d) + 'd</span>'
-      : d === 0 ? '<span class="tag tag-a">Cosechar hoy</span>'
-      : '<span class="tag tag-b">En ' + (d || '?') + 'd</span>';
-    const prog = progresoCiclo(c);
-    const kgCos = datos.cosechas.filter(x => parseInt(x.cicloId) === parseInt(c.id)).reduce((s, x) => s + (parseFloat(x.kg) || 0), 0);
-
-    return '<div style="padding:13px 16px;border-bottom:1px solid var(--borde)">' +
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">' +
-        '<div><div style="font-size:15px;font-weight:600">' + (c.cultivo || 'Sin nombre') + '</div>' +
-        '<div style="font-size:12px;color:var(--texto3);margin-top:1px">' + (c.cama || '—') + ' · ' + (c.plantas || '?') + ' plantas</div></div>' +
-        estado +
-      '</div>' +
-      '<div style="display:flex;gap:14px;font-size:11px;color:var(--texto3);margin-bottom:8px">' +
-        '<span>🌱 ' + fmtFecha(c.fechaAlmacigo) + '</span>' +
-        '<span>🪴 ' + fmtFecha(c.fechaTrasplante) + '</span>' +
-        '<span>🌾 ' + fmtFecha(c.fechaCosecha) + '</span>' +
-      '</div>' +
-      '<div style="margin-bottom:10px">' +
-        '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--texto3);margin-bottom:3px"><span>Progreso</span><span>' + prog + '%</span></div>' +
-        '<div class="progbar"><div class="progfill" style="width:' + prog + '%"></div></div>' +
-      '</div>' +
-      (c.estado !== 'cosechado'
-        ? '<div style="display:flex;gap:8px"><button class="btn btn-s btn-sm" onclick="editarCiclo(' + c.id + ')" style="flex:1">✏️ Editar</button>' +
-          '<button class="btn btn-p btn-sm" onclick="prepararCosecha(' + c.id + ')" style="flex:1">🌾 Cosechar</button></div>'
-        : '<div style="display:flex;align-items:center;justify-content:space-between">' +
-          '<span style="font-size:13px;color:var(--verde)">⚖️ ' + kgCos.toFixed(1) + ' kg cosechados</span>' +
-          '<button class="btn btn-r btn-sm" onclick="eliminarCiclo(' + c.id + ')">🗑 Eliminar</button></div>'
-      ) +
+// ═══ CICLOS ═══
+function renderCiclos(){
+  const cs=['todas',...D.camas.map(c=>c.nombre)];
+  document.getElementById('chips-c').innerHTML=cs.map(c=>'<button class="chip'+(filtroCama===c?' on':'')+'" onclick="filtroCama=\''+c+'\';renderCiclos()">'+(c==='todas'?'Todas':c)+'</button>').join('');
+  const lst=filtroCama==='todas'?D.ciclos:D.ciclos.filter(c=>c.cama===filtroCama);
+  const act=lst.filter(c=>c.estado!=='cosechado').length;
+  document.getElementById('sub-cic').textContent=act+' activo'+(act!==1?'s':'')+' · '+lst.length+' total';
+  if(!lst.length){document.getElementById('lst-cic').innerHTML='<div class="vacio"><div class="vi">🌱</div><div class="vt">Sin ciclos</div><p style="font-size:13px">Toca "+ Nuevo" para empezar</p></div>';return;}
+  document.getElementById('lst-cic').innerHTML=[...lst].sort((a,b)=>(b.fechaAlmacigo||'').localeCompare(a.fechaAlmacigo||'')).map(c=>{
+    const d=diasH(c.fechaCosecha);
+    const est=c.estado==='cosechado'?'<span class="tag tv">✅ Cosechado</span>':d!==null&&d<0?'<span class="tag tr">Atrasado '+Math.abs(d)+'d</span>':d===0?'<span class="tag ta">Cosechar hoy</span>':'<span class="tag tb">En '+(d||'?')+'d</span>';
+    const pr=progCiclo(c);
+    const kg=D.cosechas.filter(x=>parseInt(x.cicloId)===parseInt(c.id)).reduce((s,x)=>s+(parseFloat(x.kg)||0),0);
+    return'<div style="padding:12px 14px;border-bottom:1px solid var(--borde)">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px"><div><div style="font-size:15px;font-weight:600">'+(c.cultivo||'Sin nombre')+'</div><div style="font-size:11px;color:var(--text3);margin-top:1px">'+(c.cama||'—')+' · '+(c.plantas||'?')+' plantas</div></div>'+est+'</div>'+
+      '<div style="display:flex;gap:12px;font-size:11px;color:var(--text3);margin-bottom:8px"><span>🌱 '+fmt(c.fechaAlmacigo)+'</span><span>🪴 '+fmt(c.fechaTrasplante)+'</span><span>🌾 '+fmt(c.fechaCosecha)+'</span></div>'+
+      '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-bottom:3px"><span>Progreso</span><span>'+pr+'%</span></div><div class="pb"><div class="pf" style="width:'+pr+'%"></div></div></div>'+
+      '<div style="display:flex;gap:7px">'+
+        '<button class="btn bs bsm" onclick="abrirCiclo('+c.id+')" style="flex:1">✏️ Editar</button>'+
+        (c.estado!=='cosechado'?'<button class="btn bp bsm" onclick="prepCos('+c.id+')" style="flex:1">🌾 Cosechar</button>':'<span style="flex:1;text-align:center;font-size:13px;color:var(--acc);align-self:center">⚖️ '+kg.toFixed(1)+' kg</span>')+
+        '<button class="btn br bsm" onclick="elimCiclo('+c.id+')">🗑</button>'+
+      '</div>'+
     '</div>';
   }).join('');
 }
+function abrirCiclo(id=null){
+  selCamas('c-cam');
+  if(id){const c=D.ciclos.find(x=>parseInt(x.id)===parseInt(id));if(!c)return;
+    document.getElementById('t-cic').textContent='Editar ciclo';
+    document.getElementById('c-cult').value=c.cultivo||'';document.getElementById('c-cam').value=c.cama||'';
+    document.getElementById('c-fa').value=c.fechaAlmacigo||hoy();document.getElementById('c-pl').value=c.plantas||'';
+    document.getElementById('c-da').value=c.diasAlmacigo||25;document.getElementById('c-dt').value=c.diasTrasplante||45;
+    document.getElementById('c-rec').value=c.receta||'';document.getElementById('c-not').value=c.notas||'';
+    document.getElementById('c-eid').value=id;
+  }else{document.getElementById('t-cic').textContent='Nuevo ciclo';
+    ['c-cult','c-pl','c-not'].forEach(f=>document.getElementById(f).value='');
+    document.getElementById('c-fa').value=hoy();document.getElementById('c-da').value=25;document.getElementById('c-dt').value=45;document.getElementById('c-eid').value='';
+  }om('m-cic');
+}
+function guardarCiclo(){
+  const cult=document.getElementById('c-cult').value.trim(),cama=document.getElementById('c-cam').value,fa=document.getElementById('c-fa').value;
+  if(!cult){toast('⚠️ Ingresa el cultivo');return;}if(!cama){toast('⚠️ Selecciona una cama');return;}if(!fa){toast('⚠️ Ingresa la fecha');return;}
+  const pl=parseInt(document.getElementById('c-pl').value)||0,dA=parseInt(document.getElementById('c-da').value)||25,dT=parseInt(document.getElementById('c-dt').value)||45;
+  const rec=document.getElementById('c-rec').value,not=document.getElementById('c-not').value.trim();
+  const ft=addD(fa,dA),fc=addD(ft,dT),eid=document.getElementById('c-eid').value;
+  if(eid){const i=D.ciclos.findIndex(x=>parseInt(x.id)===parseInt(eid));if(i>=0)D.ciclos[i]={...D.ciclos[i],cultivo:cult,cama,fechaAlmacigo:fa,fechaTrasplante:ft,fechaCosecha:fc,plantas:pl,diasAlmacigo:dA,diasTrasplante:dT,receta:rec,notas:not};}
+  else D.ciclos.push({id:nid(D.ciclos),cultivo:cult,cama,fechaAlmacigo:fa,fechaTrasplante:ft,fechaCosecha:fc,plantas:pl,diasAlmacigo:dA,diasTrasplante:dT,receta:rec,notas:not,estado:'activo',creado:hoy()});
+  guardarL();cm('m-cic');toast('✅ Ciclo guardado');renderCiclos();if(pagActual==='inicio')renderInicio();
+}
+function prepCos(id){const c=D.ciclos.find(x=>parseInt(x.id)===parseInt(id));if(!c)return;
+  document.getElementById('cos-n').value=c.cultivo+' · '+c.cama;document.getElementById('cos-id').value=id;
+  document.getElementById('cos-f').value=hoy();['cos-kg','cos-p','cos-not'].forEach(f=>document.getElementById(f).value='');om('m-cos');
+}
+function guardarCosecha(){
+  const id=document.getElementById('cos-id').value,kg=parseFloat(document.getElementById('cos-kg').value)||0;
+  if(!kg){toast('⚠️ Ingresa los kilos');return;}
+  const f=document.getElementById('cos-f').value,p=parseFloat(document.getElementById('cos-p').value)||0;
+  D.cosechas.push({id:nid(D.cosechas),cicloId:id,kg,fecha:f,precio:p,calidad:document.getElementById('cos-c').value,notas:document.getElementById('cos-not').value.trim(),total:kg*p});
+  const i=D.ciclos.findIndex(x=>parseInt(x.id)===parseInt(id));if(i>=0)D.ciclos[i].estado='cosechado';
+  guardarL();cm('m-cos');toast('✅ '+kg+' kg registrados');renderCiclos();if(pagActual==='inicio')renderInicio();
+}
+function elimCiclo(id){confirmar('Eliminar ciclo','¿Eliminar este ciclo y sus cosechas asociadas?',function(){D.ciclos=D.ciclos.filter(c=>parseInt(c.id)!==parseInt(id));D.cosechas=D.cosechas.filter(c=>parseInt(c.cicloId)!==parseInt(id));guardarL();toast('🗑 Ciclo eliminado');renderCiclos();if(pagActual==='inicio')renderInicio();});}
 
-function abrirModalCiclo(id) {
-  llenarSelectCamas('c-cama');
-  if (id) {
-    const c = datos.ciclos.find(x => parseInt(x.id) === parseInt(id));
-    if (!c) return;
-    document.getElementById('tit-ciclo').textContent = 'Editar ciclo';
-    document.getElementById('c-cultivo').value = c.cultivo || '';
-    document.getElementById('c-cama').value = c.cama || '';
-    document.getElementById('c-fecha').value = c.fechaAlmacigo || hoy();
-    document.getElementById('c-plantas').value = c.plantas || '';
-    document.getElementById('c-da').value = c.diasAlmacigo || 25;
-    document.getElementById('c-dt').value = c.diasTrasplante || 45;
-    document.getElementById('c-receta').value = c.receta || '';
-    document.getElementById('c-notas').value = c.notas || '';
-    document.getElementById('c-editid').value = id;
-  } else {
-    document.getElementById('tit-ciclo').textContent = 'Nuevo ciclo';
-    document.getElementById('c-cultivo').value = '';
-    document.getElementById('c-fecha').value = hoy();
-    document.getElementById('c-plantas').value = '';
-    document.getElementById('c-da').value = 25;
-    document.getElementById('c-dt').value = 45;
-    document.getElementById('c-receta').value = '';
-    document.getElementById('c-notas').value = '';
-    document.getElementById('c-editid').value = '';
+// ═══ NUTRICIÓN ═══
+function renderNut(){
+  const u=[...D.nutricion].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)))[0];
+  if(u){const ph=parseFloat(u.ph)||0,ec=parseFloat(u.ec)||0,t=parseFloat(u.temp)||0;
+    document.getElementById('v-ph').textContent=ph.toFixed(1);document.getElementById('v-ec').textContent=ec.toFixed(1);document.getElementById('v-tmp').textContent=t.toFixed(1)+'°';
+    document.getElementById('g-ph').style.width=((ph/14)*100)+'%';document.getElementById('g-ec').style.width=Math.min((ec/4)*100,100)+'%';document.getElementById('g-tmp').style.width=Math.min((t/40)*100,100)+'%';}
+  document.getElementById('lst-rec').innerHTML=RECETAS.map(r=>'<div class="card" style="margin-bottom:9px;cursor:pointer" onclick="verRec('+r.id+')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:14px;font-weight:600">'+r.nombre+'</div><div style="font-size:12px;color:var(--text3);margin-top:1px">'+r.desc+'</div></div><div style="text-align:right;font-size:11px;color:var(--text3)"><div>pH '+r.ph[0]+'–'+r.ph[1]+'</div><div>EC '+r.ec[0]+'–'+r.ec[1]+'</div></div></div><div style="margin-top:7px;display:flex;flex-wrap:wrap;gap:4px">'+r.cult.map(c=>'<span class="tag tv">'+c+'</span>').join('')+'<span style="font-size:11px;color:var(--text3);align-self:center;margin-left:3px">→ toca para calcular</span></div></div>').join('');
+  const h=[...D.nutricion].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))).slice(0,20);
+  document.getElementById('lst-nut').innerHTML=h.length?h.map(n=>{const po=parseFloat(n.ph)>=5.5&&parseFloat(n.ph)<=6.5,eo=parseFloat(n.ec)>=1&&parseFloat(n.ec)<=3.5;return'<div class="item"><div class="iico">🧪</div><div class="iinf"><div class="it">'+(n.cama||'Sin cama')+'</div><div class="is">'+fmt(n.fecha)+' · '+(n.acciones||'—')+'</div></div><div style="text-align:right;font-size:12px;margin-right:5px"><div style="color:'+(po?'var(--acc)':'var(--warn)')+'">pH '+(n.ph||'—')+'</div><div style="color:'+(eo?'var(--acc)':'var(--warn)')+'">EC '+(n.ec||'—')+'</div></div><button class="hbtn" onclick="elimNut('+n.id+')">🗑</button></div>';}).join(''):'<div class="vacio"><div class="vi">🧪</div><div class="vt">Sin registros</div></div>';
+}
+function abrirNut(){selCamas('n-cam');['n-ph','n-ec','n-tmp','n-vol','n-not'].forEach(f=>document.getElementById(f).value='');document.querySelectorAll('#chips-acc .chip').forEach(c=>c.classList.remove('on'));om('m-nut');}
+function guardarNut(){
+  const cam=document.getElementById('n-cam').value;
+  D.nutricion.push({id:nid(D.nutricion),cama:cam,ph:parseFloat(document.getElementById('n-ph').value)||null,ec:parseFloat(document.getElementById('n-ec').value)||null,temp:parseFloat(document.getElementById('n-tmp').value)||null,volumen:parseFloat(document.getElementById('n-vol').value)||null,acciones:[...document.querySelectorAll('#chips-acc .chip.on')].map(c=>c.textContent).join(', '),notas:document.getElementById('n-not').value.trim(),fecha:hoy()});
+  guardarL();cm('m-nut');toast('✅ Guardado');renderNut();
+}
+function elimNut(id){confirmar('Eliminar registro','¿Eliminar este registro?',function(){D.nutricion=D.nutricion.filter(n=>parseInt(n.id)!==parseInt(id));guardarL();toast('🗑 Eliminado');renderNut();});}
+function verRec(id){const r=RECETAS.find(x=>x.id===id);if(!r)return;document.getElementById('t-rec').textContent=r.nombre;
+  document.getElementById('b-rec').innerHTML='<p style="color:var(--text3);font-size:13px;margin-bottom:12px">'+r.desc+'</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px"><div class="mc"><div class="num" style="font-size:15px">'+r.ph[0]+'–'+r.ph[1]+'</div><div class="lbl">pH</div></div><div class="mc"><div class="num" style="font-size:15px">'+r.ec[0]+'–'+r.ec[1]+'</div><div class="lbl">EC mS/cm</div></div></div>'+r.comp.map(c=>'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--borde)"><span style="font-size:14px">'+c.n+'</span><span style="font-size:13px;color:var(--acc)">'+c.g+' g/L</span></div>').join('')+'<div style="margin-top:14px"><div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:7px">Calculadora de volumen</div><div style="display:flex;gap:8px;align-items:center"><input type="number" id="cv" class="fi" placeholder="Litros" style="flex:1" oninput="calcR('+id+')"><span style="color:var(--text3);font-size:13px">L</span></div><div id="cr" style="margin-top:8px"></div></div>';
+  om('m-rec');
+}
+function calcR(id){const v=parseFloat(document.getElementById('cv').value)||0;const r=RECETAS.find(x=>x.id===id);if(!r||!v)return;document.getElementById('cr').innerHTML='<div style="font-size:12px;color:var(--text3);margin-bottom:5px">Para '+v+'L:</div>'+r.comp.map(c=>'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--borde)"><span style="font-size:13px">'+c.n+'</span><span style="font-size:13px;color:var(--acc2)">'+(c.g*v).toFixed(2)+' g</span></div>').join('');}
+
+// ═══ STOCK ═══
+function renderStock(){
+  const bajo=D.inventario.filter(i=>(parseFloat(i.stock)||0)<=(parseFloat(i.minimo)||0));
+  document.getElementById('alerta-s').innerHTML=bajo.map(a=>'<div class="alerta-box">⚠️ Stock bajo: <b>'+a.nombre+'</b> ('+a.stock+' '+a.unidad+')</div>').join('');
+  if(!D.inventario.length){document.getElementById('lst-inv').innerHTML='<div class="vacio"><div class="vi">📦</div><div class="vt">Sin insumos</div></div>';return;}
+  const ic={Nutriente:'⚗️',Semilla:'🌰',Sustrato:'🪨',Herramienta:'🔧',Químico:'🧴',Otro:'📦'};
+  const cats=[...new Set(D.inventario.map(i=>i.categoria||'Otro'))];
+  document.getElementById('lst-inv').innerHTML=cats.map(cat=>'<div class="cat-lbl">'+cat+'</div>'+D.inventario.filter(i=>(i.categoria||'Otro')===cat).map(i=>{const b=(parseFloat(i.stock)||0)<=(parseFloat(i.minimo)||0);return'<div class="item"><div class="iico">'+(ic[i.categoria]||'📦')+'</div><div class="iinf"><div class="it">'+i.nombre+'</div><div class="is">'+(i.proveedor||'—')+' · $'+(i.costo||0)+'/'+i.unidad+'</div></div><div style="text-align:right;margin-right:5px"><div style="font-size:15px;font-weight:700;color:'+(b?'var(--danger)':'var(--acc)')+'">'+i.stock+'</div><div style="font-size:11px;color:var(--text3)">'+i.unidad+'</div></div><button class="hbtn" onclick="abrirIns('+i.id+')">✏️</button><button class="hbtn" onclick="elimIns('+i.id+')">🗑</button></div>';}).join('')).join('');
+}
+function abrirIns(id=null){
+  if(id){const i=D.inventario.find(x=>parseInt(x.id)===parseInt(id));if(!i)return;
+    document.getElementById('i-n').value=i.nombre||'';document.getElementById('i-c').value=i.categoria||'Nutriente';document.getElementById('i-u').value=i.unidad||'kg';
+    document.getElementById('i-s').value=i.stock||'';document.getElementById('i-m').value=i.minimo||'';document.getElementById('i-co').value=i.costo||'';document.getElementById('i-pr').value=i.proveedor||'';document.getElementById('i-eid').value=id;
+  }else{['i-n','i-s','i-m','i-co','i-pr'].forEach(f=>document.getElementById(f).value='');document.getElementById('i-eid').value='';}
+  om('m-ins');
+}
+function guardarIns(){
+  const n=document.getElementById('i-n').value.trim();if(!n){toast('⚠️ Ingresa el nombre');return;}
+  const eid=document.getElementById('i-eid').value;
+  const obj={nombre:n,categoria:document.getElementById('i-c').value,unidad:document.getElementById('i-u').value,stock:parseFloat(document.getElementById('i-s').value)||0,minimo:parseFloat(document.getElementById('i-m').value)||0,costo:parseFloat(document.getElementById('i-co').value)||0,proveedor:document.getElementById('i-pr').value.trim()};
+  if(eid){const i=D.inventario.findIndex(x=>parseInt(x.id)===parseInt(eid));if(i>=0)D.inventario[i]={...D.inventario[i],...obj};}
+  else D.inventario.push({id:nid(D.inventario),...obj});
+  guardarL();cm('m-ins');toast('✅ Guardado');renderStock();
+}
+function elimIns(id){const i=D.inventario.find(x=>parseInt(x.id)===parseInt(id));confirmar('Eliminar insumo','¿Eliminar "'+i.nombre+'"?',function(){D.inventario=D.inventario.filter(x=>parseInt(x.id)!==parseInt(id));guardarL();toast('🗑 Eliminado');renderStock();});}
+
+// ═══ FINANZAS ═══
+function renderFin(){
+  const ahora=new Date();if(!finMes)finMes=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0');
+  const ms=[];for(let i=5;i>=0;i--){const d=new Date();d.setMonth(d.getMonth()-i);ms.push({k:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),l:d.toLocaleDateString('es-CL',{month:'short',year:'2-digit'})});}
+  document.getElementById('fin-meses').innerHTML=ms.map(m=>'<button class="fin-chip'+(finMes===m.k?' on':'')+'" onclick="finMes=\''+m.k+'\';renderFin()">'+m.l+'</button>').join('');
+  const vm=D.ventas.filter(v=>v.fecha&&String(v.fecha).startsWith(finMes)).reduce((s,v)=>s+(parseFloat(v.total)||0),0);
+  const cm2=D.compras.filter(c=>c.fecha&&String(c.fecha).startsWith(finMes)).reduce((s,c)=>s+(parseFloat(c.costo)||0),0);
+  const gm=vm-cm2;
+  const vT=D.ventas.reduce((s,v)=>s+(parseFloat(v.total)||0),0);
+  const cT=D.compras.reduce((s,c)=>s+(parseFloat(c.costo)||0),0);
+  const kgT=D.cosechas.reduce((s,c)=>s+(parseFloat(c.kg)||0),0);
+  document.getElementById('fin-stats').innerHTML=[
+    {n:'$'+Math.round(vT).toLocaleString('es-CL'),l:'Ventas totales',c:'var(--acc)'},
+    {n:'$'+Math.round(cT).toLocaleString('es-CL'),l:'Compras totales',c:'var(--danger)'},
+    {n:'$'+Math.round(vT-cT).toLocaleString('es-CL'),l:'Ganancia neta',c:(vT-cT)>=0?'var(--acc)':'var(--danger)'},
+    {n:kgT.toFixed(1)+' kg',l:'Producidos',c:'var(--acc)'},
+  ].map(s=>'<div class="mc"><div class="num" style="font-size:14px;color:'+s.c+'">'+s.n+'</div><div class="lbl">'+s.l+'</div></div>').join('');
+  document.getElementById('fin-vm').textContent='$'+Math.round(vm).toLocaleString('es-CL');
+  document.getElementById('fin-cm').textContent='$'+Math.round(cm2).toLocaleString('es-CL');
+  const eg=document.getElementById('fin-gm');eg.textContent='$'+Math.round(gm).toLocaleString('es-CL');eg.style.color=gm>=0?'var(--acc)':'var(--danger)';
+  document.getElementById('sub-fin').textContent=D.ventas.length+' ventas · '+D.compras.length+' compras';
+  renderFinTab();
+}
+function finTab(t){finTabAct=t;['v','c','b'].forEach(x=>{document.getElementById('fin-'+x).style.display=x===t?'block':'none';document.getElementById('tab-'+x+'-btn').classList.toggle('on',x===t);});renderFinTab();}
+function renderFinTab(){if(finTabAct==='v')renderFV();else if(finTabAct==='c')renderFC();else renderFB();}
+function renderFV(){
+  const lst=[...D.ventas].filter(v=>!finMes||(v.fecha&&String(v.fecha).startsWith(finMes))).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+  document.getElementById('lst-fv').innerHTML=lst.length?lst.map(v=>{const u=D.usuarios.find(x=>x.nombre===v.usuario);const uc=u?u.color:'#4ade80';return'<div class="item"><div class="iico">💰</div><div class="iinf"><div class="it">'+(v.producto||'—')+'</div><div class="is">'+fmt(v.fecha)+(v.cliente?' · '+v.cliente:'')+(v.tipo?' · '+v.tipo:'')+'</div>'+(v.usuario?'<span class="usr-badge" style="background:'+uc+'22;color:'+uc+'">'+v.usuario+'</span>':'')+' </div><div style="text-align:right;margin-right:5px"><div style="font-size:14px;font-weight:600;color:var(--acc)">$'+Math.round(v.total||0).toLocaleString('es-CL')+'</div><div style="font-size:11px;color:var(--text3)">'+(v.kg||0)+' kg</div></div><button class="hbtn" onclick="elimV('+v.id+')">🗑</button></div>';}).join(''):'<div class="vacio"><div class="vi">💰</div><div class="vt">Sin ventas este mes</div></div>';}
+function renderFC(){
+  const lst=[...D.compras].filter(c=>!finMes||(c.fecha&&String(c.fecha).startsWith(finMes))).sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+  document.getElementById('lst-fc').innerHTML=lst.length?lst.map(c=>{const u=D.usuarios.find(x=>x.nombre===c.usuario);const uc=u?u.color:'#f87171';return'<div class="item"><div class="iico">🛒</div><div class="iinf"><div class="it">'+(c.producto||'—')+'</div><div class="is">'+fmt(c.fecha)+(c.proveedor?' · '+c.proveedor:'')+' · '+(c.categoria||'')+'</div>'+(c.usuario?'<span class="usr-badge" style="background:'+uc+'22;color:'+uc+'">'+c.usuario+'</span>':'')+' </div><div style="text-align:right;margin-right:5px"><div style="font-size:14px;font-weight:600;color:var(--danger)">$'+Math.round(c.costo||0).toLocaleString('es-CL')+'</div></div><button class="hbtn" onclick="elimC('+c.id+')">🗑</button></div>';}).join(''):'<div class="vacio"><div class="vi">🛒</div><div class="vt">Sin compras este mes</div></div>';}
+function renderFB(){
+  const vT=D.ventas.reduce((s,v)=>s+(parseFloat(v.total)||0),0),cT=D.compras.reduce((s,c)=>s+(parseFloat(c.costo)||0),0),g=vT-cT;
+  const kgT=D.cosechas.reduce((s,c)=>s+(parseFloat(c.kg)||0),0);
+  const ckg=kgT>0?(cT/kgT).toFixed(0):0,pkg=kgT>0?(vT/kgT).toFixed(0):0;
+  const cats=[...new Set(D.compras.map(c=>c.categoria||'Otro'))];
+  document.getElementById('lst-fb').innerHTML='<div class="card" style="margin-bottom:10px">'+['💰 Total ventas|$'+Math.round(vT).toLocaleString('es-CL')+'|var(--acc)','🛒 Total compras|$'+Math.round(cT).toLocaleString('es-CL')+'|var(--danger)','📦 Costo por kg|$'+ckg+'|var(--text)','💵 Precio venta/kg|$'+pkg+'|var(--text)'].map(r=>{const[l,v,c]=r.split('|');return'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--borde)"><span style="color:var(--text2);font-size:13px">'+l+'</span><span style="color:'+c+';font-weight:600">'+v+'</span></div>';}).join('')+'<div style="display:flex;justify-content:space-between;padding:10px 0"><span style="font-size:14px;font-weight:600">📊 Ganancia</span><span style="font-size:17px;font-weight:700;color:'+(g>=0?'var(--acc)':'var(--danger)')+'">$'+Math.round(g).toLocaleString('es-CL')+'</span></div></div>'+
+  (cats.length?'<div class="card" style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Compras por categoría</div>'+cats.map(cat=>{const t=D.compras.filter(c=>(c.categoria||'Otro')===cat).reduce((s,c)=>s+(parseFloat(c.costo)||0),0);const p=cT>0?Math.round((t/cT)*100):0;return'<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px"><span>'+cat+'</span><span style="color:var(--danger)">$'+Math.round(t).toLocaleString('es-CL')+' ('+p+'%)</span></div><div class="pb"><div class="pf" style="width:'+p+'%;background:var(--danger)"></div></div></div>';}).join('')+'</div>':'');
+}
+function abrirVentaFin(){selUsr('vf-u');document.getElementById('vf-f').value=hoy();['vf-p','vf-kg','vf-pr','vf-cl','vf-not'].forEach(f=>document.getElementById(f).value='');om('m-vf');}
+function guardarVF(){
+  const p=document.getElementById('vf-p').value.trim(),kg=parseFloat(document.getElementById('vf-kg').value)||0;
+  if(!p){toast('⚠️ Ingresa el producto');return;}if(!kg){toast('⚠️ Ingresa los kilos');return;}
+  const pr=parseFloat(document.getElementById('vf-pr').value)||0;
+  D.ventas.push({id:nid(D.ventas),producto:p,kg,precio:pr,cliente:document.getElementById('vf-cl').value.trim(),fecha:document.getElementById('vf-f').value,tipo:document.getElementById('vf-t').value,notas:document.getElementById('vf-not').value.trim(),usuario:document.getElementById('vf-u').value,total:kg*pr});
+  guardarL();cm('m-vf');toast('✅ Venta $'+Math.round(kg*pr).toLocaleString('es-CL'));renderFin();
+}
+function abrirCompra(){selUsr('cp-u');document.getElementById('cp-f').value=hoy();['cp-p','cp-q','cp-co','cp-pr','cp-not'].forEach(f=>document.getElementById(f).value='');om('m-cp');}
+function guardarCP(){
+  const p=document.getElementById('cp-p').value.trim(),co=parseFloat(document.getElementById('cp-co').value)||0;
+  if(!p){toast('⚠️ Ingresa el producto');return;}if(!co){toast('⚠️ Ingresa el costo');return;}
+  D.compras.push({id:nid(D.compras),producto:p,categoria:document.getElementById('cp-c').value,qty:parseFloat(document.getElementById('cp-q').value)||1,costo:co,fecha:document.getElementById('cp-f').value,proveedor:document.getElementById('cp-pr').value.trim(),notas:document.getElementById('cp-not').value.trim(),usuario:document.getElementById('cp-u').value});
+  guardarL();cm('m-cp');toast('✅ Compra registrada');renderFin();
+}
+function elimV(id){confirmar('Eliminar venta','¿Eliminar esta venta?',function(){D.ventas=D.ventas.filter(v=>parseInt(v.id)!==parseInt(id));guardarL();renderFin();});}
+function elimC(id){confirmar('Eliminar compra','¿Eliminar esta compra?',function(){D.compras=D.compras.filter(c=>parseInt(c.id)!==parseInt(id));guardarL();renderFin();});}
+
+// ═══ AMBIENTE ═══
+function ambTab(t){ambTabAct=t;['clima','riego','plagas'].forEach(x=>{document.getElementById('amb-'+x).style.display=x===t?'block':'none';document.getElementById('tab-'+x+(x==='clima'?'-amb':'')+'-btn').style.display='';});document.getElementById('tab-amb-btn').classList.toggle('on',t==='clima');document.getElementById('tab-riego-btn').classList.toggle('on',t==='riego');document.getElementById('tab-plaga-btn').classList.toggle('on',t==='plagas');renderAmbTab();}
+function renderAmb(){renderAmbTab();}
+function renderAmbTab(){if(ambTabAct==='clima')renderClima();else if(ambTabAct==='riego')renderRiego();else renderPlagas();}
+function renderClima(){
+  const ult=[...D.ambiente].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)))[0];
+  let alertas='';
+  if(ult){const t=parseFloat(ult.temp)||0,h=parseFloat(ult.hum)||0;
+    document.getElementById('va-tmp').textContent=t.toFixed(1)+'°';document.getElementById('va-hum').textContent=h.toFixed(0)+'%';
+    document.getElementById('ga-tmp').style.width=Math.min((t/45)*100,100)+'%';document.getElementById('ga-hum').style.width=h+'%';
+    if(t>30)alertas+='<div class="alerta-box">🌡️ Temperatura alta: '+t+'°C — ideal 18–28°C</div>';
+    if(t<10)alertas+='<div class="alerta-box">🥶 Temperatura baja: '+t+'°C</div>';
+    if(h<40)alertas+='<div class="alerta-box">💨 Humedad baja: '+h+'% — ideal 60–80%</div>';
+    if(h>90)alertas+='<div class="alerta-box">💧 Humedad muy alta: '+h+'% — riesgo de hongos</div>';
   }
-  abrirModal('m-ciclo');
+  document.getElementById('amb-alertas').innerHTML=alertas;
+  // Gráfico temperatura últimos 14 días
+  const dias=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);dias.push({k:d.toISOString().slice(0,10),l:d.getDate()+'/'+(d.getMonth()+1)});}
+  const temps=dias.map(d=>{const r=D.ambiente.filter(a=>String(a.fecha).startsWith(d.k));return r.length?r.reduce((s,a)=>s+(parseFloat(a.temp)||0),0)/r.length:null;});
+  const mx=Math.max(...temps.filter(t=>t!==null),30);
+  document.getElementById('chart-tmp').innerHTML=dias.map((d,i)=>'<div class="bcc"><div class="bcb" style="height:'+(temps[i]!==null?Math.max((temps[i]/mx)*68,3):3)+'px;background:'+(temps[i]!==null?(temps[i]>30?'var(--danger)':temps[i]<15?'var(--info)':'var(--acc)'):'var(--g4)')+'" title="'+(temps[i]!==null?temps[i].toFixed(1)+'°':'—')+'"></div><span class="bcl">'+d.l+'</span></div>').join('');
+  const hist=[...D.ambiente].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))).slice(0,20);
+  document.getElementById('lst-ambiente').innerHTML=hist.length?hist.map(a=>'<div class="item"><div class="iico">🌡️</div><div class="iinf"><div class="it">'+fmt(a.fecha)+(a.hora?' '+a.hora:'')+'</div><div class="is">'+(a.notas||'Sin notas')+'</div></div><div style="text-align:right;margin-right:5px"><div style="font-size:14px;font-weight:600;color:'+(parseFloat(a.temp)>30?'var(--danger)':parseFloat(a.temp)<15?'var(--info)':'var(--acc)')+'">'+a.temp+'°C</div><div style="font-size:11px;color:var(--text3)">'+a.hum+'% hum</div></div><button class="hbtn" onclick="elimAmb('+a.id+')">🗑</button></div>').join(''):'<div class="vacio"><div class="vi">🌡️</div><div class="vt">Sin registros</div></div>';
 }
-
-function editarCiclo(id) { abrirModalCiclo(id); }
-
-function guardarCiclo() {
-  const cultivo = document.getElementById('c-cultivo').value.trim();
-  const cama    = document.getElementById('c-cama').value;
-  const fecha   = document.getElementById('c-fecha').value;
-  if (!cultivo) { toast('⚠️ Escribe el nombre del cultivo'); return; }
-  if (!cama)    { toast('⚠️ Selecciona una cama'); return; }
-  if (!fecha)   { toast('⚠️ Elige la fecha de almácigo'); return; }
-
-  const plantas = parseInt(document.getElementById('c-plantas').value) || 0;
-  const dA      = parseInt(document.getElementById('c-da').value) || 25;
-  const dT      = parseInt(document.getElementById('c-dt').value) || 45;
-  const receta  = document.getElementById('c-receta').value;
-  const notas   = document.getElementById('c-notas').value.trim();
-  const editId  = document.getElementById('c-editid').value;
-
-  const fechaTrasplante = sumarDias(fecha, dA);
-  const fechaCosecha    = sumarDias(fechaTrasplante, dT);
-
-  if (editId) {
-    const idx = datos.ciclos.findIndex(x => parseInt(x.id) === parseInt(editId));
-    if (idx >= 0) {
-      datos.ciclos[idx] = { ...datos.ciclos[idx], cultivo, cama, fechaAlmacigo: fecha, fechaTrasplante, fechaCosecha, plantas, diasAlmacigo: dA, diasTrasplante: dT, receta, notas };
-    }
-  } else {
-    datos.ciclos.push({ id: nuevoId(datos.ciclos), cultivo, cama, fechaAlmacigo: fecha, fechaTrasplante, fechaCosecha, plantas, diasAlmacigo: dA, diasTrasplante: dT, receta, notas, estado: 'activo', creado: hoy() });
-  }
-
-  guardarLocal();
-  cerrarModal('m-ciclo');
-  toast('✅ Ciclo guardado');
-  renderCiclos();
-  if (paginaActual === 'inicio') renderInicio();
+function abrirAmbiente(){document.getElementById('a-f').value=hoy();document.getElementById('a-h').value=new Date().toTimeString().slice(0,5);['a-tmp','a-hum','a-not'].forEach(f=>document.getElementById(f).value='');om('m-amb');}
+function guardarAmb(){
+  const t=parseFloat(document.getElementById('a-tmp').value)||null,h=parseFloat(document.getElementById('a-hum').value)||null;
+  if(!t&&!h){toast('⚠️ Ingresa temperatura o humedad');return;}
+  D.ambiente.push({id:nid(D.ambiente),temp:t,hum:h,fecha:document.getElementById('a-f').value,hora:document.getElementById('a-h').value,notas:document.getElementById('a-not').value.trim()});
+  guardarL();cm('m-amb');toast('✅ Registro guardado');renderClima();if(pagActual==='inicio')renderInicio();
 }
+function elimAmb(id){confirmar('Eliminar registro','¿Eliminar este registro de clima?',function(){D.ambiente=D.ambiente.filter(a=>parseInt(a.id)!==parseInt(id));guardarL();renderClima();});}
 
-function prepararCosecha(id) {
-  const c = datos.ciclos.find(x => parseInt(x.id) === parseInt(id));
-  if (!c) return;
-  document.getElementById('cos-nombre').value = c.cultivo + ' · ' + c.cama;
-  document.getElementById('cos-ciclo-id').value = id;
-  document.getElementById('cos-fecha').value = hoy();
-  document.getElementById('cos-kg').value = '';
-  document.getElementById('cos-precio').value = '';
-  document.getElementById('cos-notas').value = '';
-  abrirModal('m-cosecha');
+function renderRiego(){
+  const lst=[...D.riego].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
+  const litrosT=lst.reduce((s,r)=>s+(parseFloat(r.litros)||0),0);
+  const costoT=lst.reduce((s,r)=>s+(parseFloat(r.costo)||0),0);
+  document.getElementById('lst-riego').innerHTML=
+    (lst.length?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><div class="mc"><div class="num" style="font-size:16px">'+litrosT.toFixed(0)+' L</div><div class="lbl">Total litros</div></div><div class="mc"><div class="num" style="font-size:16px">$'+Math.round(costoT).toLocaleString('es-CL')+'</div><div class="lbl">Costo total</div></div></div>':'')+
+    (lst.length?lst.map(r=>'<div class="item"><div class="iico">💧</div><div class="iinf"><div class="it">'+(r.cama||'General')+'</div><div class="is">'+fmt(r.fecha)+' · '+(r.tipo||'Manual')+' · '+(r.duracion||0)+' min</div></div><div style="text-align:right;margin-right:5px"><div style="font-size:14px;font-weight:600;color:var(--info)">'+(r.litros||0)+' L</div><div style="font-size:11px;color:var(--text3)">$'+(r.costo||0)+'</div></div><button class="hbtn" onclick="elimRiego('+r.id+')">🗑</button></div>').join(''):'<div class="vacio"><div class="vi">💧</div><div class="vt">Sin registros de riego</div></div>');
 }
-
-function guardarCosecha() {
-  const cicloId = document.getElementById('cos-ciclo-id').value;
-  const kg      = parseFloat(document.getElementById('cos-kg').value) || 0;
-  if (!kg) { toast('⚠️ Ingresa los kilos cosechados'); return; }
-  const fecha   = document.getElementById('cos-fecha').value;
-  const precio  = parseFloat(document.getElementById('cos-precio').value) || 0;
-  const calidad = document.getElementById('cos-calidad').value;
-  const notas   = document.getElementById('cos-notas').value.trim();
-
-  datos.cosechas.push({ id: nuevoId(datos.cosechas), cicloId, kg, fecha, precio, calidad, notas, total: kg * precio });
-
-  const idx = datos.ciclos.findIndex(x => parseInt(x.id) === parseInt(cicloId));
-  if (idx >= 0) datos.ciclos[idx].estado = 'cosechado';
-
-  guardarLocal();
-  cerrarModal('m-cosecha');
-  toast('✅ ' + kg + ' kg registrados');
-  renderCiclos();
-  if (paginaActual === 'inicio') renderInicio();
+function abrirRiego(){selCamas('r-cam',true);document.getElementById('r-f').value=hoy();['r-l','r-d','r-c','r-not'].forEach(f=>document.getElementById(f).value='');om('m-riego');}
+function guardarRiego(){
+  const l=parseFloat(document.getElementById('r-l').value)||0;if(!l){toast('⚠️ Ingresa los litros');return;}
+  D.riego.push({id:nid(D.riego),cama:document.getElementById('r-cam').value,litros:l,duracion:parseFloat(document.getElementById('r-d').value)||0,fecha:document.getElementById('r-f').value,costo:parseFloat(document.getElementById('r-c').value)||0,tipo:document.getElementById('r-t').value,notas:document.getElementById('r-not').value.trim()});
+  guardarL();cm('m-riego');toast('✅ Riego registrado');renderRiego();
 }
+function elimRiego(id){confirmar('Eliminar riego','¿Eliminar este registro?',function(){D.riego=D.riego.filter(r=>parseInt(r.id)!==parseInt(id));guardarL();renderRiego();});}
 
-
-// ═══════════════════════════════════
-// CONFIRMAR (reemplaza confirm() para iOS)
-// ═══════════════════════════════════
-function confirmar(titulo, mensaje, accion, textoBtn) {
-  document.getElementById('confirm-tit').textContent = titulo;
-  document.getElementById('confirm-msg').textContent = mensaje;
-  const btn = document.getElementById('confirm-ok');
-  btn.textContent = textoBtn || 'Eliminar';
-  btn.onclick = function() { cerrarModal('m-confirm'); accion(); };
-  abrirModal('m-confirm');
+function renderPlagas(){
+  const act=D.plagas.filter(p=>p.estado!=='Resuelto');
+  const res=D.plagas.filter(p=>p.estado==='Resuelto');
+  const ic={'Leve':'🟡','Moderada':'🟠','Grave':'🔴'};
+  const est={'Activo':'<span class="tag tr">🔴 Activo</span>','En tratamiento':'<span class="tag ta">🟡 En tratamiento</span>','Resuelto':'<span class="tag tv">🟢 Resuelto</span>'};
+  const render=lst=>lst.map(p=>'<div style="padding:12px 14px;border-bottom:1px solid var(--borde)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px"><div><div style="font-size:14px;font-weight:600">'+(ic[p.severidad]||'🟡')+' '+p.nombre+'</div><div style="font-size:12px;color:var(--text3)">'+p.cama+' · '+fmt(p.fecha)+'</div></div>'+(est[p.estado]||'')+'</div>'+(p.tratamiento?'<div style="font-size:12px;color:var(--text2);margin-bottom:5px">💊 '+p.tratamiento+(p.dosis?' — '+p.dosis:'')+'</div>':'')+'<div style="display:flex;gap:7px"><button class="btn bs bsm" onclick="editarPlaga('+p.id+')" style="flex:1">✏️ Actualizar</button><button class="btn br bsm" onclick="elimPlaga('+p.id+')">🗑</button></div></div>').join('');
+  document.getElementById('lst-plagas').innerHTML=
+    (act.length?'<div style="padding:8px 14px 4px;font-size:11px;font-weight:600;color:var(--danger);text-transform:uppercase;letter-spacing:.4px">Activos ('+act.length+')</div>'+render(act):'')+(res.length?'<div style="padding:8px 14px 4px;font-size:11px;font-weight:600;color:var(--acc);text-transform:uppercase;letter-spacing:.4px">Resueltos</div>'+render(res):'')+(D.plagas.length?'':'<div class="vacio"><div class="vi">🐛</div><div class="vt">Sin problemas registrados</div><p style="font-size:13px">¡Todo bien!</p></div>');
 }
+function abrirPlaga(id=null){
+  selCamas('pl-cam');
+  if(id){const p=D.plagas.find(x=>parseInt(x.id)===parseInt(id));if(!p)return;
+    document.getElementById('t-plaga').textContent='🐛 Actualizar problema';
+    document.getElementById('pl-n').value=p.nombre||'';document.getElementById('pl-cam').value=p.cama||'';document.getElementById('pl-f').value=p.fecha||hoy();
+    document.getElementById('pl-sev').value=p.severidad||'Leve';document.getElementById('pl-tr').value=p.tratamiento||'';document.getElementById('pl-dos').value=p.dosis||'';
+    document.getElementById('pl-est').value=p.estado||'Activo';document.getElementById('pl-not').value=p.notas||'';document.getElementById('pl-eid').value=id;
+  }else{document.getElementById('t-plaga').textContent='🐛 Registrar problema';['pl-n','pl-tr','pl-dos','pl-not'].forEach(f=>document.getElementById(f).value='');document.getElementById('pl-f').value=hoy();document.getElementById('pl-eid').value='';}
+  om('m-plaga');
+}
+function editarPlaga(id){abrirPlaga(id);}
+function guardarPlaga(){
+  const n=document.getElementById('pl-n').value.trim();if(!n){toast('⚠️ Ingresa el problema');return;}
+  const eid=document.getElementById('pl-eid').value;
+  const obj={nombre:n,cama:document.getElementById('pl-cam').value,fecha:document.getElementById('pl-f').value,severidad:document.getElementById('pl-sev').value,tratamiento:document.getElementById('pl-tr').value.trim(),dosis:document.getElementById('pl-dos').value.trim(),estado:document.getElementById('pl-est').value,notas:document.getElementById('pl-not').value.trim()};
+  if(eid){const i=D.plagas.findIndex(x=>parseInt(x.id)===parseInt(eid));if(i>=0)D.plagas[i]={...D.plagas[i],...obj};}
+  else D.plagas.push({id:nid(D.plagas),...obj});
+  guardarL();cm('m-plaga');toast('✅ Guardado');renderPlagas();if(pagActual==='inicio')renderInicio();
+}
+function elimPlaga(id){confirmar('Eliminar registro','¿Eliminar este problema?',function(){D.plagas=D.plagas.filter(p=>parseInt(p.id)!==parseInt(id));guardarL();renderPlagas();if(pagActual==='inicio')renderInicio();});}
 
-function eliminarCiclo(id) {
-  confirmar('Eliminar ciclo', '¿Seguro que quieres eliminar este ciclo? Se perderán los datos asociados.', function() {
-    datos.ciclos = datos.ciclos.filter(c => parseInt(c.id) !== parseInt(id));
-    datos.cosechas = datos.cosechas.filter(c => parseInt(c.cicloId) !== parseInt(id));
-    guardarLocal();
-    toast('🗑 Ciclo eliminado');
-    renderCiclos();
+// ═══ RECORDATORIOS ═══
+function renderRec(){
+  const hoyStr=hoy();const manana=addD(hoyStr,1);const enSemana=addD(hoyStr,7);
+  const tareas=[...D.tareas].sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  const filtros={hoy:t=>!t.hecho&&t.fecha<=hoyStr,semana:t=>!t.hecho&&t.fecha>hoyStr&&t.fecha<=enSemana,todas:t=>!t.hecho,hechas:t=>t.hecho};
+  const lst=tareas.filter(filtros[recTabAct]||filtros.todas);
+  const pend=tareas.filter(t=>!t.hecho).length;document.getElementById('sub-rec').textContent=pend+' pendiente'+(pend!==1?'s':'')+' · '+D.tareas.length+' total';
+  const prio={'Alta':'🔴','Normal':'🟡','Baja':'🟢'};
+  document.getElementById('lst-rec-main').innerHTML=lst.length?lst.map(t=>'<div class="tarea-item"><button class="tarea-check'+(t.hecho?' done':'')+'" onclick="toggleTarea('+t.id+')">'+(t.hecho?'✓':'')+'</button><div class="iinf"><div class="it" style="'+(t.hecho?'text-decoration:line-through;opacity:.5':'')+'">'+t.desc+'</div><div class="is">'+(prio[t.prioridad]||'🟡')+' '+(t.cama||'General')+' · '+fmt(t.fecha)+'</div></div><button class="hbtn" onclick="elimTarea('+t.id+')">🗑</button></div>').join(''):'<div class="vacio"><div class="vi">✅</div><div class="vt">'+(recTabAct==='hechas'?'Sin tareas completadas':'Sin tareas pendientes')+'</div></div>';
+  // Tareas automáticas de ciclos
+  const auto=[];
+  D.ciclos.filter(c=>c.estado!=='cosechado').forEach(c=>{
+    const dt=diasH(c.fechaTrasplante),dc=diasH(c.fechaCosecha);
+    if(dt!==null&&dt<=7)auto.push({ico:'🪴',t:'Trasplante · '+c.cultivo,cam:c.cama,f:c.fechaTrasplante,d:dt});
+    if(dc!==null&&dc<=7)auto.push({ico:'🌾',t:'Cosecha · '+c.cultivo,cam:c.cama,f:c.fechaCosecha,d:dc});
   });
+  document.getElementById('lst-rec-auto').innerHTML=auto.length?auto.map(a=>{const bx=a.d<0?'<span class="tag tr">Vencida</span>':a.d===0?'<span class="tag ta">Hoy</span>':a.d<=3?'<span class="tag ta">En '+a.d+'d</span>':'<span class="tag tb">En '+a.d+'d</span>';return'<div class="tarea-item"><div style="font-size:20px">'+a.ico+'</div><div class="iinf"><div class="it">'+a.t+'</div><div class="is">'+a.cam+' · '+fmt(a.f)+'</div></div>'+bx+'</div>';}).join(''):'<div style="padding:10px 14px;font-size:13px;color:var(--text3)">Sin tareas de ciclos esta semana</div>';
 }
-
-// ═══════════════════════════════════
-// NUTRICIÓN
-// ═══════════════════════════════════
-function renderNutricion() {
-  const ult = [...datos.nutricion].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)))[0];
-  if (ult) {
-    const ph = parseFloat(ult.ph) || 0;
-    const ec = parseFloat(ult.ec) || 0;
-    const t  = parseFloat(ult.temp) || 0;
-    document.getElementById('v-ph').textContent   = ph.toFixed(1);
-    document.getElementById('v-ec').textContent   = ec.toFixed(1);
-    document.getElementById('v-temp').textContent = t.toFixed(1) + '°';
-    document.getElementById('g-ph').style.width   = ((ph / 14) * 100) + '%';
-    document.getElementById('g-ec').style.width   = Math.min((ec / 4) * 100, 100) + '%';
-    document.getElementById('g-temp').style.width = Math.min((t / 40) * 100, 100) + '%';
-  }
-
-  document.getElementById('lista-recetas').innerHTML = RECETAS.map(r =>
-    '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="verReceta(' + r.id + ')">' +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
-        '<div><div style="font-size:14px;font-weight:600">' + r.nombre + '</div>' +
-        '<div style="font-size:12px;color:var(--texto3);margin-top:1px">' + r.desc + '</div></div>' +
-        '<div style="text-align:right;font-size:11px;color:var(--texto3)">' +
-          '<div>pH ' + r.ph[0] + '–' + r.ph[1] + '</div><div>EC ' + r.ec[0] + '–' + r.ec[1] + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">' +
-        r.cult.map(c => '<span class="tag tag-v">' + c + '</span>').join('') +
-        '<span style="font-size:11px;color:var(--texto3);align-self:center;margin-left:4px">→ toca para calcular</span>' +
-      '</div>' +
-    '</div>'
-  ).join('');
-
-  const hist = [...datos.nutricion].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha))).slice(0, 20);
-  document.getElementById('lista-nutricion-hist').innerHTML = hist.length
-    ? hist.map(n => {
-        const phOk = parseFloat(n.ph) >= 5.5 && parseFloat(n.ph) <= 6.5;
-        const ecOk = parseFloat(n.ec) >= 1.0 && parseFloat(n.ec) <= 3.5;
-        return '<div class="item">' +
-          '<div class="item-ico">🧪</div>' +
-          '<div class="item-info"><div class="item-t">' + (n.cama || 'Sin cama') + '</div>' +
-          '<div class="item-s">' + fmtFecha(n.fecha) + ' · ' + (n.acciones || 'sin acción') + '</div></div>' +
-          '<div style="text-align:right;font-size:12px;margin-right:6px">' +
-            '<div style="color:' + (phOk ? 'var(--verde)' : 'var(--warn)') + '">pH ' + (n.ph || '—') + '</div>' +
-            '<div style="color:' + (ecOk ? 'var(--verde)' : 'var(--warn)') + '">EC ' + (n.ec || '—') + '</div>' +
-          '</div>' +
-          '<button class="hbtn" onclick="eliminarNutricion(' + n.id + ')">🗑</button>' +
-        '</div>';
-      }).join('')
-    : '<div class="vacio"><div class="vacio-ico">🧪</div><div class="vacio-t">Sin registros aún</div></div>';
+function recTab(t){recTabAct=t;['hoy','semana','todas','hechas'].forEach(x=>{document.getElementById('tab-rec-'+x).classList.toggle('on',x===t);});renderRec();}
+function abrirTarea(){selCamas('t-cam',true);document.getElementById('t-f').value=hoy();['t-desc','t-not'].forEach(f=>document.getElementById(f).value='');om('m-tarea');}
+function guardarTarea(){
+  const d=document.getElementById('t-desc').value.trim();if(!d){toast('⚠️ Describe la tarea');return;}
+  D.tareas.push({id:nid(D.tareas),desc:d,fecha:document.getElementById('t-f').value,prioridad:document.getElementById('t-pri').value,cama:document.getElementById('t-cam').value,notas:document.getElementById('t-not').value.trim(),hecho:false,creado:hoy()});
+  guardarL();cm('m-tarea');toast('✅ Tarea agregada');renderRec();if(pagActual==='inicio')renderInicio();
 }
+function toggleTarea(id){const i=D.tareas.findIndex(t=>parseInt(t.id)===parseInt(id));if(i>=0){D.tareas[i].hecho=!D.tareas[i].hecho;guardarL();renderRec();if(pagActual==='inicio')renderInicio();}}
+function elimTarea(id){confirmar('Eliminar tarea','¿Eliminar esta tarea?',function(){D.tareas=D.tareas.filter(t=>parseInt(t.id)!==parseInt(id));guardarL();renderRec();if(pagActual==='inicio')renderInicio();});}
 
-function abrirModalNutricion() {
-  llenarSelectCamas('n-cama');
-  ['n-ph','n-ec','n-temp','n-vol','n-notas'].forEach(id => document.getElementById(id).value = '');
-  document.querySelectorAll('#chips-acc .chip').forEach(c => c.classList.remove('sel'));
-  abrirModal('m-nutricion');
+// ═══ MÁS ═══
+function renderMas(){
+  document.getElementById('mas-usuarios').innerHTML=D.usuarios.length?D.usuarios.map(u=>'<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--borde)"><div style="width:28px;height:28px;border-radius:50%;background:'+u.color+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0d2b1a">'+u.nombre[0].toUpperCase()+'</div><div style="flex:1"><div style="font-size:14px;font-weight:500">'+u.nombre+(u.nombre===usrAct?' <span style=\'font-size:10px;color:var(--acc)\'>● activo</span>':'')+'</div><div style="font-size:11px;color:var(--text3)">'+u.rol+'</div></div></div>').join(''):'<p style="font-size:13px;color:var(--text3)">Solo Admin</p>';
+  document.getElementById('mas-camas').innerHTML=D.camas.length?D.camas.map(c=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--borde)"><div><div style="font-size:14px;font-weight:500">'+c.nombre+'</div><div style="font-size:12px;color:var(--text3)">'+c.sistema+' · '+(c.largo||'?')+'×'+(c.ancho||'?')+'m · '+(c.capacidad||'?')+' plantas</div></div><button class="hbtn" onclick="elimCama('+c.id+')">🗑</button></div>').join(''):'<p style="font-size:13px;color:var(--text3)">Sin camas</p>';
+  document.getElementById('mas-cloud').innerHTML=SURL?'<span style="color:var(--acc)">✅ Conectado a Google Sheets</span>':'<span style="color:var(--text3)">💾 Solo local</span>';
 }
+function abrirCama(){['cam-n','cam-l','cam-a','cam-c'].forEach(f=>document.getElementById(f).value='');om('m-cam');}
+function guardarCama(){const n=document.getElementById('cam-n').value.trim();if(!n){toast('⚠️ Ingresa el nombre');return;}D.camas.push({id:nid(D.camas),nombre:n,sistema:document.getElementById('cam-s').value,largo:parseFloat(document.getElementById('cam-l').value)||0,ancho:parseFloat(document.getElementById('cam-a').value)||0,capacidad:parseInt(document.getElementById('cam-c').value)||0});guardarL();cm('m-cam');toast('✅ Cama guardada');renderMas();if(pagActual==='inicio')renderInicio();}
+function elimCama(id){confirmar('Eliminar cama','¿Eliminar esta cama?',function(){D.camas=D.camas.filter(c=>parseInt(c.id)!==parseInt(id));guardarL();toast('🗑 Eliminada');renderMas();});}
 
-function guardarNutricion() {
-  const cama    = document.getElementById('n-cama').value;
-  const ph      = parseFloat(document.getElementById('n-ph').value) || null;
-  const ec      = parseFloat(document.getElementById('n-ec').value) || null;
-  const temp    = parseFloat(document.getElementById('n-temp').value) || null;
-  const vol     = parseFloat(document.getElementById('n-vol').value) || null;
-  const notas   = document.getElementById('n-notas').value.trim();
-  const acc     = [...document.querySelectorAll('#chips-acc .chip.sel')].map(c => c.textContent).join(', ');
+// ═══ USUARIOS ═══
+function iniciarUsr(){const g=localStorage.getItem('ha3_usr');usrAct=g||(D.usuarios.length?D.usuarios[0].nombre:'Admin');updUsrBtn();}
+function updUsrBtn(){const u=D.usuarios.find(x=>x.nombre===usrAct);const c=u?u.color:'#4ade80';document.getElementById('usr-btn').innerHTML='<span style="width:24px;height:24px;border-radius:50%;background:'+c+';color:#0d2b1a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">'+(usrAct?usrAct[0].toUpperCase():'A')+'</span>';}
+function abrirUsuarios(){renderLstUsr();om('m-usr');}
+function renderLstUsr(){document.getElementById('lst-usr').innerHTML=D.usuarios.length?D.usuarios.map(u=>'<div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--borde)"><div style="width:30px;height:30px;border-radius:50%;background:'+u.color+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0d2b1a">'+u.nombre[0].toUpperCase()+'</div><div style="flex:1"><div style="font-size:14px;font-weight:500">'+u.nombre+(u.nombre===usrAct?' <span style=\'font-size:10px;color:var(--acc)\'>● activo</span>':'')+'</div><div style="font-size:11px;color:var(--text3)">'+u.rol+'</div></div><button class="btn bs bsm" onclick="cambiarUsr(\''+u.nombre+'\')">Usar</button><button class="hbtn" onclick="elimUsr(\''+u.nombre+'\')">🗑</button></div>').join(''):'<p style="font-size:13px;color:var(--text3);margin-bottom:8px">Sin usuarios — usando Admin</p>';}
+function cambiarUsr(n){usrAct=n;localStorage.setItem('ha3_usr',n);updUsrBtn();renderLstUsr();toast('👤 '+n);}
+function guardarUsr(){const n=document.getElementById('usr-n').value.trim();const r=document.getElementById('usr-r').value;if(!n){toast('⚠️ Ingresa un nombre');return;}if(D.usuarios.find(u=>u.nombre===n)){toast('⚠️ Ya existe');return;}D.usuarios.push({id:nid(D.usuarios),nombre:n,rol:r,color:colorSel});guardarL();document.getElementById('usr-n').value='';renderLstUsr();if(!usrAct||usrAct==='Admin')cambiarUsr(n);toast('✅ Usuario agregado');}
+function elimUsr(n){if(n===usrAct){toast('⚠️ No puedes eliminar el usuario activo');return;}confirmar('Eliminar usuario','¿Eliminar a "'+n+'"?',function(){D.usuarios=D.usuarios.filter(u=>u.nombre!==n);guardarL();renderLstUsr();});}
+document.addEventListener('click',function(e){if(e.target.classList.contains('color-opt')){document.querySelectorAll('.color-opt').forEach(c=>c.classList.remove('on'));e.target.classList.add('on');colorSel=e.target.dataset.c;}});
 
-  datos.nutricion.push({ id: nuevoId(datos.nutricion), cama, ph, ec, temp, volumen: vol, acciones: acc, notas, fecha: hoy() });
-  guardarLocal();
-  cerrarModal('m-nutricion');
-  toast('✅ Registro guardado');
-  renderNutricion();
+// ═══ EXPORTAR ═══
+function exportarCSV(){
+  let c='\uFEFF';c+='HIDROAPP v3 — REPORTE\n'+new Date().toLocaleDateString('es-CL')+'\n\n';
+  c+='CICLOS\nCultivo,Cama,Almácigo,Trasplante,Cosecha,Plantas,Estado\n';D.ciclos.forEach(x=>{c+='"'+(x.cultivo||'')+'","'+(x.cama||'')+'","'+fmt(x.fechaAlmacigo)+'","'+fmt(x.fechaTrasplante)+'","'+fmt(x.fechaCosecha)+'","'+(x.plantas||0)+'","'+(x.estado||'')+'"\n';});
+  c+='\nCOSECHAS\nFecha,Cultivo,Kg,Precio,Total,Calidad\n';D.cosechas.forEach(x=>{const ci=D.ciclos.find(y=>parseInt(y.id)===parseInt(x.cicloId));c+='"'+fmt(x.fecha)+'","'+(ci?ci.cultivo:'—')+'","'+(x.kg||0)+'","'+(x.precio||0)+'","'+(x.total||0)+'","'+(x.calidad||'')+'"\n';});
+  c+='\nVENTAS\nFecha,Producto,Kg,Precio,Total,Cliente,Tipo,Usuario\n';D.ventas.forEach(x=>{c+='"'+fmt(x.fecha)+'","'+(x.producto||'')+'","'+(x.kg||0)+'","'+(x.precio||0)+'","'+(x.total||0)+'","'+(x.cliente||'')+'","'+(x.tipo||'')+'","'+(x.usuario||'')+'"\n';});
+  c+='\nCOMPRAS\nFecha,Producto,Categoría,Costo,Proveedor,Usuario\n';D.compras.forEach(x=>{c+='"'+fmt(x.fecha)+'","'+(x.producto||'')+'","'+(x.categoria||'')+'","'+(x.costo||0)+'","'+(x.proveedor||'')+'","'+(x.usuario||'')+'"\n';});
+  c+='\nINVENTARIO\nNombre,Categoría,Stock,Unidad,Mínimo,Costo\n';D.inventario.forEach(x=>{c+='"'+(x.nombre||'')+'","'+(x.categoria||'')+'","'+(x.stock||0)+'","'+(x.unidad||'')+'","'+(x.minimo||0)+'","'+(x.costo||0)+'"\n';});
+  c+='\nAMBIENTE\nFecha,Hora,Temp°C,Humedad%,Notas\n';D.ambiente.forEach(x=>{c+='"'+fmt(x.fecha)+'","'+(x.hora||'')+'","'+(x.temp||'')+'","'+(x.hum||'')+'","'+(x.notas||'')+'"\n';});
+  c+='\nRIEGO\nFecha,Cama,Litros,Duración,Costo,Tipo\n';D.riego.forEach(x=>{c+='"'+fmt(x.fecha)+'","'+(x.cama||'')+'","'+(x.litros||0)+'","'+(x.duracion||0)+'","'+(x.costo||0)+'","'+(x.tipo||'')+'"\n';});
+  c+='\nPLAGAS\nFecha,Nombre,Cama,Severidad,Tratamiento,Estado\n';D.plagas.forEach(x=>{c+='"'+fmt(x.fecha)+'","'+(x.nombre||'')+'","'+(x.cama||'')+'","'+(x.severidad||'')+'","'+(x.tratamiento||'')+'","'+(x.estado||'')+'"\n';});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv;charset=utf-8'}));a.download='hidroapp_'+hoy()+'.csv';a.click();toast('📊 CSV exportado');
 }
+function borrarTodo(){confirmar('Borrar TODOS los datos','Se eliminarán todos los datos locales. Los datos en Google Sheets no se borran.',function(){D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[]};localStorage.removeItem(KEY);toast('🗑 Datos eliminados');irA('inicio');},'Borrar todo');}
 
-function verReceta(id) {
-  const r = RECETAS.find(x => x.id === id);
-  if (!r) return;
-  document.getElementById('tit-receta').textContent = r.nombre;
-  document.getElementById('body-receta').innerHTML =
-    '<p style="color:var(--texto3);font-size:13px;margin-bottom:14px">' + r.desc + '</p>' +
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
-      '<div class="mini-card"><div class="num" style="font-size:17px">' + r.ph[0] + '–' + r.ph[1] + '</div><div class="lbl">pH objetivo</div></div>' +
-      '<div class="mini-card"><div class="num" style="font-size:17px">' + r.ec[0] + '–' + r.ec[1] + '</div><div class="lbl">EC mS/cm</div></div>' +
-    '</div>' +
-    '<div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Componentes por litro</div>' +
-    r.comp.map(c =>
-      '<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--borde)">' +
-        '<span style="font-size:14px">' + c.n + '</span>' +
-        '<span style="font-size:13px;color:var(--verde)">' + c.g + ' g/L</span>' +
-      '</div>'
-    ).join('') +
-    '<div style="margin-top:16px">' +
-      '<div style="font-size:13px;font-weight:600;color:var(--texto2);margin-bottom:8px">Calculadora de volumen</div>' +
-      '<div style="display:flex;gap:10px;align-items:center">' +
-        '<input type="number" id="calc-vol" class="fi" placeholder="Litros de solución" style="flex:1" oninput="calcReceta(' + id + ')">' +
-        '<span style="color:var(--texto3);font-size:13px">litros</span>' +
-      '</div>' +
-      '<div id="calc-resultado" style="margin-top:10px"></div>' +
-    '</div>';
-  abrirModal('m-receta');
+// ═══ CERRAR MODALES ═══
+document.querySelectorAll('.mf').forEach(el=>el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('on');}));
+
+// ═══ INIT ═══
+leerL();
+if(!D.camas.length&&!D.ciclos.length){
+  D.camas=[{id:1,nombre:'Cama 1',sistema:'NFT',largo:3,ancho:1,capacidad:36},{id:2,nombre:'Cama 2',sistema:'NFT',largo:3,ancho:1,capacidad:36}];
+  D.ciclos=[{id:1,cultivo:'Lechuga Butter',cama:'Cama 1',fechaAlmacigo:'2025-05-01',fechaTrasplante:'2025-05-26',fechaCosecha:'2025-07-10',plantas:30,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:'2025-05-01'},{id:2,cultivo:'Albahaca',cama:'Cama 2',fechaAlmacigo:'2025-04-15',fechaTrasplante:'2025-05-10',fechaCosecha:'2025-06-24',plantas:20,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:'2025-04-15'}];
+  D.inventario=[{id:1,nombre:'Nitrato de Calcio',categoria:'Nutriente',unidad:'kg',stock:2.5,minimo:1,costo:3500,proveedor:'AgroStore'},{id:2,nombre:'Nitrato de Potasio',categoria:'Nutriente',unidad:'kg',stock:0.5,minimo:1,costo:4200,proveedor:'AgroStore'},{id:3,nombre:'Semillas Lechuga',categoria:'Semilla',unidad:'g',stock:15,minimo:5,costo:800,proveedor:'SemillasChile'}];
+  localStorage.setItem(KEY,JSON.stringify(D));
 }
-
-function calcReceta(id) {
-  const v = parseFloat(document.getElementById('calc-vol').value) || 0;
-  const r = RECETAS.find(x => x.id === id);
-  if (!r || !v) return;
-  document.getElementById('calc-resultado').innerHTML =
-    '<div style="font-size:12px;color:var(--texto3);margin-bottom:6px">Para ' + v + ' litros necesitas:</div>' +
-    r.comp.map(c =>
-      '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--borde)">' +
-        '<span style="font-size:13px">' + c.n + '</span>' +
-        '<span style="font-size:13px;color:var(--verde2)">' + (c.g * v).toFixed(2) + ' g</span>' +
-      '</div>'
-    ).join('');
-}
-
-// ═══════════════════════════════════
-// STOCK / INVENTARIO
-// ═══════════════════════════════════
-function renderStock() {
-  const bajos = datos.inventario.filter(i => (parseFloat(i.stock) || 0) <= (parseFloat(i.minimo) || 0));
-  document.getElementById('alertas-stock').innerHTML = bajos.map(a =>
-    '<div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:var(--rsm);padding:9px 13px;margin-bottom:7px;display:flex;gap:8px;align-items:center">' +
-      '<span>⚠️</span><span style="font-size:13px;color:var(--rojo)">Stock bajo: <b>' + a.nombre + '</b> (' + (a.stock || 0) + ' ' + a.unidad + ')</span>' +
-    '</div>'
-  ).join('');
-
-  if (!datos.inventario.length) {
-    document.getElementById('lista-inventario').innerHTML =
-      '<div class="vacio"><div class="vacio-ico">📦</div><div class="vacio-t">Sin insumos</div><p style="font-size:13px">Agrega nutrientes, semillas y más</p></div>';
-    return;
-  }
-
-  const cats = [...new Set(datos.inventario.map(i => i.categoria || 'Otro'))];
-  const iconos = { Nutriente: '⚗️', Semilla: '🌰', Sustrato: '🪨', Herramienta: '🔧', Químico: '🧴', Otro: '📦' };
-
-  document.getElementById('lista-inventario').innerHTML = cats.map(cat =>
-    '<div class="cat-lbl">' + cat + '</div>' +
-    datos.inventario.filter(i => (i.categoria || 'Otro') === cat).map(i => {
-      const bajo = (parseFloat(i.stock) || 0) <= (parseFloat(i.minimo) || 0);
-      return '<div class="item">' +
-        '<div class="item-ico">' + (iconos[i.categoria] || '📦') + '</div>' +
-        '<div class="item-info"><div class="item-t">' + i.nombre + '</div>' +
-        '<div class="item-s">' + (i.proveedor || 'Sin proveedor') + ' · $' + (i.costo || 0) + '/' + i.unidad + '</div></div>' +
-        '<div style="text-align:right">' +
-          '<div style="font-size:16px;font-weight:700;color:' + (bajo ? 'var(--rojo)' : 'var(--verde)') + '">' + (i.stock || 0) + '</div>' +
-          '<div style="font-size:11px;color:var(--texto3)">' + i.unidad + '</div>' +
-        '</div>' +
-        '<button class="hbtn" style="margin-left:4px" onclick="editarInsumo(' + i.id + ')">✏️</button>' +
-        '<button class="hbtn" style="margin-left:4px" onclick="eliminarInsumo(' + i.id + ')">🗑</button>' +
-      '</div>';
-    }).join('')
-  ).join('');
-}
-
-function abrirModalInsumo(id) {
-  if (id) {
-    const i = datos.inventario.find(x => parseInt(x.id) === parseInt(id));
-    if (!i) return;
-    document.getElementById('i-nombre').value = i.nombre || '';
-    document.getElementById('i-cat').value    = i.categoria || 'Nutriente';
-    document.getElementById('i-uni').value    = i.unidad || 'kg';
-    document.getElementById('i-stock').value  = i.stock || '';
-    document.getElementById('i-min').value    = i.minimo || '';
-    document.getElementById('i-costo').value  = i.costo || '';
-    document.getElementById('i-prov').value   = i.proveedor || '';
-    document.getElementById('i-editid').value = id;
-  } else {
-    ['i-nombre','i-stock','i-min','i-costo','i-prov'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('i-editid').value = '';
-  }
-  abrirModal('m-insumo');
-}
-
-function editarInsumo(id) { abrirModalInsumo(id); }
-
-function guardarInsumo() {
-  const nombre = document.getElementById('i-nombre').value.trim();
-  if (!nombre) { toast('⚠️ Ingresa el nombre'); return; }
-  const cat    = document.getElementById('i-cat').value;
-  const uni    = document.getElementById('i-uni').value;
-  const stock  = parseFloat(document.getElementById('i-stock').value) || 0;
-  const minimo = parseFloat(document.getElementById('i-min').value) || 0;
-  const costo  = parseFloat(document.getElementById('i-costo').value) || 0;
-  const prov   = document.getElementById('i-prov').value.trim();
-  const editId = document.getElementById('i-editid').value;
-
-  if (editId) {
-    const idx = datos.inventario.findIndex(x => parseInt(x.id) === parseInt(editId));
-    if (idx >= 0) datos.inventario[idx] = { ...datos.inventario[idx], nombre, categoria: cat, unidad: uni, stock, minimo, costo, proveedor: prov };
-  } else {
-    datos.inventario.push({ id: nuevoId(datos.inventario), nombre, categoria: cat, unidad: uni, stock, minimo, costo, proveedor: prov });
-  }
-  guardarLocal();
-  cerrarModal('m-insumo');
-  toast('✅ Guardado');
-  renderStock();
-}
-
-// ═══════════════════════════════════
-// MÁS
-// ═══════════════════════════════════
-function renderMas() {
-  const ingresos = datos.ventas.reduce((s, v) => s + (parseFloat(v.total) || 0), 0);
-  const kgTotal  = datos.cosechas.reduce((s, c) => s + (parseFloat(c.kg) || 0), 0);
-  document.getElementById('econ-stats').innerHTML = [
-    { n: '$' + Math.round(ingresos).toLocaleString('es-CL'), l: 'Ingresos' },
-    { n: kgTotal.toFixed(1) + ' kg', l: 'Producidos' },
-    { n: datos.ventas.length, l: 'Ventas' },
-    { n: datos.cosechas.length, l: 'Cosechas' },
-  ].map(s => '<div class="mini-card"><div class="num" style="font-size:16px">' + s.n + '</div><div class="lbl">' + s.l + '</div></div>').join('');
-
-  // Lista de cosechas recientes con botón eliminar
-  const cosOrdenadas = [...datos.cosechas].sort((a,b) => String(b.fecha).localeCompare(String(a.fecha)));
-  document.getElementById('lista-cosechas-mas').innerHTML = cosOrdenadas.length
-    ? '<div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Cosechas registradas</div>' +
-      cosOrdenadas.map(c => {
-        const ci = datos.ciclos.find(x => parseInt(x.id) === parseInt(c.cicloId));
-        return '<div class="item" style="padding:10px 0">' +
-          '<div class="item-ico">🌾</div>' +
-          '<div class="item-info">' +
-            '<div class="item-t">' + (ci ? ci.cultivo : 'Ciclo eliminado') + '</div>' +
-            '<div class="item-s">' + fmtFecha(c.fecha) + ' · ' + (c.kg||0) + ' kg · ' + (c.calidad||'') + '</div>' +
-          '</div>' +
-          '<div style="text-align:right;margin-right:6px">' +
-            '<div style="font-size:14px;font-weight:600;color:var(--verde)">' + (c.kg||0) + ' kg</div>' +
-            (c.total ? '<div style="font-size:11px;color:var(--texto3)">$' + Math.round(c.total).toLocaleString('es-CL') + '</div>' : '') +
-          '</div>' +
-          '<button class="hbtn" onclick="eliminarCosecha(' + c.id + ')">🗑</button>' +
-        '</div>';
-      }).join('')
-    : '';
-
-  // Lista de ventas con botón eliminar
-  const ventasOrdenadas = [...datos.ventas].sort((a,b) => String(b.fecha).localeCompare(String(a.fecha)));
-  document.getElementById('lista-ventas').innerHTML = ventasOrdenadas.length
-    ? '<div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin:10px 0 6px">Ventas registradas</div>' +
-      ventasOrdenadas.map(v =>
-        '<div class="item" style="padding:10px 0">' +
-          '<div class="item-ico">💰</div>' +
-          '<div class="item-info">' +
-            '<div class="item-t">' + (v.producto||'Sin nombre') + '</div>' +
-            '<div class="item-s">' + fmtFecha(v.fecha) + ' · ' + (v.kg||0) + ' kg' + (v.cliente ? ' · ' + v.cliente : '') + '</div>' +
-          '</div>' +
-          '<div style="text-align:right;margin-right:6px">' +
-            '<div style="font-size:14px;font-weight:600;color:var(--verde)">$' + Math.round(v.total||0).toLocaleString('es-CL') + '</div>' +
-            '<div style="font-size:11px;color:var(--texto3)">' + (v.kg||0) + ' kg</div>' +
-          '</div>' +
-          '<button class="hbtn" onclick="eliminarVenta(' + v.id + ')">🗑</button>' +
-        '</div>'
-      ).join('')
-    : '';
-
-  document.getElementById('lista-camas-mas').innerHTML = datos.camas.length
-    ? datos.camas.map(c =>
-        '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--borde)">' +
-          '<div><div style="font-size:14px;font-weight:500">' + c.nombre + '</div>' +
-          '<div style="font-size:12px;color:var(--texto3)">' + c.sistema + ' · ' + (c.largo || '?') + '×' + (c.ancho || '?') + 'm · ' + (c.capacidad || '?') + ' plantas</div></div>' +
-          '<button class="hbtn" onclick="eliminarCama(' + c.id + ')">🗑</button>' +
-        '</div>'
-      ).join('')
-    : '<p style="font-size:13px;color:var(--texto3);padding:6px 0">Sin camas configuradas</p>';
-
-  actualizarDrive();
-}
-
-function abrirModalCama() {
-  ['cam-nombre','cam-largo','cam-ancho','cam-cap'].forEach(id => document.getElementById(id).value = '');
-  abrirModal('m-cama');
-}
-
-function guardarCama() {
-  const nombre = document.getElementById('cam-nombre').value.trim();
-  if (!nombre) { toast('⚠️ Ingresa el nombre'); return; }
-  datos.camas.push({
-    id: nuevoId(datos.camas),
-    nombre,
-    sistema: document.getElementById('cam-sistema').value,
-    largo: parseFloat(document.getElementById('cam-largo').value) || 0,
-    ancho: parseFloat(document.getElementById('cam-ancho').value) || 0,
-    capacidad: parseInt(document.getElementById('cam-cap').value) || 0,
-  });
-  guardarLocal();
-  cerrarModal('m-cama');
-  toast('✅ Cama guardada');
-  renderMas();
-  if (paginaActual === 'inicio') renderInicio();
-}
-
-function eliminarCama(id) {
-  confirmar('Eliminar cama', '¿Seguro que quieres eliminar esta cama?', function() {
-    datos.camas = datos.camas.filter(c => parseInt(c.id) !== parseInt(id));
-    guardarLocal();
-    toast('🗑 Cama eliminada');
-    renderMas();
-  });
-}
-
-function eliminarNutricion(id) {
-  confirmar('Eliminar registro', '¿Eliminar este registro de nutrición?', function() {
-    datos.nutricion = datos.nutricion.filter(n => parseInt(n.id) !== parseInt(id));
-    guardarLocal();
-    toast('🗑 Registro eliminado');
-    renderNutricion();
-  });
-}
-
-function eliminarInsumo(id) {
-  const i = datos.inventario.find(x => parseInt(x.id) === parseInt(id));
-  confirmar('Eliminar insumo', '¿Eliminar "' + (i ? i.nombre : '') + '" del inventario?', function() {
-    datos.inventario = datos.inventario.filter(x => parseInt(x.id) !== parseInt(id));
-    guardarLocal();
-    toast('🗑 Insumo eliminado');
-    renderStock();
-  });
-}
-
-function eliminarVenta(id) {
-  confirmar('Eliminar venta', '¿Eliminar este registro de venta?', function() {
-    datos.ventas = datos.ventas.filter(v => parseInt(v.id) !== parseInt(id));
-    guardarLocal();
-    toast('🗑 Venta eliminada');
-    renderMas();
-  });
-}
-
-function eliminarCosecha(id) {
-  confirmar('Eliminar cosecha', '¿Eliminar este registro de cosecha? El ciclo volverá a estado activo.', function() {
-    const cos = datos.cosechas.find(c => parseInt(c.id) === parseInt(id));
-    datos.cosechas = datos.cosechas.filter(c => parseInt(c.id) !== parseInt(id));
-    // reactivar ciclo si no tiene más cosechas
-    if (cos) {
-      const quedanCosechas = datos.cosechas.filter(c => parseInt(c.cicloId) === parseInt(cos.cicloId));
-      if (!quedanCosechas.length) {
-        const idx = datos.ciclos.findIndex(c => parseInt(c.id) === parseInt(cos.cicloId));
-        if (idx >= 0) datos.ciclos[idx].estado = 'activo';
-      }
-    }
-    guardarLocal();
-    toast('🗑 Cosecha eliminada');
-    renderMas();
-    renderCiclos();
-  });
-}
-
-function abrirModalVenta() {
-  document.getElementById('v-fecha').value = hoy();
-  ['v-prod','v-kg','v-precio','v-cliente'].forEach(id => document.getElementById(id).value = '');
-  abrirModal('m-venta');
-}
-
-function guardarVenta() {
-  const prod = document.getElementById('v-prod').value.trim();
-  const kg   = parseFloat(document.getElementById('v-kg').value) || 0;
-  if (!prod || !kg) { toast('⚠️ Completa producto y kilos'); return; }
-  const precio  = parseFloat(document.getElementById('v-precio').value) || 0;
-  const cliente = document.getElementById('v-cliente').value.trim();
-  const fecha   = document.getElementById('v-fecha').value;
-  datos.ventas.push({ id: nuevoId(datos.ventas), producto: prod, kg, precio, cliente, fecha, total: kg * precio });
-  guardarLocal();
-  cerrarModal('m-venta');
-  toast('✅ Venta registrada');
-  renderMas();
-}
-
-// ═══════════════════════════════════
-// EXPORTAR CSV
-// ═══════════════════════════════════
-function exportarCSV() {
-  let csv = '\uFEFF';
-  csv += 'HIDROAPP — REPORTE\nGenerado: ' + new Date().toLocaleDateString('es-CL') + '\n\n';
-  csv += 'CICLOS\nCultivo,Cama,Almácigo,Trasplante,Cosecha,Plantas,Estado\n';
-  datos.ciclos.forEach(c => { csv += '"' + (c.cultivo||'') + '","' + (c.cama||'') + '","' + fmtFecha(c.fechaAlmacigo) + '","' + fmtFecha(c.fechaTrasplante) + '","' + fmtFecha(c.fechaCosecha) + '","' + (c.plantas||0) + '","' + (c.estado||'') + '"\n'; });
-  csv += '\nCOSECHAS\nFecha,Cultivo,Kg,Precio/kg,Total,Calidad\n';
-  datos.cosechas.forEach(c => { const ci = datos.ciclos.find(x => parseInt(x.id) === parseInt(c.cicloId)); csv += '"' + fmtFecha(c.fecha) + '","' + (ci ? ci.cultivo : '—') + '","' + (c.kg||0) + '","' + (c.precio||0) + '","' + (c.total||0) + '","' + (c.calidad||'') + '"\n'; });
-  csv += '\nVENTAS\nFecha,Producto,Kg,Precio/kg,Total,Cliente\n';
-  datos.ventas.forEach(v => { csv += '"' + fmtFecha(v.fecha) + '","' + (v.producto||'') + '","' + (v.kg||0) + '","' + (v.precio||0) + '","' + (v.total||0) + '","' + (v.cliente||'') + '"\n'; });
-  csv += '\nINVENTARIO\nNombre,Categoría,Stock,Unidad,Mínimo,Costo,Proveedor\n';
-  datos.inventario.forEach(i => { csv += '"' + (i.nombre||'') + '","' + (i.categoria||'') + '","' + (i.stock||0) + '","' + (i.unidad||'') + '","' + (i.minimo||0) + '","' + (i.costo||0) + '","' + (i.proveedor||'') + '"\n'; });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-  a.download = 'hidroapp_' + hoy() + '.csv';
-  a.click();
-  toast('📊 CSV exportado');
-}
-
-function borrarTodo() {
-  confirmar('Borrar todos los datos', 'Se eliminarán TODOS los datos locales. Los datos en Google Sheets no se borran.', function() {
-    datos = { camas: [], ciclos: [], cosechas: [], nutricion: [], inventario: [], ventas: [] };
-    localStorage.removeItem(KEY);
-    toast('🗑 Datos locales eliminados');
-    renderInicio();
-    irA('inicio');
-  }, 'Borrar todo');
-}
-
-// ═══════════════════════════════════
-// CERRAR MODALES AL TOCAR FONDO
-// ═══════════════════════════════════
-document.querySelectorAll('.modal-fondo').forEach(el => {
-  el.addEventListener('click', function(e) {
-    if (e.target === el) el.classList.remove('abierto');
-  });
-});
-
-// ═══════════════════════════════════
-// INICIO — carga inmediata
-// ═══════════════════════════════════
-cargarLocal();
-
-// Datos de ejemplo si es primera vez
-if (!datos.camas.length && !datos.ciclos.length) {
-  datos.camas = [
-    { id:1, nombre:'Cama 1', sistema:'NFT', largo:3, ancho:1, capacidad:36 },
-    { id:2, nombre:'Cama 2', sistema:'NFT', largo:3, ancho:1, capacidad:36 }
-  ];
-  datos.ciclos = [
-    { id:1, cultivo:'Lechuga Butter', cama:'Cama 1', fechaAlmacigo:'2025-05-01', fechaTrasplante:'2025-05-26', fechaCosecha:'2025-07-10', plantas:30, diasAlmacigo:25, diasTrasplante:45, estado:'activo', creado:'2025-05-01' },
-    { id:2, cultivo:'Albahaca', cama:'Cama 2', fechaAlmacigo:'2025-04-15', fechaTrasplante:'2025-05-10', fechaCosecha:'2025-06-24', plantas:20, diasAlmacigo:25, diasTrasplante:45, estado:'activo', creado:'2025-04-15' }
-  ];
-  datos.inventario = [
-    { id:1, nombre:'Nitrato de Calcio', categoria:'Nutriente', unidad:'kg', stock:2.5, minimo:1, costo:3500, proveedor:'AgroStore' },
-    { id:2, nombre:'Nitrato de Potasio', categoria:'Nutriente', unidad:'kg', stock:0.5, minimo:1, costo:4200, proveedor:'AgroStore' },
-    { id:3, nombre:'Semillas Lechuga', categoria:'Semilla', unidad:'g', stock:15, minimo:5, costo:800, proveedor:'SemillasChile' }
-  ];
-  localStorage.setItem(KEY, JSON.stringify(datos));
-}
-
-// Actualizar estado drive
-if (URL_SHEETS) {
-  setSyncEstado('ok', 'Sheets');
-  // Sync en background sin bloquear
-  setTimeout(() => cargarDesdeSheets(), 500);
-} else {
-  setSyncEstado('local', 'Local');
-}
-
-actualizarDrive();
-renderInicio();
+if(SURL){setSS('ok','Sheets');setTimeout(()=>cargarSheets(),500);}else{setSS('','Local');}
+iniciarUsr();updDrive();renderInicio();
 </script>
 </body>
 </html>
