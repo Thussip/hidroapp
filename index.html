@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HidroApp">
+<meta name="theme-color" content="#0d2b1a">
+<title>HidroApp</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --verde: #4ade80; --verde2: #86efac; --fondo: #0d2b1a; --fondo2: #0f3320;
+  --fondo3: #143d26; --fondo4: #1a4d30; --borde: rgba(74,222,128,0.2);
+  --texto: #f0fdf4; --texto2: #bbf7d0; --texto3: #6ee7b7;
+  --tarj: rgba(20,61,38,0.8); --warn: #fbbf24; --rojo: #f87171; --azul: #60a5fa;
+  --r: 14px; --rsm: 9px;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+html, body { height: 100%; background: var(--fondo); color: var(--texto); font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 15px; overflow: hidden; }
+body { display: flex; flex-direction: column; }
+
+/* HEADER */
+#cabecera {
+  background: var(--fondo2);
+  padding: calc(var(--safe-t) + 12px) 16px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--borde); flex-shrink: 0;
+}
+#cabecera h1 { font-size: 19px; font-weight: 700; color: var(--verde); letter-spacing: -0.5px; }
+#cabecera h1 span { color: var(--texto); font-weight: 300; }
+.hbtn { background: rgba(74,222,128,0.1); border: 1px solid var(--borde); color: var(--texto2); border-radius: 50%; width: 36px; height: 36px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.hbtn:active { opacity: 0.7; }
+
+/* CONTENIDO */
+#contenido { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-bottom: 72px; }
+
+/* NAV */
+#nav {
+  background: var(--fondo2); border-top: 1px solid var(--borde);
+  display: flex; justify-content: space-around;
+  padding: 6px 0 calc(var(--safe-b) + 6px); flex-shrink: 0;
+}
+.nbtn { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; color: var(--texto3); font-size: 10px; font-weight: 500; cursor: pointer; padding: 4px 10px; min-width: 52px; font-family: inherit; }
+.nbtn .ico { font-size: 22px; transition: transform 0.15s; }
+.nbtn.activo { color: var(--verde); }
+.nbtn.activo .ico { transform: translateY(-2px); }
+
+/* PAGINAS */
+.pag { display: none; }
+.pag.activa { display: block; animation: aparecer 0.2s ease; }
+@keyframes aparecer { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* CARDS */
+.card { background: var(--tarj); border: 1px solid var(--borde); border-radius: var(--r); padding: 14px; }
+.mini-card { background: rgba(26,77,48,0.6); border: 1px solid var(--borde); border-radius: var(--rsm); padding: 12px; text-align: center; }
+.num { font-size: 24px; font-weight: 700; color: var(--verde); font-variant-numeric: tabular-nums; }
+.lbl { font-size: 11px; color: var(--texto3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+/* BADGES */
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+.tag-v { background: rgba(74,222,128,0.15); color: var(--verde); }
+.tag-a { background: rgba(251,191,36,0.15); color: var(--warn); }
+.tag-r { background: rgba(248,113,113,0.15); color: var(--rojo); }
+.tag-b { background: rgba(96,165,250,0.15); color: var(--azul); }
+
+/* BOTONES */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 10px 16px; border-radius: var(--rsm); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.15s; }
+.btn:active { opacity: 0.75; }
+.btn-p { background: var(--verde); color: var(--fondo); }
+.btn-s { background: rgba(74,222,128,0.1); color: var(--texto2); border: 1px solid var(--borde); }
+.btn-r { background: rgba(248,113,113,0.1); color: var(--rojo); border: 1px solid rgba(248,113,113,0.25); }
+.btn-full { width: 100%; }
+.btn-sm { padding: 7px 12px; font-size: 13px; }
+
+/* FORMULARIOS */
+.fg { margin-bottom: 12px; }
+.fl { display: block; font-size: 11px; color: var(--texto3); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.fi { width: 100%; padding: 10px 12px; background: rgba(26,77,48,0.6); border: 1px solid var(--borde); border-radius: var(--rsm); color: var(--texto); font-family: inherit; font-size: 15px; outline: none; }
+.fi:focus { border-color: var(--verde); }
+select.fi option { background: var(--fondo3); }
+textarea.fi { resize: vertical; min-height: 70px; }
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ENCABEZADO DE SECCIÓN */
+.sec-h { padding: 16px 16px 10px; display: flex; align-items: center; justify-content: space-between; }
+.sec-t { font-size: 20px; font-weight: 700; }
+.sec-s { font-size: 12px; color: var(--texto3); margin-top: 2px; }
+
+/* ITEMS DE LISTA */
+.item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--borde); }
+.item:last-child { border-bottom: none; }
+.item:active { background: rgba(74,222,128,0.05); }
+.item-ico { width: 40px; height: 40px; border-radius: 10px; background: rgba(26,77,48,0.8); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.item-info { flex: 1; min-width: 0; }
+.item-t { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-s { font-size: 12px; color: var(--texto3); margin-top: 1px; }
+
+/* BARRA DE PROGRESO */
+.progbar { height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+.progfill { height: 100%; background: linear-gradient(90deg, var(--verde), var(--verde2)); border-radius: 3px; }
+
+/* MODAL */
+.modal-fondo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 99; align-items: flex-end; justify-content: center; }
+.modal-fondo.abierto { display: flex; }
+.modal { background: var(--fondo3); border: 1px solid var(--borde); border-radius: 20px 20px 0 0; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; padding-bottom: calc(var(--safe-b) + 12px); }
+.modal-asa { width: 36px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 10px auto 0; }
+.modal-cab { padding: 12px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--borde); }
+.modal-tit { font-size: 17px; font-weight: 700; }
+.modal-cuerpo { padding: 16px; }
+.modal-pie { padding: 0 16px; display: flex; gap: 8px; }
+
+/* CHIPS */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip { padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--borde); color: var(--texto3); background: none; font-family: inherit; }
+.chip.sel { background: var(--verde); color: var(--fondo); border-color: var(--verde); }
+
+/* GAUGE */
+.gauge-fila { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.gauge-lbl { font-size: 12px; color: var(--texto2); width: 26px; }
+.gauge-bar { flex: 1; height: 7px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+.gauge-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+.gauge-val { font-size: 12px; color: var(--verde); width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* GRAFICO BARRAS */
+.grafico { display: flex; align-items: flex-end; gap: 5px; height: 80px; }
+.g-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.g-barra { width: 100%; background: var(--verde); border-radius: 3px 3px 0 0; opacity: 0.8; min-height: 3px; }
+.g-lbl { font-size: 9px; color: var(--texto3); }
+
+/* TOAST */
+#toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%); background: var(--fondo4); border: 1px solid var(--borde); color: var(--texto); padding: 9px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 200; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; }
+#toast.visible { opacity: 1; }
+
+/* VACIO */
+.vacio { text-align: center; padding: 40px 20px; color: var(--texto3); }
+.vacio-ico { font-size: 42px; margin-bottom: 10px; opacity: 0.5; }
+.vacio-t { font-size: 15px; color: var(--texto2); margin-bottom: 4px; }
+
+/* SECCION CATEGORÍA */
+.cat-lbl { padding: 10px 16px 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--texto3); }
+</style>
+</head>
+<body>
+
+<div id="cabecera">
+  <h1>🌿 Hidro<span>App</span></h1>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span id="sync-estado" style="font-size:11px;color:var(--texto3);padding:4px 10px;border-radius:20px;background:rgba(74,222,128,0.08);border:1px solid var(--borde)">💾 Local</span>
+    <button class="hbtn" onclick="exportarCSV()" title="Exportar datos">📊</button>
+  </div>
+</div>
+
+<div id="contenido">
+
+  <!-- INICIO -->
+  <div class="pag activa" id="pag-inicio">
+    <div style="margin:12px;padding:18px;background:linear-gradient(135deg,var(--fondo4),var(--fondo3));border:1px solid var(--borde);border-radius:var(--r)">
+      <div style="font-size:11px;color:var(--texto3)" id="fecha-hoy"></div>
+      <div style="font-size:20px;font-weight:700;color:var(--verde);margin-top:3px" id="saludo"></div>
+      <div style="font-size:13px;color:var(--texto2);margin-top:4px" id="resumen-ciclos"></div>
+    </div>
+
+    <div style="padding:0 12px;margin-top:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="stats-inicio"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="sec-h" style="padding-bottom:6px">
+        <span style="font-size:15px;font-weight:600">Próximas tareas</span>
+        <button class="btn btn-sm btn-s" onclick="irA('ciclos')">Ver todo</button>
+      </div>
+      <div id="tareas-proximas"></div>
+    </div>
+
+    <div style="padding:12px">
+      <div style="font-size:13px;font-weight:600;color:var(--texto2);margin-bottom:8px">Producción últimos 6 meses (kg)</div>
+      <div class="card" style="padding:10px">
+        <div class="grafico" id="grafico-prod"></div>
+      </div>
+    </div>
+
+    <div style="margin:0 12px 12px;padding:12px 14px;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:var(--rsm);cursor:pointer" onclick="abrirDrive()">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px">☁️</span>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--azul)" id="drive-titulo">Conectar Google Sheets</div>
+          <div style="font-size:11px;color:var(--texto3)" id="drive-subtitulo">Sincroniza entre iOS, Android y PC</div>
+        </div>
+        <span style="color:var(--texto3);margin-left:auto">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CICLOS -->
+  <div class="pag" id="pag-ciclos">
+    <div class="sec-h">
+      <div><div class="sec-t">Ciclos</div><div class="sec-s" id="sub-ciclos">—</div></div>
+      <button class="btn btn-sm btn-p" onclick="abrirModalCiclo()">+ Nuevo</button>
+    </div>
+    <div style="padding:0 12px 10px"><div class="chips" id="chips-filtro"></div></div>
+    <div id="lista-ciclos"></div>
+  </div>
+
+  <!-- NUTRICIÓN -->
+  <div class="pag" id="pag-nutricion">
+    <div class="sec-h">
+      <div><div class="sec-t">Nutrición</div><div class="sec-s">pH · EC · Soluciones</div></div>
+      <button class="btn btn-sm btn-p" onclick="abrirModalNutricion()">+ Registro</button>
+    </div>
+    <div style="padding:0 12px">
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Último registro</div>
+        <div class="gauge-fila"><span class="gauge-lbl">pH</span><div class="gauge-bar"><div class="gauge-fill" id="g-ph" style="background:linear-gradient(90deg,#60a5fa,#34d399);width:0%"></div></div><span class="gauge-val" id="v-ph">—</span></div>
+        <div class="gauge-fila"><span class="gauge-lbl">EC</span><div class="gauge-bar"><div class="gauge-fill" id="g-ec" style="background:linear-gradient(90deg,#fbbf24,#4ade80);width:0%"></div></div><span class="gauge-val" id="v-ec">—</span></div>
+        <div class="gauge-fila"><span class="gauge-lbl">T°</span><div class="gauge-bar"><div class="gauge-fill" id="g-temp" style="background:linear-gradient(90deg,#f87171,#fbbf24);width:0%"></div></div><span class="gauge-val" id="v-temp">—</span></div>
+      </div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:10px">Recetas</div>
+      <div id="lista-recetas"></div>
+      <div style="font-size:14px;font-weight:600;margin:14px 0 8px">Historial</div>
+      <div id="lista-nutricion-hist"></div>
+    </div>
+  </div>
+
+  <!-- INVENTARIO -->
+  <div class="pag" id="pag-stock">
+    <div class="sec-h">
+      <div><div class="sec-t">Stock</div><div class="sec-s">Insumos y materiales</div></div>
+      <button class="btn btn-sm btn-p" onclick="abrirModalInsumo()">+ Agregar</button>
+    </div>
+    <div id="alertas-stock" style="padding:0 12px 6px"></div>
+    <div id="lista-inventario"></div>
+  </div>
+
+  <!-- MÁS -->
+  <div class="pag" id="pag-mas">
+    <div class="sec-h"><div class="sec-t">Más</div></div>
+    <div style="padding:0 12px">
+
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Economía</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px" id="econ-stats"></div>
+        <button class="btn btn-s btn-full btn-sm" onclick="abrirModalVenta()">💰 Registrar venta</button>
+      </div>
+
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Camas / Sistemas</div>
+        <div id="lista-camas-mas"></div>
+        <button class="btn btn-s btn-full btn-sm" style="margin-top:10px" onclick="abrirModalCama()">🛏 Nueva cama</button>
+      </div>
+
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Google Sheets</div>
+        <div style="font-size:13px;margin-bottom:10px" id="drive-estado-mas">—</div>
+        <button class="btn btn-s btn-full btn-sm" style="margin-bottom:8px" onclick="sincronizarAhora()">☁️ Sincronizar ahora</button>
+        <button class="btn btn-s btn-full btn-sm" onclick="abrirDrive()">🔗 Configurar conexión</button>
+      </div>
+
+      <div class="card" style="margin-bottom:12px">
+        <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Datos</div>
+        <button class="btn btn-s btn-full btn-sm" style="margin-bottom:8px" onclick="exportarCSV()">📊 Exportar a CSV/Excel</button>
+        <button class="btn btn-r btn-full btn-sm" onclick="borrarTodo()">🗑 Borrar todos los datos</button>
+      </div>
+
+      <div style="text-align:center;padding:10px;font-size:11px;color:var(--texto3)">HidroApp v2.0</div>
+    </div>
+  </div>
+
+</div>
+
+<nav id="nav">
+  <button class="nbtn activo" id="nb-inicio" onclick="irA('inicio')"><span class="ico">🏠</span><span>Inicio</span></button>
+  <button class="nbtn" id="nb-ciclos" onclick="irA('ciclos')"><span class="ico">📅</span><span>Ciclos</span></button>
+  <button class="nbtn" id="nb-nutricion" onclick="irA('nutricion')"><span class="ico">🧪</span><span>Nutrición</span></button>
+  <button class="nbtn" id="nb-stock" onclick="irA('stock')"><span class="ico">📦</span><span>Stock</span></button>
+  <button class="nbtn" id="nb-mas" onclick="irA('mas')"><span class="ico">⚙️</span><span>Más</span></button>
+</nav>
+
+<div id="toast"></div>
+
+<!-- MODAL: CICLO -->
+<div class="modal-fondo" id="m-ciclo">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit" id="tit-ciclo">Nuevo ciclo</span>
+      <button class="hbtn" onclick="cerrarModal('m-ciclo')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="fg"><label class="fl">Cultivo</label>
+        <input class="fi" id="c-cultivo" type="text" placeholder="Ej: Lechuga Butter" list="dl-cult" autocomplete="off">
+        <datalist id="dl-cult"><option value="Lechuga Butter"><option value="Lechuga Costina"><option value="Espinaca"><option value="Albahaca"><option value="Cilantro"><option value="Perejil"><option value="Tomate Cherry"><option value="Pimiento"><option value="Pepino"><option value="Frutilla"><option value="Rúcula"><option value="Menta"></datalist>
+      </div>
+      <div class="fg"><label class="fl">Cama</label><select class="fi" id="c-cama"></select></div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Fecha almácigo</label><input class="fi" id="c-fecha" type="date"></div>
+        <div class="fg"><label class="fl">N° plantas</label><input class="fi" id="c-plantas" type="number" placeholder="20" min="1"></div>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Días almácigo</label><input class="fi" id="c-da" type="number" value="25" min="1"></div>
+        <div class="fg"><label class="fl">Días trasplante</label><input class="fi" id="c-dt" type="number" value="45" min="1"></div>
+      </div>
+      <div class="fg"><label class="fl">Receta de solución</label>
+        <select class="fi" id="c-receta">
+          <option value="">Sin asignar</option>
+          <option value="1">Solución Universal</option>
+          <option value="2">Tomate / Pimiento</option>
+          <option value="3">Almácigo / Plantín</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="c-notas" placeholder="Observaciones opcionales..."></textarea></div>
+      <input type="hidden" id="c-editid">
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-ciclo')">Cancelar</button>
+      <button class="btn btn-p" style="flex:2" onclick="guardarCiclo()">Guardar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- MODAL: COSECHA -->
+<div class="modal-fondo" id="m-cosecha">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit">Registrar cosecha</span>
+      <button class="hbtn" onclick="cerrarModal('m-cosecha')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="fg"><label class="fl">Ciclo</label><input class="fi" id="cos-nombre" type="text" readonly style="opacity:.6"></div>
+      <input type="hidden" id="cos-ciclo-id">
+      <div class="fila">
+        <div class="fg"><label class="fl">Kilos cosechados</label><input class="fi" id="cos-kg" type="number" placeholder="0.0" step="0.1" min="0"></div>
+        <div class="fg"><label class="fl">Fecha</label><input class="fi" id="cos-fecha" type="date"></div>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Precio ($/kg)</label><input class="fi" id="cos-precio" type="number" placeholder="0" min="0"></div>
+        <div class="fg"><label class="fl">Calidad</label>
+          <select class="fi" id="cos-calidad">
+            <option value="Excelente">⭐ Excelente</option>
+            <option value="Buena" selected>👍 Buena</option>
+            <option value="Regular">👌 Regular</option>
+            <option value="Baja">⚠️ Baja</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="cos-notas" placeholder="Observaciones..."></textarea></div>
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-cosecha')">Cancelar</button>
+      <button class="btn btn-p" style="flex:2" onclick="guardarCosecha()">Registrar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- MODAL: NUTRICION -->
+<div class="modal-fondo" id="m-nutricion">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit">Registro de nutrición</span>
+      <button class="hbtn" onclick="cerrarModal('m-nutricion')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="fg"><label class="fl">Cama / Sistema</label><select class="fi" id="n-cama"></select></div>
+      <div class="fila">
+        <div class="fg"><label class="fl">pH</label><input class="fi" id="n-ph" type="number" placeholder="6.0" step="0.1" min="0" max="14"></div>
+        <div class="fg"><label class="fl">EC (mS/cm)</label><input class="fi" id="n-ec" type="number" placeholder="1.8" step="0.1" min="0"></div>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Temperatura °C</label><input class="fi" id="n-temp" type="number" placeholder="20" step="0.5"></div>
+        <div class="fg"><label class="fl">Volumen (L)</label><input class="fi" id="n-vol" type="number" placeholder="50" min="0"></div>
+      </div>
+      <div class="fg"><label class="fl">Acciones</label>
+        <div class="chips" id="chips-acc">
+          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Cambio solución</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Ajuste pH</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Ajuste EC</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Limpieza tanque</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Aireación</button>
+          <button type="button" class="chip" onclick="this.classList.toggle('sel')">Poda</button>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Notas</label><textarea class="fi" id="n-notas" placeholder="Observaciones..."></textarea></div>
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-nutricion')">Cancelar</button>
+      <button class="btn btn-p" style="flex:2" onclick="guardarNutricion()">Guardar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- MODAL: INSUMO -->
+<div class="modal-fondo" id="m-insumo">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit">Insumo</span>
+      <button class="hbtn" onclick="cerrarModal('m-insumo')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="i-nombre" type="text" placeholder="Ej: Nitrato de Calcio"></div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Categoría</label>
+          <select class="fi" id="i-cat">
+            <option>Nutriente</option><option>Semilla</option><option>Sustrato</option>
+            <option>Herramienta</option><option>Químico</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Unidad</label>
+          <select class="fi" id="i-uni">
+            <option>kg</option><option>g</option><option>L</option><option>mL</option><option>unidad</option><option>paquete</option>
+          </select>
+        </div>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Stock actual</label><input class="fi" id="i-stock" type="number" placeholder="0" step="0.1" min="0"></div>
+        <div class="fg"><label class="fl">Stock mínimo</label><input class="fi" id="i-min" type="number" placeholder="0" step="0.1" min="0"></div>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Costo ($)</label><input class="fi" id="i-costo" type="number" placeholder="0" min="0"></div>
+        <div class="fg"><label class="fl">Proveedor</label><input class="fi" id="i-prov" type="text" placeholder="Opcional"></div>
+      </div>
+      <input type="hidden" id="i-editid">
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-insumo')">Cancelar</button>
+      <button class="btn btn-p" style="flex:2" onclick="guardarInsumo()">Guardar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- MODAL: CAMA -->
+<div class="modal-fondo" id="m-cama">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit">Nueva cama</span>
+      <button class="hbtn" onclick="cerrarModal('m-cama')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="fg"><label class="fl">Nombre</label><input class="fi" id="cam-nombre" type="text" placeholder="Ej: Cama 1"></div>
+      <div class="fg"><label class="fl">Sistema</label>
+        <select class="fi" id="cam-sistema">
+          <option>NFT</option><option>DWC</option><option>Kratky</option><option>Aeroponía</option><option>Sustrato</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Largo (m)</label><input class="fi" id="cam-largo" type="number" placeholder="2.0" step="0.1" min="0.1"></div>
+        <div class="fg"><label class="fl">Ancho (m)</label><input class="fi" id="cam-ancho" type="number" placeholder="1.0" step="0.1" min="0.1"></div>
+      </div>
+      <div class="fg"><label class="fl">Capacidad (plantas)</label><input class="fi" id="cam-cap" type="number" placeholder="20" min="1"></div>
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-cama')">Cancelar</button>
+      <button class="btn btn-p" style="flex:2" onclick="guardarCama()">Guardar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- MODAL: VENTA -->
+<div class="modal-fondo" id="m-venta">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit">Registrar venta</span>
+      <button class="hbtn" onclick="cerrarModal('m-venta')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="fg"><label class="fl">Producto</label><input class="fi" id="v-prod" type="text" placeholder="Ej: Lechuga Butter"></div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Kilos</label><input class="fi" id="v-kg" type="number" placeholder="0.0" step="0.1" min="0"></div>
+        <div class="fg"><label class="fl">Precio ($/kg)</label><input class="fi" id="v-precio" type="number" placeholder="0" min="0"></div>
+      </div>
+      <div class="fila">
+        <div class="fg"><label class="fl">Cliente</label><input class="fi" id="v-cliente" type="text" placeholder="Opcional"></div>
+        <div class="fg"><label class="fl">Fecha</label><input class="fi" id="v-fecha" type="date"></div>
+      </div>
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-venta')">Cancelar</button>
+      <button class="btn btn-p" style="flex:2" onclick="guardarVenta()">Registrar</button>
+    </div>
+    <div style="height:10px"></div>
+  </div>
+</div>
+
+<!-- MODAL: DRIVE -->
+<div class="modal-fondo" id="m-drive">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit">☁️ Google Sheets</span>
+      <button class="hbtn" onclick="cerrarModal('m-drive')">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div style="background:rgba(26,77,48,0.6);border:1px solid var(--borde);border-radius:var(--rsm);padding:14px;margin-bottom:14px;font-size:13px;color:var(--texto3);line-height:1.8">
+        <b style="color:var(--verde2)">Paso 1:</b> Crea una planilla en <b>sheets.google.com</b><br>
+        <b style="color:var(--verde2)">Paso 2:</b> Menú <b>Extensiones → Apps Script</b>, pega el archivo <b>apps_script_backend.js</b> y guarda<br>
+        <b style="color:var(--verde2)">Paso 3:</b> <b>Implementar → Nueva implementación</b>, tipo <b>Aplicación web</b>, acceso <b>Cualquier persona</b>, copia la URL<br>
+        <b style="color:var(--verde2)">Paso 4:</b> Pégala aquí abajo
+      </div>
+      <div class="fg">
+        <label class="fl">URL del Apps Script</label>
+        <input class="fi" id="drive-url" type="url" placeholder="https://script.google.com/macros/s/...">
+      </div>
+      <button class="btn btn-p btn-full" style="margin-bottom:8px" onclick="conectarSheets()">🔗 Conectar</button>
+      <button class="btn btn-s btn-full btn-sm" onclick="cerrarModal('m-drive')">Cancelar — usar solo local</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: RECETA -->
+<div class="modal-fondo" id="m-receta">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab">
+      <span class="modal-tit" id="tit-receta">Receta</span>
+      <button class="hbtn" onclick="cerrarModal('m-receta')">✕</button>
+    </div>
+    <div class="modal-cuerpo" id="body-receta"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// DATOS
+// ═══════════════════════════════════
+const KEY = 'ha2';
+const KEY_URL = 'ha2_url';
+
+let datos = {
+  camas: [], ciclos: [], cosechas: [],
+  nutricion: [], inventario: [], ventas: []
+};
+
+let URL_SHEETS = localStorage.getItem(KEY_URL) || '';
+let filtroCama = 'todas';
+let timerSync = null;
+
+const RECETAS = [
+  { id:1, nombre:'Solución Universal', desc:'Lechuga, albahaca, hojas', ph:[5.5,6.5], ec:[1.4,2.0],
+    cult:['Lechuga','Albahaca','Espinaca','Cilantro'],
+    comp:[{n:'Nitrato de Calcio',g:0.94},{n:'Nitrato de Potasio',g:0.60},{n:'Sulfato de Magnesio',g:0.49},{n:'MKP',g:0.27},{n:'Quelato Fe',g:0.03}] },
+  { id:2, nombre:'Tomate / Pimiento', desc:'Alta concentración para frutos', ph:[5.8,6.8], ec:[2.5,3.5],
+    cult:['Tomate','Pimiento','Pepino'],
+    comp:[{n:'Nitrato de Calcio',g:1.18},{n:'Nitrato de Potasio',g:0.80},{n:'Sulfato de Magnesio',g:0.65},{n:'MKP',g:0.35},{n:'Quelato Fe',g:0.04}] },
+  { id:3, nombre:'Almácigo / Plantín', desc:'Baja concentración, germinación', ph:[5.5,6.0], ec:[0.8,1.2],
+    cult:['Todas las especies'],
+    comp:[{n:'Nitrato de Calcio',g:0.47},{n:'Nitrato de Potasio',g:0.30},{n:'Sulfato de Magnesio',g:0.25},{n:'MKP',g:0.14}] },
+];
+
+// ═══════════════════════════════════
+// PERSISTENCIA LOCAL
+// ═══════════════════════════════════
+function cargarLocal() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      Object.keys(datos).forEach(k => { if (p[k]) datos[k] = p[k]; });
+    }
+  } catch(e) {}
+}
+
+function guardarLocal() {
+  localStorage.setItem(KEY, JSON.stringify(datos));
+  progSync();
+}
+
+function nuevoId(arr) {
+  if (!arr.length) return 1;
+  return Math.max(...arr.map(x => parseInt(x.id) || 0)) + 1;
+}
+
+// ═══════════════════════════════════
+// GOOGLE SHEETS SYNC
+// ═══════════════════════════════════
+function setSyncEstado(estado, texto) {
+  const el = document.getElementById('sync-estado');
+  const iconos = { ok: '✅', sync: '🔄', error: '⚠️', local: '💾' };
+  el.textContent = (iconos[estado] || '💾') + ' ' + texto;
+}
+
+async function llamarScript(accion, payload) {
+  if (!URL_SHEETS) return null;
+  const body = { action: accion };
+  if (payload) body.datos = JSON.stringify(payload);
+  const resp = await fetch(URL_SHEETS, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'text/plain' }
+  });
+  return resp.json();
+}
+
+async function cargarDesdeSheets() {
+  if (!URL_SHEETS) return;
+  setSyncEstado('sync', 'Sincronizando...');
+  try {
+    const res = await llamarScript('cargar');
+    if (res && res.ok && res.datos) {
+      Object.keys(datos).forEach(k => {
+        if (res.datos[k] && res.datos[k].length > 0) datos[k] = res.datos[k];
+      });
+      localStorage.setItem(KEY, JSON.stringify(datos));
+      setSyncEstado('ok', 'Sheets');
+      renderPaginaActual();
+    }
+  } catch(e) {
+    setSyncEstado('error', 'Sin conexión');
+  }
+}
+
+async function guardarEnSheets() {
+  if (!URL_SHEETS) return;
+  setSyncEstado('sync', 'Guardando...');
+  try {
+    const res = await llamarScript('guardar', datos);
+    if (res && res.ok) { setSyncEstado('ok', 'Sheets'); return; }
+  } catch(e) {}
+  setSyncEstado('error', 'Error sync');
+}
+
+function progSync() {
+  clearTimeout(timerSync);
+  timerSync = setTimeout(() => guardarEnSheets(), 3000);
+}
+
+function sincronizarAhora() {
+  guardarEnSheets().then(() => toast('☁️ Datos sincronizados'));
+}
+
+// ═══════════════════════════════════
+// SETUP SHEETS
+// ═══════════════════════════════════
+function abrirDrive() {
+  document.getElementById('drive-url').value = URL_SHEETS;
+  abrirModal('m-drive');
+}
+
+async function conectarSheets() {
+  const url = document.getElementById('drive-url').value.trim();
+  if (!url || !url.startsWith('https://script.google.com')) {
+    toast('⚠️ URL inválida'); return;
+  }
+  setSyncEstado('sync', 'Probando...');
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'ping' }),
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    const d = await r.json();
+    if (d && d.ok) {
+      URL_SHEETS = url;
+      localStorage.setItem(KEY_URL, url);
+      await llamarScript('init');
+      cerrarModal('m-drive');
+      setSyncEstado('ok', 'Sheets');
+      actualizarDrive();
+      await guardarEnSheets();
+      toast('✅ Conectado a Google Sheets');
+    } else throw new Error();
+  } catch(e) {
+    setSyncEstado('error', 'No se pudo conectar');
+    toast('⚠️ No se pudo conectar. Verifica la URL y los permisos.');
+  }
+}
+
+function actualizarDrive() {
+  if (URL_SHEETS) {
+    document.getElementById('drive-titulo').textContent = '✅ Conectado a Google Sheets';
+    document.getElementById('drive-subtitulo').textContent = 'Tus datos se sincronizan automáticamente';
+    document.getElementById('drive-estado-mas').innerHTML = '<span style="color:var(--verde)">✅ Sincronizado con Google Sheets</span>';
+  } else {
+    document.getElementById('drive-titulo').textContent = 'Conectar Google Sheets';
+    document.getElementById('drive-subtitulo').textContent = 'Sincroniza entre iOS, Android y PC';
+    document.getElementById('drive-estado-mas').innerHTML = '<span style="color:var(--texto3)">💾 Solo local — datos en este dispositivo</span>';
+  }
+}
+
+// ═══════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════
+let paginaActual = 'inicio';
+
+function irA(pag) {
+  document.querySelectorAll('.pag').forEach(p => p.classList.remove('activa'));
+  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('activo'));
+  document.getElementById('pag-' + pag).classList.add('activa');
+  document.getElementById('nb-' + pag).classList.add('activo');
+  paginaActual = pag;
+  renderPaginaActual();
+}
+
+function renderPaginaActual() {
+  const renders = {
+    inicio: renderInicio, ciclos: renderCiclos,
+    nutricion: renderNutricion, stock: renderStock, mas: renderMas
+  };
+  if (renders[paginaActual]) renders[paginaActual]();
+}
+
+// ═══════════════════════════════════
+// UTILIDADES
+// ═══════════════════════════════════
+function toast(msg, dur) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), dur || 2200);
+}
+
+function hoy() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function fmtFecha(d) {
+  if (!d) return '—';
+  const s = String(d);
+  const dt = new Date(s.includes('T') ? s : s + 'T00:00:00');
+  return dt.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+}
+
+function sumarDias(fechaStr, dias) {
+  const d = new Date(fechaStr + 'T00:00:00');
+  d.setDate(d.getDate() + parseInt(dias));
+  return d.toISOString().slice(0, 10);
+}
+
+function diasHasta(fechaStr) {
+  if (!fechaStr) return null;
+  const diff = new Date(String(fechaStr) + 'T00:00:00') - new Date(hoy() + 'T00:00:00');
+  return Math.round(diff / 86400000);
+}
+
+function progresoCiclo(c) {
+  if (c.estado === 'cosechado') return 100;
+  if (!c.fechaAlmacigo || !c.fechaCosecha) return 0;
+  const ini = new Date(c.fechaAlmacigo + 'T00:00:00').getTime();
+  const fin = new Date(c.fechaCosecha + 'T00:00:00').getTime();
+  const ahora = Date.now();
+  if (ahora <= ini) return 0;
+  if (ahora >= fin) return 100;
+  return Math.round(((ahora - ini) / (fin - ini)) * 100);
+}
+
+function abrirModal(id) { document.getElementById(id).classList.add('abierto'); }
+function cerrarModal(id) { document.getElementById(id).classList.remove('abierto'); }
+
+function llenarSelectCamas(elId) {
+  const sel = document.getElementById(elId);
+  sel.innerHTML = datos.camas.length
+    ? datos.camas.map(c => '<option value="' + c.nombre + '">' + c.nombre + '</option>').join('')
+    : '<option value="">— Agrega una cama primero —</option>';
+}
+
+// ═══════════════════════════════════
+// PANTALLA INICIO
+// ═══════════════════════════════════
+function renderInicio() {
+  const h = new Date().getHours();
+  document.getElementById('fecha-hoy').textContent =
+    new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
+  document.getElementById('saludo').textContent =
+    h < 12 ? 'Buenos días 🌅' : h < 18 ? 'Buenas tardes ☀️' : 'Buenas noches 🌙';
+
+  const activos = datos.ciclos.filter(c => c.estado !== 'cosechado');
+  document.getElementById('resumen-ciclos').textContent = activos.length
+    ? activos.length + ' ciclo' + (activos.length > 1 ? 's' : '') + ' activo' + (activos.length > 1 ? 's' : '') + ' en curso'
+    : 'Sin ciclos activos — agrega uno';
+
+  const kgTotal = datos.cosechas.reduce((s, c) => s + (parseFloat(c.kg) || 0), 0);
+  const alertas = datos.inventario.filter(i => (parseFloat(i.stock) || 0) <= (parseFloat(i.minimo) || 0)).length;
+
+  document.getElementById('stats-inicio').innerHTML = [
+    { n: datos.camas.length, l: 'Camas', i: '🛏' },
+    { n: activos.length, l: 'Activos', i: '🌿' },
+    { n: kgTotal.toFixed(1), l: 'Kg cosechados', i: '⚖️' },
+    { n: alertas, l: 'Alertas stock', i: '⚠️' },
+  ].map(s =>
+    '<div class="mini-card"><div style="font-size:20px;margin-bottom:4px">' + s.i + '</div>' +
+    '<div class="num">' + s.n + '</div><div class="lbl">' + s.l + '</div></div>'
+  ).join('');
+
+  // Tareas próximas
+  const tareas = [];
+  datos.ciclos.filter(c => c.estado !== 'cosechado').forEach(c => {
+    if (c.fechaTrasplante) tareas.push({ f: c.fechaTrasplante, t: 'Trasplante · ' + c.cultivo, cam: c.cama, tp: 't' });
+    if (c.fechaCosecha)    tareas.push({ f: c.fechaCosecha,    t: 'Cosecha · '    + c.cultivo, cam: c.cama, tp: 'c' });
+  });
+  tareas.sort((a, b) => a.f.localeCompare(b.f));
+
+  const ct = document.getElementById('tareas-proximas');
+  if (!tareas.length) {
+    ct.innerHTML = '<div class="vacio"><div class="vacio-ico">📅</div><div class="vacio-t">Sin tareas próximas</div></div>';
+  } else {
+    ct.innerHTML = tareas.slice(0, 5).map(t => {
+      const d = diasHasta(t.f);
+      const tag = d < 0 ? '<span class="tag tag-r">Vencida</span>'
+        : d === 0 ? '<span class="tag tag-a">Hoy</span>'
+        : d <= 3  ? '<span class="tag tag-a">En ' + d + 'd</span>'
+        : '<span class="tag tag-v">En ' + d + 'd</span>';
+      return '<div class="item">' +
+        '<div class="item-ico">' + (t.tp === 'c' ? '🌾' : '🪴') + '</div>' +
+        '<div class="item-info"><div class="item-t">' + t.t + '</div><div class="item-s">' + t.cam + ' · ' + fmtFecha(t.f) + '</div></div>' +
+        tag + '</div>';
+    }).join('');
+  }
+
+  // Gráfico 6 meses
+  const meses = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(); d.setMonth(d.getMonth() - i);
+    const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    const l = d.toLocaleDateString('es-CL', { month: 'short' });
+    meses.push({ k, l });
+  }
+  const vals = meses.map(m =>
+    datos.cosechas.filter(c => c.fecha && String(c.fecha).startsWith(m.k))
+      .reduce((s, c) => s + (parseFloat(c.kg) || 0), 0)
+  );
+  const maxVal = Math.max(...vals, 0.1);
+  document.getElementById('grafico-prod').innerHTML = meses.map((m, i) => {
+    const h = Math.max((vals[i] / maxVal) * 68, 3);
+    return '<div class="g-col"><div class="g-barra" style="height:' + h + 'px" title="' + vals[i].toFixed(1) + ' kg"></div><span class="g-lbl">' + m.l + '</span></div>';
+  }).join('');
+
+  actualizarDrive();
+}
+
+// ═══════════════════════════════════
+// CICLOS
+// ═══════════════════════════════════
+function renderCiclos() {
+  const allCamas = ['todas', ...datos.camas.map(c => c.nombre)];
+  document.getElementById('chips-filtro').innerHTML = allCamas.map(c =>
+    '<button class="chip' + (filtroCama === c ? ' sel' : '') + '" onclick="filtroCama=\'' + c + '\';renderCiclos()">' +
+    (c === 'todas' ? 'Todas' : c) + '</button>'
+  ).join('');
+
+  const lista = filtroCama === 'todas' ? datos.ciclos : datos.ciclos.filter(c => c.cama === filtroCama);
+  const act = lista.filter(c => c.estado !== 'cosechado').length;
+  document.getElementById('sub-ciclos').textContent = act + ' activo' + (act !== 1 ? 's' : '') + ' · ' + lista.length + ' total';
+
+  if (!lista.length) {
+    document.getElementById('lista-ciclos').innerHTML =
+      '<div class="vacio"><div class="vacio-ico">🌱</div><div class="vacio-t">Sin ciclos</div>' +
+      '<p style="font-size:13px">Toca "+ Nuevo" para planificar tu primer cultivo</p></div>';
+    return;
+  }
+
+  const sorted = [...lista].sort((a, b) => (b.fechaAlmacigo || '').localeCompare(a.fechaAlmacigo || ''));
+  document.getElementById('lista-ciclos').innerHTML = sorted.map(c => {
+    const d = diasHasta(c.fechaCosecha);
+    const estado = c.estado === 'cosechado'
+      ? '<span class="tag tag-v">✅ Cosechado</span>'
+      : d !== null && d < 0 ? '<span class="tag tag-r">Atrasado ' + Math.abs(d) + 'd</span>'
+      : d === 0 ? '<span class="tag tag-a">Cosechar hoy</span>'
+      : '<span class="tag tag-b">En ' + (d || '?') + 'd</span>';
+    const prog = progresoCiclo(c);
+    const kgCos = datos.cosechas.filter(x => parseInt(x.cicloId) === parseInt(c.id)).reduce((s, x) => s + (parseFloat(x.kg) || 0), 0);
+
+    return '<div style="padding:13px 16px;border-bottom:1px solid var(--borde)">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">' +
+        '<div><div style="font-size:15px;font-weight:600">' + (c.cultivo || 'Sin nombre') + '</div>' +
+        '<div style="font-size:12px;color:var(--texto3);margin-top:1px">' + (c.cama || '—') + ' · ' + (c.plantas || '?') + ' plantas</div></div>' +
+        estado +
+      '</div>' +
+      '<div style="display:flex;gap:14px;font-size:11px;color:var(--texto3);margin-bottom:8px">' +
+        '<span>🌱 ' + fmtFecha(c.fechaAlmacigo) + '</span>' +
+        '<span>🪴 ' + fmtFecha(c.fechaTrasplante) + '</span>' +
+        '<span>🌾 ' + fmtFecha(c.fechaCosecha) + '</span>' +
+      '</div>' +
+      '<div style="margin-bottom:10px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--texto3);margin-bottom:3px"><span>Progreso</span><span>' + prog + '%</span></div>' +
+        '<div class="progbar"><div class="progfill" style="width:' + prog + '%"></div></div>' +
+      '</div>' +
+      (c.estado !== 'cosechado'
+        ? '<div style="display:flex;gap:8px"><button class="btn btn-s btn-sm" onclick="editarCiclo(' + c.id + ')" style="flex:1">✏️ Editar</button>' +
+          '<button class="btn btn-p btn-sm" onclick="prepararCosecha(' + c.id + ')" style="flex:1">🌾 Cosechar</button></div>'
+        : '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<span style="font-size:13px;color:var(--verde)">⚖️ ' + kgCos.toFixed(1) + ' kg cosechados</span>' +
+          '<button class="btn btn-r btn-sm" onclick="eliminarCiclo(' + c.id + ')">🗑 Eliminar</button></div>'
+      ) +
+    '</div>';
+  }).join('');
+}
+
+function abrirModalCiclo(id) {
+  llenarSelectCamas('c-cama');
+  if (id) {
+    const c = datos.ciclos.find(x => parseInt(x.id) === parseInt(id));
+    if (!c) return;
+    document.getElementById('tit-ciclo').textContent = 'Editar ciclo';
+    document.getElementById('c-cultivo').value = c.cultivo || '';
+    document.getElementById('c-cama').value = c.cama || '';
+    document.getElementById('c-fecha').value = c.fechaAlmacigo || hoy();
+    document.getElementById('c-plantas').value = c.plantas || '';
+    document.getElementById('c-da').value = c.diasAlmacigo || 25;
+    document.getElementById('c-dt').value = c.diasTrasplante || 45;
+    document.getElementById('c-receta').value = c.receta || '';
+    document.getElementById('c-notas').value = c.notas || '';
+    document.getElementById('c-editid').value = id;
+  } else {
+    document.getElementById('tit-ciclo').textContent = 'Nuevo ciclo';
+    document.getElementById('c-cultivo').value = '';
+    document.getElementById('c-fecha').value = hoy();
+    document.getElementById('c-plantas').value = '';
+    document.getElementById('c-da').value = 25;
+    document.getElementById('c-dt').value = 45;
+    document.getElementById('c-receta').value = '';
+    document.getElementById('c-notas').value = '';
+    document.getElementById('c-editid').value = '';
+  }
+  abrirModal('m-ciclo');
+}
+
+function editarCiclo(id) { abrirModalCiclo(id); }
+
+function guardarCiclo() {
+  const cultivo = document.getElementById('c-cultivo').value.trim();
+  const cama    = document.getElementById('c-cama').value;
+  const fecha   = document.getElementById('c-fecha').value;
+  if (!cultivo) { toast('⚠️ Escribe el nombre del cultivo'); return; }
+  if (!cama)    { toast('⚠️ Selecciona una cama'); return; }
+  if (!fecha)   { toast('⚠️ Elige la fecha de almácigo'); return; }
+
+  const plantas = parseInt(document.getElementById('c-plantas').value) || 0;
+  const dA      = parseInt(document.getElementById('c-da').value) || 25;
+  const dT      = parseInt(document.getElementById('c-dt').value) || 45;
+  const receta  = document.getElementById('c-receta').value;
+  const notas   = document.getElementById('c-notas').value.trim();
+  const editId  = document.getElementById('c-editid').value;
+
+  const fechaTrasplante = sumarDias(fecha, dA);
+  const fechaCosecha    = sumarDias(fechaTrasplante, dT);
+
+  if (editId) {
+    const idx = datos.ciclos.findIndex(x => parseInt(x.id) === parseInt(editId));
+    if (idx >= 0) {
+      datos.ciclos[idx] = { ...datos.ciclos[idx], cultivo, cama, fechaAlmacigo: fecha, fechaTrasplante, fechaCosecha, plantas, diasAlmacigo: dA, diasTrasplante: dT, receta, notas };
+    }
+  } else {
+    datos.ciclos.push({ id: nuevoId(datos.ciclos), cultivo, cama, fechaAlmacigo: fecha, fechaTrasplante, fechaCosecha, plantas, diasAlmacigo: dA, diasTrasplante: dT, receta, notas, estado: 'activo', creado: hoy() });
+  }
+
+  guardarLocal();
+  cerrarModal('m-ciclo');
+  toast('✅ Ciclo guardado');
+  renderCiclos();
+  if (paginaActual === 'inicio') renderInicio();
+}
+
+function prepararCosecha(id) {
+  const c = datos.ciclos.find(x => parseInt(x.id) === parseInt(id));
+  if (!c) return;
+  document.getElementById('cos-nombre').value = c.cultivo + ' · ' + c.cama;
+  document.getElementById('cos-ciclo-id').value = id;
+  document.getElementById('cos-fecha').value = hoy();
+  document.getElementById('cos-kg').value = '';
+  document.getElementById('cos-precio').value = '';
+  document.getElementById('cos-notas').value = '';
+  abrirModal('m-cosecha');
+}
+
+function guardarCosecha() {
+  const cicloId = document.getElementById('cos-ciclo-id').value;
+  const kg      = parseFloat(document.getElementById('cos-kg').value) || 0;
+  if (!kg) { toast('⚠️ Ingresa los kilos cosechados'); return; }
+  const fecha   = document.getElementById('cos-fecha').value;
+  const precio  = parseFloat(document.getElementById('cos-precio').value) || 0;
+  const calidad = document.getElementById('cos-calidad').value;
+  const notas   = document.getElementById('cos-notas').value.trim();
+
+  datos.cosechas.push({ id: nuevoId(datos.cosechas), cicloId, kg, fecha, precio, calidad, notas, total: kg * precio });
+
+  const idx = datos.ciclos.findIndex(x => parseInt(x.id) === parseInt(cicloId));
+  if (idx >= 0) datos.ciclos[idx].estado = 'cosechado';
+
+  guardarLocal();
+  cerrarModal('m-cosecha');
+  toast('✅ ' + kg + ' kg registrados');
+  renderCiclos();
+  if (paginaActual === 'inicio') renderInicio();
+}
+
+function eliminarCiclo(id) {
+  if (!confirm('¿Eliminar este ciclo?')) return;
+  datos.ciclos = datos.ciclos.filter(c => parseInt(c.id) !== parseInt(id));
+  guardarLocal();
+  toast('🗑 Ciclo eliminado');
+  renderCiclos();
+}
+
+// ═══════════════════════════════════
+// NUTRICIÓN
+// ═══════════════════════════════════
+function renderNutricion() {
+  const ult = [...datos.nutricion].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)))[0];
+  if (ult) {
+    const ph = parseFloat(ult.ph) || 0;
+    const ec = parseFloat(ult.ec) || 0;
+    const t  = parseFloat(ult.temp) || 0;
+    document.getElementById('v-ph').textContent   = ph.toFixed(1);
+    document.getElementById('v-ec').textContent   = ec.toFixed(1);
+    document.getElementById('v-temp').textContent = t.toFixed(1) + '°';
+    document.getElementById('g-ph').style.width   = ((ph / 14) * 100) + '%';
+    document.getElementById('g-ec').style.width   = Math.min((ec / 4) * 100, 100) + '%';
+    document.getElementById('g-temp').style.width = Math.min((t / 40) * 100, 100) + '%';
+  }
+
+  document.getElementById('lista-recetas').innerHTML = RECETAS.map(r =>
+    '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="verReceta(' + r.id + ')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div><div style="font-size:14px;font-weight:600">' + r.nombre + '</div>' +
+        '<div style="font-size:12px;color:var(--texto3);margin-top:1px">' + r.desc + '</div></div>' +
+        '<div style="text-align:right;font-size:11px;color:var(--texto3)">' +
+          '<div>pH ' + r.ph[0] + '–' + r.ph[1] + '</div><div>EC ' + r.ec[0] + '–' + r.ec[1] + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">' +
+        r.cult.map(c => '<span class="tag tag-v">' + c + '</span>').join('') +
+        '<span style="font-size:11px;color:var(--texto3);align-self:center;margin-left:4px">→ toca para calcular</span>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+
+  const hist = [...datos.nutricion].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha))).slice(0, 20);
+  document.getElementById('lista-nutricion-hist').innerHTML = hist.length
+    ? hist.map(n => {
+        const phOk = parseFloat(n.ph) >= 5.5 && parseFloat(n.ph) <= 6.5;
+        const ecOk = parseFloat(n.ec) >= 1.0 && parseFloat(n.ec) <= 3.5;
+        return '<div class="item">' +
+          '<div class="item-ico">🧪</div>' +
+          '<div class="item-info"><div class="item-t">' + (n.cama || 'Sin cama') + '</div>' +
+          '<div class="item-s">' + fmtFecha(n.fecha) + ' · ' + (n.acciones || 'sin acción') + '</div></div>' +
+          '<div style="text-align:right;font-size:12px">' +
+            '<div style="color:' + (phOk ? 'var(--verde)' : 'var(--warn)') + '">pH ' + (n.ph || '—') + '</div>' +
+            '<div style="color:' + (ecOk ? 'var(--verde)' : 'var(--warn)') + '">EC ' + (n.ec || '—') + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('')
+    : '<div class="vacio"><div class="vacio-ico">🧪</div><div class="vacio-t">Sin registros aún</div></div>';
+}
+
+function abrirModalNutricion() {
+  llenarSelectCamas('n-cama');
+  ['n-ph','n-ec','n-temp','n-vol','n-notas'].forEach(id => document.getElementById(id).value = '');
+  document.querySelectorAll('#chips-acc .chip').forEach(c => c.classList.remove('sel'));
+  abrirModal('m-nutricion');
+}
+
+function guardarNutricion() {
+  const cama    = document.getElementById('n-cama').value;
+  const ph      = parseFloat(document.getElementById('n-ph').value) || null;
+  const ec      = parseFloat(document.getElementById('n-ec').value) || null;
+  const temp    = parseFloat(document.getElementById('n-temp').value) || null;
+  const vol     = parseFloat(document.getElementById('n-vol').value) || null;
+  const notas   = document.getElementById('n-notas').value.trim();
+  const acc     = [...document.querySelectorAll('#chips-acc .chip.sel')].map(c => c.textContent).join(', ');
+
+  datos.nutricion.push({ id: nuevoId(datos.nutricion), cama, ph, ec, temp, volumen: vol, acciones: acc, notas, fecha: hoy() });
+  guardarLocal();
+  cerrarModal('m-nutricion');
+  toast('✅ Registro guardado');
+  renderNutricion();
+}
+
+function verReceta(id) {
+  const r = RECETAS.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('tit-receta').textContent = r.nombre;
+  document.getElementById('body-receta').innerHTML =
+    '<p style="color:var(--texto3);font-size:13px;margin-bottom:14px">' + r.desc + '</p>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
+      '<div class="mini-card"><div class="num" style="font-size:17px">' + r.ph[0] + '–' + r.ph[1] + '</div><div class="lbl">pH objetivo</div></div>' +
+      '<div class="mini-card"><div class="num" style="font-size:17px">' + r.ec[0] + '–' + r.ec[1] + '</div><div class="lbl">EC mS/cm</div></div>' +
+    '</div>' +
+    '<div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Componentes por litro</div>' +
+    r.comp.map(c =>
+      '<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--borde)">' +
+        '<span style="font-size:14px">' + c.n + '</span>' +
+        '<span style="font-size:13px;color:var(--verde)">' + c.g + ' g/L</span>' +
+      '</div>'
+    ).join('') +
+    '<div style="margin-top:16px">' +
+      '<div style="font-size:13px;font-weight:600;color:var(--texto2);margin-bottom:8px">Calculadora de volumen</div>' +
+      '<div style="display:flex;gap:10px;align-items:center">' +
+        '<input type="number" id="calc-vol" class="fi" placeholder="Litros de solución" style="flex:1" oninput="calcReceta(' + id + ')">' +
+        '<span style="color:var(--texto3);font-size:13px">litros</span>' +
+      '</div>' +
+      '<div id="calc-resultado" style="margin-top:10px"></div>' +
+    '</div>';
+  abrirModal('m-receta');
+}
+
+function calcReceta(id) {
+  const v = parseFloat(document.getElementById('calc-vol').value) || 0;
+  const r = RECETAS.find(x => x.id === id);
+  if (!r || !v) return;
+  document.getElementById('calc-resultado').innerHTML =
+    '<div style="font-size:12px;color:var(--texto3);margin-bottom:6px">Para ' + v + ' litros necesitas:</div>' +
+    r.comp.map(c =>
+      '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--borde)">' +
+        '<span style="font-size:13px">' + c.n + '</span>' +
+        '<span style="font-size:13px;color:var(--verde2)">' + (c.g * v).toFixed(2) + ' g</span>' +
+      '</div>'
+    ).join('');
+}
+
+// ═══════════════════════════════════
+// STOCK / INVENTARIO
+// ═══════════════════════════════════
+function renderStock() {
+  const bajos = datos.inventario.filter(i => (parseFloat(i.stock) || 0) <= (parseFloat(i.minimo) || 0));
+  document.getElementById('alertas-stock').innerHTML = bajos.map(a =>
+    '<div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:var(--rsm);padding:9px 13px;margin-bottom:7px;display:flex;gap:8px;align-items:center">' +
+      '<span>⚠️</span><span style="font-size:13px;color:var(--rojo)">Stock bajo: <b>' + a.nombre + '</b> (' + (a.stock || 0) + ' ' + a.unidad + ')</span>' +
+    '</div>'
+  ).join('');
+
+  if (!datos.inventario.length) {
+    document.getElementById('lista-inventario').innerHTML =
+      '<div class="vacio"><div class="vacio-ico">📦</div><div class="vacio-t">Sin insumos</div><p style="font-size:13px">Agrega nutrientes, semillas y más</p></div>';
+    return;
+  }
+
+  const cats = [...new Set(datos.inventario.map(i => i.categoria || 'Otro'))];
+  const iconos = { Nutriente: '⚗️', Semilla: '🌰', Sustrato: '🪨', Herramienta: '🔧', Químico: '🧴', Otro: '📦' };
+
+  document.getElementById('lista-inventario').innerHTML = cats.map(cat =>
+    '<div class="cat-lbl">' + cat + '</div>' +
+    datos.inventario.filter(i => (i.categoria || 'Otro') === cat).map(i => {
+      const bajo = (parseFloat(i.stock) || 0) <= (parseFloat(i.minimo) || 0);
+      return '<div class="item">' +
+        '<div class="item-ico">' + (iconos[i.categoria] || '📦') + '</div>' +
+        '<div class="item-info"><div class="item-t">' + i.nombre + '</div>' +
+        '<div class="item-s">' + (i.proveedor || 'Sin proveedor') + ' · $' + (i.costo || 0) + '/' + i.unidad + '</div></div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:16px;font-weight:700;color:' + (bajo ? 'var(--rojo)' : 'var(--verde)') + '">' + (i.stock || 0) + '</div>' +
+          '<div style="font-size:11px;color:var(--texto3)">' + i.unidad + '</div>' +
+        '</div>' +
+        '<button class="hbtn" style="margin-left:6px" onclick="editarInsumo(' + i.id + ')">✏️</button>' +
+      '</div>';
+    }).join('')
+  ).join('');
+}
+
+function abrirModalInsumo(id) {
+  if (id) {
+    const i = datos.inventario.find(x => parseInt(x.id) === parseInt(id));
+    if (!i) return;
+    document.getElementById('i-nombre').value = i.nombre || '';
+    document.getElementById('i-cat').value    = i.categoria || 'Nutriente';
+    document.getElementById('i-uni').value    = i.unidad || 'kg';
+    document.getElementById('i-stock').value  = i.stock || '';
+    document.getElementById('i-min').value    = i.minimo || '';
+    document.getElementById('i-costo').value  = i.costo || '';
+    document.getElementById('i-prov').value   = i.proveedor || '';
+    document.getElementById('i-editid').value = id;
+  } else {
+    ['i-nombre','i-stock','i-min','i-costo','i-prov'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('i-editid').value = '';
+  }
+  abrirModal('m-insumo');
+}
+
+function editarInsumo(id) { abrirModalInsumo(id); }
+
+function guardarInsumo() {
+  const nombre = document.getElementById('i-nombre').value.trim();
+  if (!nombre) { toast('⚠️ Ingresa el nombre'); return; }
+  const cat    = document.getElementById('i-cat').value;
+  const uni    = document.getElementById('i-uni').value;
+  const stock  = parseFloat(document.getElementById('i-stock').value) || 0;
+  const minimo = parseFloat(document.getElementById('i-min').value) || 0;
+  const costo  = parseFloat(document.getElementById('i-costo').value) || 0;
+  const prov   = document.getElementById('i-prov').value.trim();
+  const editId = document.getElementById('i-editid').value;
+
+  if (editId) {
+    const idx = datos.inventario.findIndex(x => parseInt(x.id) === parseInt(editId));
+    if (idx >= 0) datos.inventario[idx] = { ...datos.inventario[idx], nombre, categoria: cat, unidad: uni, stock, minimo, costo, proveedor: prov };
+  } else {
+    datos.inventario.push({ id: nuevoId(datos.inventario), nombre, categoria: cat, unidad: uni, stock, minimo, costo, proveedor: prov });
+  }
+  guardarLocal();
+  cerrarModal('m-insumo');
+  toast('✅ Guardado');
+  renderStock();
+}
+
+// ═══════════════════════════════════
+// MÁS
+// ═══════════════════════════════════
+function renderMas() {
+  const ingresos = datos.ventas.reduce((s, v) => s + (parseFloat(v.total) || 0), 0);
+  const kgTotal  = datos.cosechas.reduce((s, c) => s + (parseFloat(c.kg) || 0), 0);
+  document.getElementById('econ-stats').innerHTML = [
+    { n: '$' + Math.round(ingresos).toLocaleString('es-CL'), l: 'Ingresos' },
+    { n: kgTotal.toFixed(1) + ' kg', l: 'Producidos' },
+    { n: datos.ventas.length, l: 'Ventas' },
+    { n: datos.cosechas.length, l: 'Cosechas' },
+  ].map(s => '<div class="mini-card"><div class="num" style="font-size:16px">' + s.n + '</div><div class="lbl">' + s.l + '</div></div>').join('');
+
+  document.getElementById('lista-camas-mas').innerHTML = datos.camas.length
+    ? datos.camas.map(c =>
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--borde)">' +
+          '<div><div style="font-size:14px;font-weight:500">' + c.nombre + '</div>' +
+          '<div style="font-size:12px;color:var(--texto3)">' + c.sistema + ' · ' + (c.largo || '?') + '×' + (c.ancho || '?') + 'm · ' + (c.capacidad || '?') + ' plantas</div></div>' +
+          '<button class="hbtn" onclick="eliminarCama(' + c.id + ')">🗑</button>' +
+        '</div>'
+      ).join('')
+    : '<p style="font-size:13px;color:var(--texto3);padding:6px 0">Sin camas configuradas</p>';
+
+  actualizarDrive();
+}
+
+function abrirModalCama() {
+  ['cam-nombre','cam-largo','cam-ancho','cam-cap'].forEach(id => document.getElementById(id).value = '');
+  abrirModal('m-cama');
+}
+
+function guardarCama() {
+  const nombre = document.getElementById('cam-nombre').value.trim();
+  if (!nombre) { toast('⚠️ Ingresa el nombre'); return; }
+  datos.camas.push({
+    id: nuevoId(datos.camas),
+    nombre,
+    sistema: document.getElementById('cam-sistema').value,
+    largo: parseFloat(document.getElementById('cam-largo').value) || 0,
+    ancho: parseFloat(document.getElementById('cam-ancho').value) || 0,
+    capacidad: parseInt(document.getElementById('cam-cap').value) || 0,
+  });
+  guardarLocal();
+  cerrarModal('m-cama');
+  toast('✅ Cama guardada');
+  renderMas();
+  if (paginaActual === 'inicio') renderInicio();
+}
+
+function eliminarCama(id) {
+  if (!confirm('¿Eliminar esta cama?')) return;
+  datos.camas = datos.camas.filter(c => parseInt(c.id) !== parseInt(id));
+  guardarLocal();
+  toast('🗑 Eliminada');
+  renderMas();
+}
+
+function abrirModalVenta() {
+  document.getElementById('v-fecha').value = hoy();
+  ['v-prod','v-kg','v-precio','v-cliente'].forEach(id => document.getElementById(id).value = '');
+  abrirModal('m-venta');
+}
+
+function guardarVenta() {
+  const prod = document.getElementById('v-prod').value.trim();
+  const kg   = parseFloat(document.getElementById('v-kg').value) || 0;
+  if (!prod || !kg) { toast('⚠️ Completa producto y kilos'); return; }
+  const precio  = parseFloat(document.getElementById('v-precio').value) || 0;
+  const cliente = document.getElementById('v-cliente').value.trim();
+  const fecha   = document.getElementById('v-fecha').value;
+  datos.ventas.push({ id: nuevoId(datos.ventas), producto: prod, kg, precio, cliente, fecha, total: kg * precio });
+  guardarLocal();
+  cerrarModal('m-venta');
+  toast('✅ Venta registrada');
+  renderMas();
+}
+
+// ═══════════════════════════════════
+// EXPORTAR CSV
+// ═══════════════════════════════════
+function exportarCSV() {
+  let csv = '\uFEFF';
+  csv += 'HIDROAPP — REPORTE\nGenerado: ' + new Date().toLocaleDateString('es-CL') + '\n\n';
+  csv += 'CICLOS\nCultivo,Cama,Almácigo,Trasplante,Cosecha,Plantas,Estado\n';
+  datos.ciclos.forEach(c => { csv += '"' + (c.cultivo||'') + '","' + (c.cama||'') + '","' + fmtFecha(c.fechaAlmacigo) + '","' + fmtFecha(c.fechaTrasplante) + '","' + fmtFecha(c.fechaCosecha) + '","' + (c.plantas||0) + '","' + (c.estado||'') + '"\n'; });
+  csv += '\nCOSECHAS\nFecha,Cultivo,Kg,Precio/kg,Total,Calidad\n';
+  datos.cosechas.forEach(c => { const ci = datos.ciclos.find(x => parseInt(x.id) === parseInt(c.cicloId)); csv += '"' + fmtFecha(c.fecha) + '","' + (ci ? ci.cultivo : '—') + '","' + (c.kg||0) + '","' + (c.precio||0) + '","' + (c.total||0) + '","' + (c.calidad||'') + '"\n'; });
+  csv += '\nVENTAS\nFecha,Producto,Kg,Precio/kg,Total,Cliente\n';
+  datos.ventas.forEach(v => { csv += '"' + fmtFecha(v.fecha) + '","' + (v.producto||'') + '","' + (v.kg||0) + '","' + (v.precio||0) + '","' + (v.total||0) + '","' + (v.cliente||'') + '"\n'; });
+  csv += '\nINVENTARIO\nNombre,Categoría,Stock,Unidad,Mínimo,Costo,Proveedor\n';
+  datos.inventario.forEach(i => { csv += '"' + (i.nombre||'') + '","' + (i.categoria||'') + '","' + (i.stock||0) + '","' + (i.unidad||'') + '","' + (i.minimo||0) + '","' + (i.costo||0) + '","' + (i.proveedor||'') + '"\n'; });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'hidroapp_' + hoy() + '.csv';
+  a.click();
+  toast('📊 CSV exportado');
+}
+
+function borrarTodo() {
+  if (confirm('¿Borrar TODOS los datos?') && confirm('¿Estás seguro? No hay deshacer.')) {
+    datos = { camas: [], ciclos: [], cosechas: [], nutricion: [], inventario: [], ventas: [] };
+    localStorage.removeItem(KEY);
+    toast('🗑 Datos eliminados');
+    renderInicio();
+    irA('inicio');
+  }
+}
+
+// ═══════════════════════════════════
+// CERRAR MODALES AL TOCAR FONDO
+// ═══════════════════════════════════
+document.querySelectorAll('.modal-fondo').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === el) el.classList.remove('abierto');
+  });
+});
+
+// ═══════════════════════════════════
+// INICIO — carga inmediata
+// ═══════════════════════════════════
+cargarLocal();
+
+// Datos de ejemplo si es primera vez
+if (!datos.camas.length && !datos.ciclos.length) {
+  datos.camas = [
+    { id:1, nombre:'Cama 1', sistema:'NFT', largo:3, ancho:1, capacidad:36 },
+    { id:2, nombre:'Cama 2', sistema:'NFT', largo:3, ancho:1, capacidad:36 }
+  ];
+  datos.ciclos = [
+    { id:1, cultivo:'Lechuga Butter', cama:'Cama 1', fechaAlmacigo:'2025-05-01', fechaTrasplante:'2025-05-26', fechaCosecha:'2025-07-10', plantas:30, diasAlmacigo:25, diasTrasplante:45, estado:'activo', creado:'2025-05-01' },
+    { id:2, cultivo:'Albahaca', cama:'Cama 2', fechaAlmacigo:'2025-04-15', fechaTrasplante:'2025-05-10', fechaCosecha:'2025-06-24', plantas:20, diasAlmacigo:25, diasTrasplante:45, estado:'activo', creado:'2025-04-15' }
+  ];
+  datos.inventario = [
+    { id:1, nombre:'Nitrato de Calcio', categoria:'Nutriente', unidad:'kg', stock:2.5, minimo:1, costo:3500, proveedor:'AgroStore' },
+    { id:2, nombre:'Nitrato de Potasio', categoria:'Nutriente', unidad:'kg', stock:0.5, minimo:1, costo:4200, proveedor:'AgroStore' },
+    { id:3, nombre:'Semillas Lechuga', categoria:'Semilla', unidad:'g', stock:15, minimo:5, costo:800, proveedor:'SemillasChile' }
+  ];
+  localStorage.setItem(KEY, JSON.stringify(datos));
+}
+
+// Actualizar estado drive
+if (URL_SHEETS) {
+  setSyncEstado('ok', 'Sheets');
+  // Sync en background sin bloquear
+  setTimeout(() => cargarDesdeSheets(), 500);
+} else {
+  setSyncEstado('local', 'Local');
+}
+
+actualizarDrive();
+renderInicio();
+</script>
+</body>
+</html>
