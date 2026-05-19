@@ -491,7 +491,7 @@ body{display:flex;flex-direction:column}
       <b style="color:var(--acc2)">3.</b> <b>Implementar → App web</b>, acceso <b>Cualquier persona</b>, copia URL<br>
       <b style="color:var(--acc2)">4.</b> Pégala aquí
     </div>
-    <div class="fg"><label class="fl">URL del Apps Script</label><input class="fi" id="drive-url" type="url" placeholder="https://script.google.com/macros/s/..."></div>
+    <div class="fg"><label class="fl">URL del Apps Script</label><input class="fi" id="drive-url" type="url" placeholder="https://script.google.com/macros/s/..." value="https://script.google.com/macros/s/AKfycbxLY9K-6pv-5lbDYhrhyshFDimTo8_KfQ-WX1Ovgi0aFmTL7p9bQmGqclNYtIciTZgk/exec"></div>
     <button class="btn bp bw" style="margin-bottom:6px" onclick="conectarSheets()">🔗 Conectar</button>
     <button class="btn bs bw bsm" onclick="cm('m-drive')">Cancelar</button>
   </div>
@@ -519,7 +519,7 @@ body{display:flex;flex-direction:column}
 // ═══ DATOS ═══
 const KEY='ha3',KURL='ha3_url';
 let D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[]};
-let SURL=localStorage.getItem(KURL)||'';
+let SURL=localStorage.getItem(KURL)||'https://script.google.com/macros/s/AKfycbxLY9K-6pv-5lbDYhrhyshFDimTo8_KfQ-WX1Ovgi0aFmTL7p9bQmGqclNYtIciTZgk/exec';
 let filtroCama='todas',pagActual='inicio',finTabAct='v',ambTabAct='clima',recTabAct='hoy',finMes='',stimer=null,usrAct='',colorSel='#4ade80';
 
 const RECETAS=[
@@ -596,20 +596,50 @@ function renderInicio(){
   document.getElementById('h-date').textContent=new Date().toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
   document.getElementById('h-sal').textContent=h<12?'Buenos días 🌅':h<18?'Buenas tardes ☀️':'Buenas noches 🌙';
   const act=D.ciclos.filter(c=>c.estado!=='cosechado');
-  document.getElementById('h-sub').textContent=act.length?act.length+' ciclo'+(act.length>1?'s':'')+' activo'+(act.length>1?'s':''):'Sin ciclos activos';
+  document.getElementById('h-sub').textContent=act.length?act.length+' ciclo'+(act.length>1?'s':'')+' activo'+(act.length>1?'s':''):'Sin ciclos activos — agrega uno en Ciclos';
   const kgT=D.cosechas.reduce((s,c)=>s+(parseFloat(c.kg)||0),0);
-  const alS=D.inventario.filter(i=>(parseFloat(i.stock)||0)<=(parseFloat(i.minimo)||0)).length;
-  const plagasAct=D.plagas.filter(p=>p.estado!=='Resuelto').length;
-  document.getElementById('d-stats').innerHTML=[
-    {n:D.camas.length,l:'Camas',i:'🛏'},{n:act.length,l:'Activos',i:'🌿'},
-    {n:kgT.toFixed(1),l:'Kg cosech.',i:'⚖️'},{n:alS+plagasAct,l:'Alertas',i:'⚠️'}
-  ].map(s=>'<div class="mc"><div style="font-size:18px;margin-bottom:3px">'+s.i+'</div><div class="num">'+s.n+'</div><div class="lbl">'+s.l+'</div></div>').join('');
+  const stockBajo=D.inventario.filter(i=>(parseFloat(i.stock)||0)<=(parseFloat(i.minimo)||0));
+  const plagasAct=D.plagas.filter(p=>p.estado!=='Resuelto');
+  const ventasT=D.ventas.reduce((s,v)=>s+(parseFloat(v.total)||0),0);
 
-  // Alertas en inicio
+  // Stats principales
+  document.getElementById('d-stats').innerHTML=[
+    {n:D.camas.length||0, l:'Camas',      i:'🛏', c:'var(--acc)'},
+    {n:act.length||0,     l:'Ciclos activos', i:'🌿', c:'var(--acc)'},
+    {n:kgT.toFixed(1),    l:'Kg cosechados',  i:'⚖️', c:'var(--acc)'},
+    {n:'$'+Math.round(ventasT).toLocaleString('es-CL'), l:'Ventas totales', i:'💰', c:'var(--acc)'},
+  ].map(s=>'<div class="mc" style="cursor:pointer"><div style="font-size:20px;margin-bottom:4px">'+s.i+'</div><div class="num" style="font-size:20px;color:'+s.c+'">'+s.n+'</div><div class="lbl">'+s.l+'</div></div>').join('');
+
+  // Alertas — siempre mostrar algo
   let alertasHTML='';
-  D.plagas.filter(p=>p.estado!=='Resuelto').forEach(pl=>{alertasHTML+='<div class="alerta-box">⚠️ '+pl.nombre+' en '+pl.cama+' ('+pl.estado+')</div>';});
-  const ult=D.ambiente.slice(-1)[0];
-  if(ult){if(parseFloat(ult.temp)>30)alertasHTML+='<div class="alerta-box">🌡️ Temperatura alta: '+ult.temp+'°C</div>';if(parseFloat(ult.temp)<10)alertasHTML+='<div class="alerta-box">🥶 Temperatura baja: '+ult.temp+'°C</div>';}
+
+  // Stock bajo
+  stockBajo.forEach(i=>{
+    alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('stock')">📦 Stock bajo: <b>'+i.nombre+'</b> — quedan '+i.stock+' '+i.unidad+'</div>';
+  });
+
+  // Plagas activas
+  plagasAct.forEach(p=>{
+    alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">🐛 Plaga activa: <b>'+p.nombre+'</b> en '+p.cama+' ('+p.estado+')</div>';
+  });
+
+  // Clima
+  const ultAmb=[...D.ambiente].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)))[0];
+  if(ultAmb){
+    if(parseFloat(ultAmb.temp)>30) alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">🌡️ Temperatura alta: <b>'+ultAmb.temp+'°C</b> — revisa ventilación</div>';
+    if(parseFloat(ultAmb.temp)<10) alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">🥶 Temperatura baja: <b>'+ultAmb.temp+'°C</b></div>';
+    if(parseFloat(ultAmb.hum)>90)  alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ambiente')">💧 Humedad muy alta: <b>'+ultAmb.hum+'%</b> — riesgo de hongos</div>';
+  }
+
+  // Ciclos vencidos
+  D.ciclos.filter(c=>c.estado!=='cosechado').forEach(c=>{
+    const d=diasH(c.fechaCosecha);
+    if(d!==null&&d<0) alertasHTML+='<div class="alerta-box" style="cursor:pointer" onclick="irA('ciclos')">🌾 Cosecha vencida: <b>'+c.cultivo+'</b> en '+c.cama+' ('+Math.abs(d)+'d atrasada)</div>';
+  });
+
+  // Si todo está bien
+  if(!alertasHTML) alertasHTML='<div class="ok-box">✅ Todo en orden — sin alertas activas</div>';
+
   document.getElementById('d-alertas').innerHTML=alertasHTML;
 
   // Tareas del día
@@ -961,11 +991,33 @@ function borrarTodo(){confirmar('Borrar TODOS los datos','Se eliminarán todos l
 document.querySelectorAll('.mf').forEach(el=>el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('on');}));
 
 // ═══ INIT ═══
+// Auto-detectar URL desde parámetro ?script= en la URL
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const scriptParam=params.get('script');
+  if(scriptParam&&scriptParam.startsWith('https://script.google.com')){
+    SURL=scriptParam;localStorage.setItem(KURL,SURL);
+  } else if(!localStorage.getItem(KURL)&&SURL){
+    // Guardar la URL por defecto si no hay ninguna guardada
+    localStorage.setItem(KURL,SURL);
+  }
+})();
+
 leerL();
 if(!D.camas.length&&!D.ciclos.length){
   D.camas=[{id:1,nombre:'Cama 1',sistema:'NFT',largo:3,ancho:1,capacidad:36},{id:2,nombre:'Cama 2',sistema:'NFT',largo:3,ancho:1,capacidad:36}];
   D.ciclos=[{id:1,cultivo:'Lechuga Butter',cama:'Cama 1',fechaAlmacigo:'2025-05-01',fechaTrasplante:'2025-05-26',fechaCosecha:'2025-07-10',plantas:30,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:'2025-05-01'},{id:2,cultivo:'Albahaca',cama:'Cama 2',fechaAlmacigo:'2025-04-15',fechaTrasplante:'2025-05-10',fechaCosecha:'2025-06-24',plantas:20,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:'2025-04-15'}];
   D.inventario=[{id:1,nombre:'Nitrato de Calcio',categoria:'Nutriente',unidad:'kg',stock:2.5,minimo:1,costo:3500,proveedor:'AgroStore'},{id:2,nombre:'Nitrato de Potasio',categoria:'Nutriente',unidad:'kg',stock:0.5,minimo:1,costo:4200,proveedor:'AgroStore'},{id:3,nombre:'Semillas Lechuga',categoria:'Semilla',unidad:'g',stock:15,minimo:5,costo:800,proveedor:'SemillasChile'}];
+  // Ciclos con fechas actuales para que las tareas aparezcan
+  const hoyDate=new Date();
+  const fa1=new Date(hoyDate);fa1.setDate(fa1.getDate()-20);
+  const ft1=new Date(hoyDate);ft1.setDate(ft1.getDate()+5);
+  const fc1=new Date(hoyDate);fc1.setDate(fc1.getDate()+50);
+  const fa2=new Date(hoyDate);fa2.setDate(fa2.getDate()-10);
+  const ft2=new Date(hoyDate);ft2.setDate(ft2.getDate()+15);
+  const fc2=new Date(hoyDate);fc2.setDate(fc2.getDate()+60);
+  const fmt2=d=>d.toISOString().slice(0,10);
+  D.ciclos=[{id:1,cultivo:'Lechuga Butter',cama:'Cama 1',fechaAlmacigo:fmt2(fa1),fechaTrasplante:fmt2(ft1),fechaCosecha:fmt2(fc1),plantas:30,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:fmt2(fa1)},{id:2,cultivo:'Albahaca',cama:'Cama 2',fechaAlmacigo:fmt2(fa2),fechaTrasplante:fmt2(ft2),fechaCosecha:fmt2(fc2),plantas:20,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:fmt2(fa2)}];
   localStorage.setItem(KEY,JSON.stringify(D));
 }
 if(SURL){setSS('ok','Sheets');setTimeout(()=>cargarSheets(),500);}else{setSS('','Local');}
