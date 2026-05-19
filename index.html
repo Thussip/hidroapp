@@ -242,7 +242,9 @@ textarea.fi { resize: vertical; min-height: 70px; }
       <div class="card" style="margin-bottom:12px">
         <div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Economía</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px" id="econ-stats"></div>
+      <div id="lista-cosechas-mas" style="margin-bottom:10px"></div>
         <button class="btn btn-s btn-full btn-sm" onclick="abrirModalVenta()">💰 Registrar venta</button>
+        <div id="lista-ventas" style="margin-top:10px"></div>
       </div>
 
       <div class="card" style="margin-bottom:12px">
@@ -518,6 +520,22 @@ textarea.fi { resize: vertical; min-height: 70px; }
 </div>
 
 <!-- MODAL: RECETA -->
+
+<!-- MODAL CONFIRMAR -->
+<div class="modal-fondo" id="m-confirm">
+  <div class="modal">
+    <div class="modal-asa"></div>
+    <div class="modal-cab"><span class="modal-tit" id="confirm-tit">Confirmar</span></div>
+    <div class="modal-cuerpo">
+      <p style="font-size:15px;color:var(--texto2);margin-bottom:20px" id="confirm-msg"></p>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-s" style="flex:1" onclick="cerrarModal('m-confirm')">Cancelar</button>
+        <button class="btn btn-r" style="flex:2" id="confirm-ok">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-fondo" id="m-receta">
   <div class="modal">
     <div class="modal-asa"></div>
@@ -993,12 +1011,27 @@ function guardarCosecha() {
   if (paginaActual === 'inicio') renderInicio();
 }
 
+
+// ═══════════════════════════════════
+// CONFIRMAR (reemplaza confirm() para iOS)
+// ═══════════════════════════════════
+function confirmar(titulo, mensaje, accion, textoBtn) {
+  document.getElementById('confirm-tit').textContent = titulo;
+  document.getElementById('confirm-msg').textContent = mensaje;
+  const btn = document.getElementById('confirm-ok');
+  btn.textContent = textoBtn || 'Eliminar';
+  btn.onclick = function() { cerrarModal('m-confirm'); accion(); };
+  abrirModal('m-confirm');
+}
+
 function eliminarCiclo(id) {
-  if (!confirm('¿Eliminar este ciclo?')) return;
-  datos.ciclos = datos.ciclos.filter(c => parseInt(c.id) !== parseInt(id));
-  guardarLocal();
-  toast('🗑 Ciclo eliminado');
-  renderCiclos();
+  confirmar('Eliminar ciclo', '¿Seguro que quieres eliminar este ciclo? Se perderán los datos asociados.', function() {
+    datos.ciclos = datos.ciclos.filter(c => parseInt(c.id) !== parseInt(id));
+    datos.cosechas = datos.cosechas.filter(c => parseInt(c.cicloId) !== parseInt(id));
+    guardarLocal();
+    toast('🗑 Ciclo eliminado');
+    renderCiclos();
+  });
 }
 
 // ═══════════════════════════════════
@@ -1043,10 +1076,11 @@ function renderNutricion() {
           '<div class="item-ico">🧪</div>' +
           '<div class="item-info"><div class="item-t">' + (n.cama || 'Sin cama') + '</div>' +
           '<div class="item-s">' + fmtFecha(n.fecha) + ' · ' + (n.acciones || 'sin acción') + '</div></div>' +
-          '<div style="text-align:right;font-size:12px">' +
+          '<div style="text-align:right;font-size:12px;margin-right:6px">' +
             '<div style="color:' + (phOk ? 'var(--verde)' : 'var(--warn)') + '">pH ' + (n.ph || '—') + '</div>' +
             '<div style="color:' + (ecOk ? 'var(--verde)' : 'var(--warn)') + '">EC ' + (n.ec || '—') + '</div>' +
           '</div>' +
+          '<button class="hbtn" onclick="eliminarNutricion(' + n.id + ')">🗑</button>' +
         '</div>';
       }).join('')
     : '<div class="vacio"><div class="vacio-ico">🧪</div><div class="vacio-t">Sin registros aún</div></div>';
@@ -1149,7 +1183,8 @@ function renderStock() {
           '<div style="font-size:16px;font-weight:700;color:' + (bajo ? 'var(--rojo)' : 'var(--verde)') + '">' + (i.stock || 0) + '</div>' +
           '<div style="font-size:11px;color:var(--texto3)">' + i.unidad + '</div>' +
         '</div>' +
-        '<button class="hbtn" style="margin-left:6px" onclick="editarInsumo(' + i.id + ')">✏️</button>' +
+        '<button class="hbtn" style="margin-left:4px" onclick="editarInsumo(' + i.id + ')">✏️</button>' +
+        '<button class="hbtn" style="margin-left:4px" onclick="eliminarInsumo(' + i.id + ')">🗑</button>' +
       '</div>';
     }).join('')
   ).join('');
@@ -1212,6 +1247,47 @@ function renderMas() {
     { n: datos.cosechas.length, l: 'Cosechas' },
   ].map(s => '<div class="mini-card"><div class="num" style="font-size:16px">' + s.n + '</div><div class="lbl">' + s.l + '</div></div>').join('');
 
+  // Lista de cosechas recientes con botón eliminar
+  const cosOrdenadas = [...datos.cosechas].sort((a,b) => String(b.fecha).localeCompare(String(a.fecha)));
+  document.getElementById('lista-cosechas-mas').innerHTML = cosOrdenadas.length
+    ? '<div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Cosechas registradas</div>' +
+      cosOrdenadas.map(c => {
+        const ci = datos.ciclos.find(x => parseInt(x.id) === parseInt(c.cicloId));
+        return '<div class="item" style="padding:10px 0">' +
+          '<div class="item-ico">🌾</div>' +
+          '<div class="item-info">' +
+            '<div class="item-t">' + (ci ? ci.cultivo : 'Ciclo eliminado') + '</div>' +
+            '<div class="item-s">' + fmtFecha(c.fecha) + ' · ' + (c.kg||0) + ' kg · ' + (c.calidad||'') + '</div>' +
+          '</div>' +
+          '<div style="text-align:right;margin-right:6px">' +
+            '<div style="font-size:14px;font-weight:600;color:var(--verde)">' + (c.kg||0) + ' kg</div>' +
+            (c.total ? '<div style="font-size:11px;color:var(--texto3)">$' + Math.round(c.total).toLocaleString('es-CL') + '</div>' : '') +
+          '</div>' +
+          '<button class="hbtn" onclick="eliminarCosecha(' + c.id + ')">🗑</button>' +
+        '</div>';
+      }).join('')
+    : '';
+
+  // Lista de ventas con botón eliminar
+  const ventasOrdenadas = [...datos.ventas].sort((a,b) => String(b.fecha).localeCompare(String(a.fecha)));
+  document.getElementById('lista-ventas').innerHTML = ventasOrdenadas.length
+    ? '<div style="font-size:11px;font-weight:600;color:var(--texto3);text-transform:uppercase;letter-spacing:.4px;margin:10px 0 6px">Ventas registradas</div>' +
+      ventasOrdenadas.map(v =>
+        '<div class="item" style="padding:10px 0">' +
+          '<div class="item-ico">💰</div>' +
+          '<div class="item-info">' +
+            '<div class="item-t">' + (v.producto||'Sin nombre') + '</div>' +
+            '<div class="item-s">' + fmtFecha(v.fecha) + ' · ' + (v.kg||0) + ' kg' + (v.cliente ? ' · ' + v.cliente : '') + '</div>' +
+          '</div>' +
+          '<div style="text-align:right;margin-right:6px">' +
+            '<div style="font-size:14px;font-weight:600;color:var(--verde)">$' + Math.round(v.total||0).toLocaleString('es-CL') + '</div>' +
+            '<div style="font-size:11px;color:var(--texto3)">' + (v.kg||0) + ' kg</div>' +
+          '</div>' +
+          '<button class="hbtn" onclick="eliminarVenta(' + v.id + ')">🗑</button>' +
+        '</div>'
+      ).join('')
+    : '';
+
   document.getElementById('lista-camas-mas').innerHTML = datos.camas.length
     ? datos.camas.map(c =>
         '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--borde)">' +
@@ -1249,11 +1325,59 @@ function guardarCama() {
 }
 
 function eliminarCama(id) {
-  if (!confirm('¿Eliminar esta cama?')) return;
-  datos.camas = datos.camas.filter(c => parseInt(c.id) !== parseInt(id));
-  guardarLocal();
-  toast('🗑 Eliminada');
-  renderMas();
+  confirmar('Eliminar cama', '¿Seguro que quieres eliminar esta cama?', function() {
+    datos.camas = datos.camas.filter(c => parseInt(c.id) !== parseInt(id));
+    guardarLocal();
+    toast('🗑 Cama eliminada');
+    renderMas();
+  });
+}
+
+function eliminarNutricion(id) {
+  confirmar('Eliminar registro', '¿Eliminar este registro de nutrición?', function() {
+    datos.nutricion = datos.nutricion.filter(n => parseInt(n.id) !== parseInt(id));
+    guardarLocal();
+    toast('🗑 Registro eliminado');
+    renderNutricion();
+  });
+}
+
+function eliminarInsumo(id) {
+  const i = datos.inventario.find(x => parseInt(x.id) === parseInt(id));
+  confirmar('Eliminar insumo', '¿Eliminar "' + (i ? i.nombre : '') + '" del inventario?', function() {
+    datos.inventario = datos.inventario.filter(x => parseInt(x.id) !== parseInt(id));
+    guardarLocal();
+    toast('🗑 Insumo eliminado');
+    renderStock();
+  });
+}
+
+function eliminarVenta(id) {
+  confirmar('Eliminar venta', '¿Eliminar este registro de venta?', function() {
+    datos.ventas = datos.ventas.filter(v => parseInt(v.id) !== parseInt(id));
+    guardarLocal();
+    toast('🗑 Venta eliminada');
+    renderMas();
+  });
+}
+
+function eliminarCosecha(id) {
+  confirmar('Eliminar cosecha', '¿Eliminar este registro de cosecha? El ciclo volverá a estado activo.', function() {
+    const cos = datos.cosechas.find(c => parseInt(c.id) === parseInt(id));
+    datos.cosechas = datos.cosechas.filter(c => parseInt(c.id) !== parseInt(id));
+    // reactivar ciclo si no tiene más cosechas
+    if (cos) {
+      const quedanCosechas = datos.cosechas.filter(c => parseInt(c.cicloId) === parseInt(cos.cicloId));
+      if (!quedanCosechas.length) {
+        const idx = datos.ciclos.findIndex(c => parseInt(c.id) === parseInt(cos.cicloId));
+        if (idx >= 0) datos.ciclos[idx].estado = 'activo';
+      }
+    }
+    guardarLocal();
+    toast('🗑 Cosecha eliminada');
+    renderMas();
+    renderCiclos();
+  });
 }
 
 function abrirModalVenta() {
@@ -1298,13 +1422,13 @@ function exportarCSV() {
 }
 
 function borrarTodo() {
-  if (confirm('¿Borrar TODOS los datos?') && confirm('¿Estás seguro? No hay deshacer.')) {
+  confirmar('Borrar todos los datos', 'Se eliminarán TODOS los datos locales. Los datos en Google Sheets no se borran.', function() {
     datos = { camas: [], ciclos: [], cosechas: [], nutricion: [], inventario: [], ventas: [] };
     localStorage.removeItem(KEY);
-    toast('🗑 Datos eliminados');
+    toast('🗑 Datos locales eliminados');
     renderInicio();
     irA('inicio');
-  }
+  }, 'Borrar todo');
 }
 
 // ═══════════════════════════════════
