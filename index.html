@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.5</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.7</div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -319,61 +319,88 @@ body{display:flex;flex-direction:column}
   <div style="padding:0 12px" id="calc-content"></div>
 </div>
 
-<!-- MÁS -->
-<div class="pg" id="pg-mas">
-  <div class="sh"><div class="st">Más</div></div>
-  <div style="padding:0 12px">
+<!-- AJUSTES -->
+<div class="pg" id="pg-ajustes">
+  <div class="sh" style="padding-bottom:4px">
+    <div class="st">Ajustes</div>
+  </div>
+  <div style="padding:0 12px;padding-bottom:20px">
+
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 8px">🌿 Cultivo</div>
     <div class="card" style="margin-bottom:10px">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Usuarios</div>
-      <div id="mas-usuarios"></div>
-      <button class="btn bs bw bsm" style="margin-top:8px" onclick="abrirUsuarios()">👤 Gestionar usuarios</button>
-    </div>
-    <div class="card" style="margin-bottom:10px">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Mis camas</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:600">Mis camas</div>
+          <div style="font-size:12px;color:var(--text3)" id="sub-camas-aj">Sin camas</div>
+        </div>
+        <button class="btn bp bsm" onclick="abrirCama()">+ Nueva</button>
+      </div>
       <div id="mas-camas"></div>
-      <button class="btn bs bw bsm" style="margin-top:8px" onclick="abrirCama()">🛏 Nueva cama</button>
     </div>
     <div class="card" style="margin-bottom:10px">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Google Sheets</div>
-      <div style="font-size:13px;margin-bottom:8px" id="mas-cloud"></div>
-      <button class="btn bs bw bsm" style="margin-bottom:6px" onclick="syncAhora()">☁️ Sincronizar ahora</button>
-      <button class="btn bs bw bsm" onclick="abrirDrive()">🔗 Configurar conexión</button>
-    </div>
-    <div class="card" style="margin-bottom:10px">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Herramientas</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-        <button class="btn bs bsm bw" onclick="irA('reportes');toggleSub()">📊 Reportes</button>
-        <button class="btn bs bsm bw" onclick="irA('biblioteca');toggleSub()">🌱 Biblioteca</button>
-        <button class="btn bs bsm bw" onclick="irA('calc');toggleSub()">🧮 Calculadoras</button>
-        <button class="btn bs bsm bw" onclick="abrirConfig()">🎨 Personalizar</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn bs bsm bw" onclick="irA('nutricion')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🧪</span><span style="font-size:11px">Nutrición</span></button>
+        <button class="btn bs bsm bw" onclick="irA('biblioteca')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🌱</span><span style="font-size:11px;text-align:center">Biblioteca</span></button>
+        <button class="btn bs bsm bw" onclick="irA('reportes')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">📊</span><span style="font-size:11px">Reportes</span></button>
+        <button class="btn bs bsm bw" onclick="irA('calc')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🧮</span><span style="font-size:11px">Calculadoras</span></button>
+        <button class="btn bs bsm bw" onclick="irA('recordatorios')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🔔</span><span style="font-size:11px">Recordatorios</span></button>
+        <button class="btn bs bsm bw" onclick="irA('finanzas')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">💰</span><span style="font-size:11px">Finanzas</span></button>
       </div>
     </div>
+
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:6px 0 8px">👥 Equipo</div>
     <div class="card" style="margin-bottom:10px">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Datos</div>
-      <button class="btn bs bw bsm" style="margin-bottom:6px" onclick="exportarCSV()">📊 Exportar CSV/Excel</button>
-      <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:600">Usuarios</div>
+          <div style="font-size:12px;color:var(--text3)" id="sub-usr-aj">Sin usuarios</div>
+        </div>
+        <button class="btn bp bsm" onclick="abrirUsuarios()">+ Gestionar</button>
+      </div>
+      <div id="mas-usuarios"></div>
     </div>
-    <div style="text-align:center;padding:10px;font-size:11px;color:var(--text3)">HidroApp v3.0 · Google Sheets Sync</div>
+
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:6px 0 8px">☁️ Nube</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:600">Google Sheets</div>
+          <div style="font-size:12px;margin-top:2px" id="mas-cloud">—</div>
+        </div>
+        <div id="aj-sync-dot" class="sdot"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn bs bsm bw" onclick="syncAhora()">☁️ Sincronizar</button>
+        <button class="btn bs bsm bw" onclick="abrirDrive()">🔗 Configurar</button>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:6px 0 8px">🎨 Apariencia</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn bs bsm bw" onclick="abrirConfig()" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🎨</span><span style="font-size:11px">Personalizar</span></button>
+        <button class="btn bs bsm bw" onclick="setModo('claro')" id="btn-modo-c" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">☀️</span><span style="font-size:11px">Modo claro</span></button>
+        <button class="btn bs bsm bw" onclick="setModo('oscuro')" id="btn-modo-o" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🌙</span><span style="font-size:11px">Modo oscuro</span></button>
+        <button class="btn bs bsm bw" onclick="exportarCSV()" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">📊</span><span style="font-size:11px">Exportar CSV</span></button>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:600;color:var(--danger);text-transform:uppercase;letter-spacing:.5px;padding:6px 0 8px">⚠️ Zona peligrosa</div>
+    <div class="card" style="margin-bottom:20px;border-color:rgba(248,113,113,.2)">
+      <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos locales</button>
+    </div>
+
+    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v3.7 · Google Sheets Sync</div>
   </div>
 </div>
 
-</div><!-- /cnt -->
-
-<!-- SUBMENU MÁS -->
-<div id="submenu" style="display:none;position:fixed;bottom:72px;right:0;left:0;background:var(--g1);border-top:1px solid var(--borde);z-index:50;padding:8px 12px;display:none">
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
-    <button class="nb" id="nb-reportes" onclick="irA('reportes');toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">📊</span><span>Reportes</span></button>
-    <button class="nb" id="nb-biblioteca" onclick="irA('biblioteca');toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">🌱</span><span>Cultivos</span></button>
-    <button class="nb" id="nb-calc" onclick="irA('calc');toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">🧮</span><span>Calc.</span></button>
-    <button class="nb" id="nb-config-btn" onclick="abrirConfig();toggleSub()" style="background:var(--card2);border-radius:10px;padding:10px 4px"><span class="ico">🎨</span><span>Diseño</span></button>
-  </div>
-</div>
-<nav id="nav">
+<nav id="nav" style="overflow-x:auto;justify-content:flex-start;gap:0;padding-left:4px;padding-right:4px">
   <button class="nb on" id="nb-inicio" onclick="irA('inicio')"><span class="ico">🏠</span><span>Inicio</span></button>
   <button class="nb" id="nb-ciclos" onclick="irA('ciclos')"><span class="ico">📅</span><span>Ciclos</span></button>
+  <button class="nb" id="nb-stock" onclick="irA('stock')"><span class="ico">📦</span><span>Stock</span></button>
   <button class="nb" id="nb-ambiente" onclick="irA('ambiente')"><span class="ico">🌡️</span><span>Ambiente</span></button>
   <button class="nb" id="nb-finanzas" onclick="irA('finanzas')"><span class="ico">💰</span><span>Finanzas</span></button>
-  <button class="nb" id="nb-mas" onclick="toggleSub()"><span class="ico">⚙️</span><span>Más</span></button>
+  <button class="nb" id="nb-ajustes" onclick="irA('ajustes')"><span class="ico">⚙️</span><span>Ajustes</span></button>
 </nav>
 
 <div id="toast"></div>
@@ -766,26 +793,18 @@ function updDrive(){
 function irA(p){
   document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(x=>x.classList.remove('on'));
+  // map old 'mas' to 'ajustes'
+  if(p==='mas') p='ajustes';
   const pg=document.getElementById('pg-'+p);
   const nb=document.getElementById('nb-'+p);
-  if(pg)pg.classList.add('on');
-  if(nb)nb.classList.add('on');
-  else document.getElementById('nb-mas').classList.add('on');
+  if(pg) pg.classList.add('on');
+  // pages without nav button highlight ajustes
+  const navPages=['inicio','ciclos','ambiente','finanzas','ajustes'];
+  if(nb) nb.classList.add('on');
+  else if(!navPages.includes(p)) document.getElementById('nb-ajustes').classList.add('on');
   pagActual=p;renderPA();
 }
-function toggleSub(){
-  const s=document.getElementById('submenu');
-  s.style.display=s.style.display==='none'||!s.style.display?'block':'none';
-}
-// Close submenu when tapping outside
-document.addEventListener('click',function(e){
-  const sub=document.getElementById('submenu');
-  const masBtn=document.getElementById('nb-mas');
-  if(sub&&masBtn&&!sub.contains(e.target)&&!masBtn.contains(e.target)){
-    sub.style.display='none';
-  }
-});
-function renderPA(){({inicio:renderInicio,ciclos:renderCiclos,nutricion:renderNut,stock:renderStock,finanzas:renderFin,ambiente:renderAmb,recordatorios:renderRec,reportes:renderReportes,biblioteca:renderBiblioteca,calc:renderCalc,mas:renderMas})[pagActual]?.();}
+function renderPA(){({inicio:renderInicio,ciclos:renderCiclos,nutricion:renderNut,stock:renderStock,finanzas:renderFin,ambiente:renderAmb,recordatorios:renderRec,reportes:renderReportes,biblioteca:renderBiblioteca,calc:renderCalc,ajustes:renderAjustes,mas:renderAjustes})[pagActual]?.();}
 
 // ═══ UTILS ═══
 function toast(m,d=2200){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),d);}
@@ -1191,11 +1210,47 @@ function toggleTarea(id){const i=D.tareas.findIndex(t=>parseInt(t.id)===parseInt
 function elimTarea(id){confirmar('Eliminar tarea','¿Eliminar esta tarea?',function(){D.tareas=D.tareas.filter(t=>parseInt(t.id)!==parseInt(id));guardarL();renderRec();if(pagActual==='inicio')renderInicio();});}
 
 // ═══ MÁS ═══
-function renderMas(){
-  document.getElementById('mas-usuarios').innerHTML=D.usuarios.length?D.usuarios.map(u=>'<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--borde)"><div style="width:28px;height:28px;border-radius:50%;background:'+u.color+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0d2b1a">'+u.nombre[0].toUpperCase()+'</div><div style="flex:1"><div style="font-size:14px;font-weight:500">'+u.nombre+(u.nombre===usrAct?' <span style=\'font-size:10px;color:var(--acc)\'>● activo</span>':'')+'</div><div style="font-size:11px;color:var(--text3)">'+u.rol+'</div></div></div>').join(''):'<p style="font-size:13px;color:var(--text3)">Solo Admin</p>';
-  document.getElementById('mas-camas').innerHTML=D.camas.length?D.camas.map(c=>'<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--borde)"><div><div style="font-size:14px;font-weight:500">'+c.nombre+'</div><div style="font-size:12px;color:var(--text3)">'+c.sistema+' · '+(c.largo||'?')+'×'+(c.ancho||'?')+'m · '+(c.capacidad||'?')+' plantas</div></div><button class="hbtn" onclick="elimCama('+c.id+')">🗑</button></div>').join(''):'<p style="font-size:13px;color:var(--text3)">Sin camas</p>';
-  document.getElementById('mas-cloud').innerHTML=SURL?'<span style="color:var(--acc)">✅ Conectado a Google Sheets</span>':'<span style="color:var(--text3)">💾 Solo local</span>';
+function renderMas(){ renderAjustes(); }
+
+function renderAjustes(){
+  // CAMAS
+  const camasEl=document.getElementById('mas-camas');
+  const subCamasEl=document.getElementById('sub-camas-aj');
+  if(camasEl) camasEl.innerHTML=D.camas.length
+    ?D.camas.map(function(c){return'<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--borde)"><div><div style="font-size:14px;font-weight:500">'+c.nombre+'</div><div style="font-size:12px;color:var(--text3)">'+c.sistema+' · '+(c.largo||'?')+'×'+(c.ancho||'?')+'m · '+(c.capacidad||'?')+' plantas</div></div><button class="hbtn" onclick="elimCama('+c.id+')">🗑</button></div>';}).join('')
+    :'<p style="font-size:13px;color:var(--text3);padding:6px 0">Sin camas — toca "+ Nueva" para agregar</p>';
+  if(subCamasEl) subCamasEl.textContent=D.camas.length+' cama'+(D.camas.length!==1?'s':'')+' configurada'+(D.camas.length!==1?'s':'');
+
+  // USUARIOS
+  const usrEl=document.getElementById('mas-usuarios');
+  const subUsrEl=document.getElementById('sub-usr-aj');
+  if(usrEl){
+    if(!D.usuarios.length){
+      usrEl.innerHTML='<p style="font-size:13px;color:var(--text3);padding:6px 0">Sin usuarios — usando Admin</p>';
+    } else {
+      usrEl.innerHTML=D.usuarios.map(function(u){
+        var activo=u.nombre===usrAct?'<span style="font-size:10px;color:var(--acc)"> ●</span>':'';
+        return '<div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--borde)">'+
+          '<div style="width:30px;height:30px;border-radius:50%;background:'+u.color+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0d2b1a;flex-shrink:0">'+u.nombre[0].toUpperCase()+'</div>'+
+          '<div style="flex:1"><div style="font-size:14px;font-weight:500">'+u.nombre+activo+'</div>'+
+          '<div style="font-size:11px;color:var(--text3)">'+u.rol+'</div></div>'+
+          '<button class="btn bs bsm" onclick="cambiarUsr(this.dataset.n)" data-n="'+u.nombre+'">Usar</button>'+
+          '<button class="hbtn" style="margin-left:4px" onclick="elimUsr(this.dataset.n)" data-n="'+u.nombre+'">🗑</button></div>';
+      }).join('');
+    }
+  }
+  if(subUsrEl) subUsrEl.textContent=D.usuarios.length?D.usuarios.length+' usuario'+(D.usuarios.length!==1?'s':'')+' · activo: '+usrAct:'Solo Admin';
+
+  // NUBE
+  const cloudEl=document.getElementById('mas-cloud');
+  const dotEl=document.getElementById('aj-sync-dot');
+  if(cloudEl) cloudEl.innerHTML=SURL
+    ?'<span style="color:var(--acc)">✅ Conectado · sincronización automática</span>'
+    :'<span style="color:var(--text3)">💾 Solo local — toca Configurar</span>';
+  if(dotEl) dotEl.className='sdot '+(SURL?'ok':'');
 }
+
+
 function abrirCama(){['cam-n','cam-l','cam-a','cam-c'].forEach(f=>document.getElementById(f).value='');om('m-cam');}
 function guardarCama(){const n=document.getElementById('cam-n').value.trim();if(!n){toast('⚠️ Ingresa el nombre');return;}D.camas.push({id:nid(D.camas),nombre:n,sistema:document.getElementById('cam-s').value,largo:parseFloat(document.getElementById('cam-l').value)||0,ancho:parseFloat(document.getElementById('cam-a').value)||0,capacidad:parseInt(document.getElementById('cam-c').value)||0});guardarL();cm('m-cam');toast('✅ Cama guardada');renderMas();if(pagActual==='inicio')renderInicio();}
 function elimCama(id){confirmar('Eliminar cama','¿Eliminar esta cama?',function(){D.camas=D.camas.filter(c=>parseInt(c.id)!==parseInt(id));guardarL();toast('🗑 Eliminada');renderMas();});}
@@ -1209,9 +1264,6 @@ function cambiarUsr(n){usrAct=n;localStorage.setItem('ha3_usr',n);updUsrBtn();re
 function guardarUsr(){const n=document.getElementById('usr-n').value.trim();const r=document.getElementById('usr-r').value;if(!n){toast('⚠️ Ingresa un nombre');return;}if(D.usuarios.find(u=>u.nombre===n)){toast('⚠️ Ya existe');return;}D.usuarios.push({id:nid(D.usuarios),nombre:n,rol:r,color:colorSel});guardarL();document.getElementById('usr-n').value='';renderLstUsr();if(!usrAct||usrAct==='Admin')cambiarUsr(n);toast('✅ Usuario agregado');}
 function elimUsr(n){if(n===usrAct){toast('⚠️ No puedes eliminar el usuario activo');return;}confirmar('Eliminar usuario','¿Eliminar a "'+n+'"?',function(){D.usuarios=D.usuarios.filter(u=>u.nombre!==n);guardarL();renderLstUsr();});}
 document.addEventListener('click',function(e){if(e.target.classList.contains('color-opt')){document.querySelectorAll('.color-opt').forEach(c=>c.classList.remove('on'));e.target.classList.add('on');colorSel=e.target.dataset.c;}});
-
-// ═══ SUBMENU ═══
-// (toggleSub is defined in irA block)
 
 // ═══ FOTOS ═══
 let fotoCicloId = null;
@@ -1735,7 +1787,7 @@ let cfgColorSel = '#4ade80';
 function cargarConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
-    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v3.5';
+    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v3.7';
     if (cfg.color) {
       document.documentElement.style.setProperty('--acc', cfg.color);
       document.documentElement.style.setProperty('--acc2', cfg.color + 'cc');
@@ -1760,7 +1812,7 @@ function guardarConfig() {
   const cfg = { nombre, sub, color: cfgColorSel };
   try { const old = JSON.parse(localStorage.getItem('ha3_cfg') || '{}'); cfg.modo = old.modo || 'oscuro'; } catch(e) {}
   localStorage.setItem('ha3_cfg', JSON.stringify(cfg));
-  document.getElementById('cab-sub').textContent = nombre + ' · v3.5';
+  document.getElementById('cab-sub').textContent = nombre + ' · v3.7';
   document.documentElement.style.setProperty('--acc', cfgColorSel);
   document.documentElement.style.setProperty('--acc2', cfgColorSel + 'cc');
   cm('m-config');
