@@ -25,14 +25,14 @@ body{display:flex;flex-direction:column}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .hbtn{width:32px;height:32px;border-radius:50%;border:1px solid var(--borde2);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:.15s;flex-shrink:0}
 .hbtn:active{opacity:.7}
-#cnt{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:76px}
-#nav{background:var(--g1);border-top:1px solid var(--borde);display:flex;justify-content:space-around;align-items:flex-end;padding:8px 4px calc(var(--sb)+10px);flex-shrink:0;position:sticky;bottom:0;z-index:20}
-.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text3);font-size:11px;font-weight:500;cursor:pointer;padding:4px 6px;min-width:52px;flex:1;font-family:inherit;transition:.15s;border-radius:10px}
-.nb .ico{font-size:24px;transition:.2s}.nb.on{color:var(--acc)}.nb.on .ico{transform:translateY(-2px)}
+#cnt{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:90px}
+#nav{background:var(--g1);border-top:1px solid var(--borde);display:flex;justify-content:space-around;align-items:center;padding:8px 0 calc(var(--sb)+10px);position:fixed;bottom:0;left:0;right:0;z-index:20}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text3);font-size:11px;font-weight:500;cursor:pointer;padding:4px 2px;flex:1;font-family:inherit;transition:.15s;border-radius:10px}
+.nb .ico{font-size:24px;transition:.2s;line-height:1}.nb.on{color:var(--acc)}.nb.on .ico{transform:translateY(-2px)}
 .pg{display:none}.pg.on{display:block;animation:fi .2s ease}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.card{background:var(--card);border:1px solid var(--borde);border-radius:var(--r);padding:14px;backdrop-filter:blur(8px)}
-.mc{background:var(--card2);border:1px solid var(--borde);border-radius:var(--rsm);padding:12px;text-align:center}
+.card{background:var(--card);border:1px solid var(--borde);border-radius:var(--r);padding:14px;position:relative}
+.mc{background:var(--card2);border:1px solid var(--borde);border-radius:var(--rsm);padding:12px;text-align:center;position:relative}
 .num{font-size:22px;font-weight:700;color:var(--acc);line-height:1.1}
 .lbl{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
 .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.9</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v4.1</div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -339,7 +339,7 @@ body{display:flex;flex-direction:column}
     </div>
     <div class="card" style="margin-bottom:10px">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button class="btn bs bsm bw" onclick="irA('nutricion')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🧪</span><span style="font-size:11px">Nutrición</span></button>
+        <button class="btn bs bsm bw" onclick="irA('nutricion')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto;position:relative;z-index:1"><span style="font-size:22px">🧪</span><span style="font-size:11px">Nutrición</span></button>
         <button class="btn bs bsm bw" onclick="irA('biblioteca')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🌱</span><span style="font-size:11px;text-align:center">Biblioteca</span></button>
         <button class="btn bs bsm bw" onclick="irA('reportes')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">📊</span><span style="font-size:11px">Reportes</span></button>
         <button class="btn bs bsm bw" onclick="irA('calc')" style="flex-direction:column;display:flex;align-items:center;gap:3px;padding:12px 6px;height:auto"><span style="font-size:22px">🧮</span><span style="font-size:11px">Calculadoras</span></button>
@@ -390,7 +390,7 @@ body{display:flex;flex-direction:column}
       <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos locales</button>
     </div>
 
-    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v3.9 · Google Sheets Sync</div>
+    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v4.1 · Google Sheets Sync</div>
   </div>
 </div>
 
@@ -1787,7 +1787,7 @@ let cfgColorSel = '#4ade80';
 function cargarConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
-    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v3.9';
+    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v4.1';
     if (cfg.color) {
       document.documentElement.style.setProperty('--acc', cfg.color);
       document.documentElement.style.setProperty('--acc2', cfg.color + 'cc');
@@ -1812,7 +1812,7 @@ function guardarConfig() {
   const cfg = { nombre, sub, color: cfgColorSel };
   try { const old = JSON.parse(localStorage.getItem('ha3_cfg') || '{}'); cfg.modo = old.modo || 'oscuro'; } catch(e) {}
   localStorage.setItem('ha3_cfg', JSON.stringify(cfg));
-  document.getElementById('cab-sub').textContent = nombre + ' · v3.9';
+  document.getElementById('cab-sub').textContent = nombre + ' · v4.1';
   document.documentElement.style.setProperty('--acc', cfgColorSel);
   document.documentElement.style.setProperty('--acc2', cfgColorSel + 'cc');
   cm('m-config');
