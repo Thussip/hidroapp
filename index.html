@@ -26,10 +26,9 @@ body{display:flex;flex-direction:column}
 .hbtn{width:32px;height:32px;border-radius:50%;border:1px solid var(--borde2);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2);transition:.15s;flex-shrink:0}
 .hbtn:active{opacity:.7}
 #cnt{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:76px}
-#nav{background:var(--g1);border-top:1px solid var(--borde);display:flex;justify-content:space-around;align-items:center;padding:4px 0 calc(var(--sb)+4px);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-#nav::-webkit-scrollbar{display:none}
-.nb{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;color:var(--text3);font-size:9px;font-weight:500;cursor:pointer;padding:3px 6px;min-width:52px;flex-shrink:0;font-family:inherit;transition:.15s;border-radius:8px}
-.nb .ico{font-size:19px;transition:.2s}.nb.on{color:var(--acc)}.nb.on .ico{transform:translateY(-2px)}
+#nav{background:var(--g1);border-top:1px solid var(--borde);display:flex;justify-content:space-around;align-items:flex-end;padding:8px 4px calc(var(--sb)+10px);flex-shrink:0;position:sticky;bottom:0;z-index:20}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--text3);font-size:11px;font-weight:500;cursor:pointer;padding:4px 6px;min-width:52px;flex:1;font-family:inherit;transition:.15s;border-radius:10px}
+.nb .ico{font-size:24px;transition:.2s}.nb.on{color:var(--acc)}.nb.on .ico{transform:translateY(-2px)}
 .pg{display:none}.pg.on{display:block;animation:fi .2s ease}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .card{background:var(--card);border:1px solid var(--borde);border-radius:var(--r);padding:14px;backdrop-filter:blur(8px)}
@@ -95,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.8</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v3.9</div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -391,7 +390,7 @@ body{display:flex;flex-direction:column}
       <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos locales</button>
     </div>
 
-    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v3.8 · Google Sheets Sync</div>
+    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v3.9 · Google Sheets Sync</div>
   </div>
 </div>
 
@@ -1788,7 +1787,7 @@ let cfgColorSel = '#4ade80';
 function cargarConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
-    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v3.8';
+    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v3.9';
     if (cfg.color) {
       document.documentElement.style.setProperty('--acc', cfg.color);
       document.documentElement.style.setProperty('--acc2', cfg.color + 'cc');
@@ -1813,7 +1812,7 @@ function guardarConfig() {
   const cfg = { nombre, sub, color: cfgColorSel };
   try { const old = JSON.parse(localStorage.getItem('ha3_cfg') || '{}'); cfg.modo = old.modo || 'oscuro'; } catch(e) {}
   localStorage.setItem('ha3_cfg', JSON.stringify(cfg));
-  document.getElementById('cab-sub').textContent = nombre + ' · v3.8';
+  document.getElementById('cab-sub').textContent = nombre + ' · v3.9';
   document.documentElement.style.setProperty('--acc', cfgColorSel);
   document.documentElement.style.setProperty('--acc2', cfgColorSel + 'cc');
   cm('m-config');
