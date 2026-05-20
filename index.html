@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v4.1</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v4.3</div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -390,7 +390,7 @@ body{display:flex;flex-direction:column}
       <button class="btn br bw bsm" onclick="borrarTodo()">🗑 Borrar todos los datos locales</button>
     </div>
 
-    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v4.1 · Google Sheets Sync</div>
+    <div style="text-align:center;padding:8px;font-size:11px;color:var(--text3)">HidroApp v4.3 · Google Sheets Sync</div>
   </div>
 </div>
 
@@ -1787,7 +1787,7 @@ let cfgColorSel = '#4ade80';
 function cargarConfig() {
   try {
     const cfg = JSON.parse(localStorage.getItem('ha3_cfg') || '{}');
-    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v4.1';
+    if (cfg.nombre) document.getElementById('cab-sub').textContent = cfg.nombre + ' · v4.3';
     if (cfg.color) {
       document.documentElement.style.setProperty('--acc', cfg.color);
       document.documentElement.style.setProperty('--acc2', cfg.color + 'cc');
@@ -1812,7 +1812,7 @@ function guardarConfig() {
   const cfg = { nombre, sub, color: cfgColorSel };
   try { const old = JSON.parse(localStorage.getItem('ha3_cfg') || '{}'); cfg.modo = old.modo || 'oscuro'; } catch(e) {}
   localStorage.setItem('ha3_cfg', JSON.stringify(cfg));
-  document.getElementById('cab-sub').textContent = nombre + ' · v4.1';
+  document.getElementById('cab-sub').textContent = nombre + ' · v4.3';
   document.documentElement.style.setProperty('--acc', cfgColorSel);
   document.documentElement.style.setProperty('--acc2', cfgColorSel + 'cc');
   cm('m-config');
@@ -2196,7 +2196,23 @@ function exportarCSV(){
   c+='\nPLAGAS\nFecha,Nombre,Cama,Severidad,Tratamiento,Estado\n';D.plagas.forEach(x=>{c+='"'+fmt(x.fecha)+'","'+(x.nombre||'')+'","'+(x.cama||'')+'","'+(x.severidad||'')+'","'+(x.tratamiento||'')+'","'+(x.estado||'')+'"\n';});
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/csv;charset=utf-8'}));a.download='hidroapp_'+hoy()+'.csv';a.click();toast('📊 CSV exportado');
 }
-function borrarTodo(){confirmar('Borrar TODOS los datos','Se eliminarán todos los datos locales. Los datos en Google Sheets no se borran.',function(){D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[]};localStorage.removeItem(KEY);toast('🗑 Datos eliminados');irA('inicio');},'Borrar todo');}
+function borrarTodo(){
+  const msg = SURL
+    ? 'Se eliminarán los datos locales Y de Google Sheets. No hay vuelta atrás.'
+    : 'Se eliminarán todos los datos locales. No hay vuelta atrás.';
+  confirmar('Borrar TODOS los datos', msg, async function(){
+    D={camas:[],ciclos:[],cosechas:[],nutricion:[],inventario:[],ventas:[],compras:[],ambiente:[],riego:[],plagas:[],tareas:[],usuarios:[],fotos:[],biblioteca:[]};
+    localStorage.setItem(KEY, JSON.stringify(D));
+    if(SURL){
+      setSS('sy','Limpiando Sheets...');
+      try{ await llamar('guardar',D); setSS('ok','Sheets limpio'); }
+      catch(e){ setSS('er','Error al limpiar'); }
+    }
+    toast('🗑 Datos eliminados');
+    renderInicio();
+    irA('inicio');
+  }, 'Borrar todo');
+}
 
 // ═══ CERRAR MODALES ═══
 document.querySelectorAll('.mf').forEach(el=>el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('on');}));
@@ -2215,24 +2231,43 @@ document.querySelectorAll('.mf').forEach(el=>el.addEventListener('click',functio
 })();
 
 leerL();
-if(!D.camas.length&&!D.ciclos.length){
-  D.camas=[{id:1,nombre:'Cama 1',sistema:'NFT',largo:3,ancho:1,capacidad:36},{id:2,nombre:'Cama 2',sistema:'NFT',largo:3,ancho:1,capacidad:36}];
-  D.ciclos=[{id:1,cultivo:'Lechuga Butter',cama:'Cama 1',fechaAlmacigo:'2025-05-01',fechaTrasplante:'2025-05-26',fechaCosecha:'2025-07-10',plantas:30,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:'2025-05-01'},{id:2,cultivo:'Albahaca',cama:'Cama 2',fechaAlmacigo:'2025-04-15',fechaTrasplante:'2025-05-10',fechaCosecha:'2025-06-24',plantas:20,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:'2025-04-15'}];
-  D.inventario=[{id:1,nombre:'Nitrato de Calcio',categoria:'Nutriente',unidad:'kg',stock:2.5,minimo:1,costo:3500,proveedor:'AgroStore'},{id:2,nombre:'Nitrato de Potasio',categoria:'Nutriente',unidad:'kg',stock:0.5,minimo:1,costo:4200,proveedor:'AgroStore'},{id:3,nombre:'Semillas Lechuga',categoria:'Semilla',unidad:'g',stock:15,minimo:5,costo:800,proveedor:'SemillasChile'}];
-  // Ciclos con fechas actuales para que las tareas aparezcan
-  const hoyDate=new Date();
-  const fa1=new Date(hoyDate);fa1.setDate(fa1.getDate()-20);
-  const ft1=new Date(hoyDate);ft1.setDate(ft1.getDate()+5);
-  const fc1=new Date(hoyDate);fc1.setDate(fc1.getDate()+50);
-  const fa2=new Date(hoyDate);fa2.setDate(fa2.getDate()-10);
-  const ft2=new Date(hoyDate);ft2.setDate(ft2.getDate()+15);
-  const fc2=new Date(hoyDate);fc2.setDate(fc2.getDate()+60);
-  const fmt2=d=>d.toISOString().slice(0,10);
-  D.ciclos=[{id:1,cultivo:'Lechuga Butter',cama:'Cama 1',fechaAlmacigo:fmt2(fa1),fechaTrasplante:fmt2(ft1),fechaCosecha:fmt2(fc1),plantas:30,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:fmt2(fa1)},{id:2,cultivo:'Albahaca',cama:'Cama 2',fechaAlmacigo:fmt2(fa2),fechaTrasplante:fmt2(ft2),fechaCosecha:fmt2(fc2),plantas:20,diasAlmacigo:25,diasTrasplante:45,estado:'activo',creado:fmt2(fa2)}];
-  localStorage.setItem(KEY,JSON.stringify(D));
-}
-if(SURL){setSS('ok','Sheets');setTimeout(()=>cargarSheets(),500);}else{setSS('','Local');}
-iniciarUsr();cargarConfig();updDrive();renderInicio();
+
+// INICIO INTELIGENTE
+(async function arrancar(){
+
+  // 1. Si hay URL de Sheets → cargar desde la nube primero
+  if(SURL){
+    setSS('sy','Cargando desde Sheets...');
+    try{
+      const res = await llamar('cargar');
+      if(res && res.ok && res.datos){
+        // Verificar si hay datos reales en Sheets
+        const hayDatos = Object.values(res.datos).some(function(arr){ return Array.isArray(arr) && arr.length > 0; });
+        if(hayDatos){
+          Object.keys(D).forEach(function(k){ if(res.datos[k] && res.datos[k].length > 0) D[k]=res.datos[k]; });
+          localStorage.setItem(KEY, JSON.stringify(D));
+          setSS('ok','Sheets');
+        } else {
+          // Sheets vacío — usar datos locales si los hay
+          setSS('ok','Sheets vacío');
+        }
+      }
+    } catch(e){
+      setSS('er','Sin conexión');
+    }
+  } else {
+    setSS('','Local');
+  }
+
+  // 2. Si no hay nada en local NI en sheets → app limpia (sin ejemplos)
+  // Los datos de ejemplo ya no se cargan automáticamente
+  // El usuario empieza con la app vacía y agrega sus propias camas y ciclos
+
+  iniciarUsr();
+  cargarConfig();
+  updDrive();
+  renderInicio();
+})();
 </script>
 </body>
 </html>
