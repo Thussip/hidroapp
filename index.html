@@ -94,7 +94,7 @@ body{display:flex;flex-direction:column}
 <div id="cab">
   <div>
     <h1>🌿 Hidro<span>App</span></h1>
-    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v4.3</div>
+    <div class="cab-sub" id="cab-sub">Gestión Hidropónica · v4.3 · <span style="color:var(--acc2);font-weight:600">Solarcrop SPA</span></div>
   </div>
   <div class="cab-r">
     <div class="ss" onclick="syncAhora()" id="sbtn"><div class="sdot" id="sdot"></div><span id="slbl">Local</span></div>
@@ -811,7 +811,7 @@ function toast(m,d=2200){const t=document.getElementById('toast');t.textContent=
 function hoy(){return new Date().toISOString().slice(0,10);}
 function fmt(d){if(!d)return'—';const s=String(d);const dt=new Date(s.includes('T')?s:s+'T00:00:00');return dt.toLocaleDateString('es-CL',{day:'2-digit',month:'short'});}
 function addD(s,n){const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+parseInt(n));return d.toISOString().slice(0,10);}
-function diasH(s){if(!s)return null;return Math.round((new Date(String(s)+'T00:00:00')-new Date(hoy()+'T00:00:00'))/864e5);}
+function diasH(s){if(!s)return null;const sf=String(s).slice(0,10);return Math.round((new Date(sf+'T12:00:00')-new Date(hoy()+'T12:00:00'))/864e5);}
 function cm(id){document.getElementById(id).classList.remove('on');}
 function om(id){document.getElementById(id).classList.add('on');}
 function selCamas(id,addGeneral=false){const el=document.getElementById(id);if(!el)return;el.innerHTML=(addGeneral?'<option value="">General</option>':'')+D.camas.map(c=>'<option value="'+c.nombre+'">'+c.nombre+'</option>').join('')||(addGeneral?'':'<option>Sin camas</option>');}
@@ -863,9 +863,6 @@ function renderInicio(){
   document.getElementById('d-alertas').innerHTML=alertas.length
     ? alertas.map(function(a){return '<div class="alerta-box" onclick="irA(\"'+a.tipo+'\")" style="cursor:pointer">'+a.msg+'</div>';}).join('')
     : '<div class="ok-box">✅ Todo en orden — sin alertas activas</div>';
-  if(!alertasHTML) alertasHTML='<div class="ok-box">✅ Todo en orden — sin alertas activas</div>';
-
-  document.getElementById('d-alertas').innerHTML=alertasHTML;
 
   // Tareas del día
   const tareasHoy=[];
@@ -911,7 +908,7 @@ function renderCiclos(){
   if(!lst.length){document.getElementById('lst-cic').innerHTML='<div class="vacio"><div class="vi">🌱</div><div class="vt">Sin ciclos</div><p style="font-size:13px">Toca "+ Nuevo" para empezar</p></div>';return;}
   document.getElementById('lst-cic').innerHTML=[...lst].sort((a,b)=>(b.fechaAlmacigo||'').localeCompare(a.fechaAlmacigo||'')).map(c=>{
     const d=diasH(c.fechaCosecha);
-    const est=c.estado==='cosechado'?'<span class="tag tv">✅ Cosechado</span>':d!==null&&d<0?'<span class="tag tr">Atrasado '+Math.abs(d)+'d</span>':d===0?'<span class="tag ta">Cosechar hoy</span>':'<span class="tag tb">En '+(d||'?')+'d</span>';
+    const est=c.estado==='cosechado'?'<span class="tag tv">✅ Cosechado</span>':d===null?'<span class="tag tb">Sin fecha</span>':d<0?'<span class="tag tr">Atrasado '+Math.abs(d)+'d</span>':d===0?'<span class="tag ta">Cosechar hoy</span>':'<span class="tag tb">En '+d+'d</span>';
     const pr=progCiclo(c);
     const kg=D.cosechas.filter(x=>parseInt(x.cicloId)===parseInt(c.id)).reduce((s,x)=>s+(parseFloat(x.kg)||0),0);
     return'<div style="padding:12px 14px;border-bottom:1px solid var(--borde)">'+
@@ -1286,14 +1283,15 @@ function renderGaleria(cicloId) {
     el.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--text3);font-size:13px">Sin fotos aún — agrega la primera 📸</div>';
     return;
   }
-  el.innerHTML = fotos.map(function(f){
+  const hayLocal = fotos.some(f => !f.nube);
+  const avisoLocal = hayLocal ? '<div style="grid-column:1/-1;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--warn);margin-bottom:4px">⚠️ Las fotos 📱 son solo locales (sin internet al subir). Las fotos ☁️ son visibles para todos.</div>' : '';
+  el.innerHTML = avisoLocal + fotos.map(function(f){
     const fid = f.id;
-    const fdesc = (f.desc||'').replace(/'/g,"\'");
     return '<div style="position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--card2)">' +
       '<img src="' + f.url + '" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="verFotoIdx(' + fid + ')">' +
       '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);padding:4px 6px;font-size:10px;color:#fff;display:flex;justify-content:space-between">' +
         '<span>' + (f.desc || fmt(f.fecha)) + '</span>' +
-        '<span>' + (f.nube ? '☁️' : '📱') + '</span>' +
+        '<span title="' + (f.nube ? 'En la nube' : 'Solo local') + '">' + (f.nube ? '☁️' : '📱') + '</span>' +
       '</div>' +
       '<button onclick="elimFoto(' + fid + ')" style="position:absolute;top:4px;right:4px;background:rgba(248,113,113,.8);border:none;border-radius:50%;width:22px;height:22px;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">&#x2715;</button>' +
     '</div>';
